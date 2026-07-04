@@ -1,5 +1,3 @@
-import "server-only";
-
 import { MonitorStatus, type MonitorHit, type MonitorTask } from "@prisma/client";
 import { prisma } from "./db";
 import { getUserTweetsFromConsumer, isConsumerApiConfigured } from "./consumer-api";

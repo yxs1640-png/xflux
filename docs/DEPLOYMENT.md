@@ -117,7 +117,7 @@ fly secrets set \
   CONSUMER_API_KEY="你的Consumer密钥" \
   -a xflux-monitor-worker
 
-fly deploy --config worker/fly.toml --dockerfile Dockerfile.worker
+fly deploy . --config worker/fly.toml -a xflux-monitor-worker
 
 fly logs -a xflux-monitor-worker
 ```

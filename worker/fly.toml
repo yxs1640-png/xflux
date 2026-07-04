@@ -1,34 +1,34 @@
-# Deploy from repository root:
-#   fly launch --config worker/fly.toml --dockerfile Dockerfile.worker --no-deploy
-#   fly secrets set DATABASE_URL="..." DIRECT_URL="..." CONSUMER_API_KEY="..." -a xflux-monitor-worker
-#   fly deploy --config worker/fly.toml --dockerfile Dockerfile.worker
+# fly.toml app configuration file generated for xflux-monitor-worker on 2026-07-04T14:40:54+08:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
 
-app = "xflux-monitor-worker"
-primary_region = "sin"
+app = 'xflux-monitor-worker'
+primary_region = 'sin'
 
 [build]
-  dockerfile = "Dockerfile.worker"
+  dockerfile = "../Dockerfile.worker"
 
 [env]
-  MONITOR_WORKER_TICK_MS = "30000"
-  MONITOR_WORKER_BATCH_SIZE = "5"
-  CONSUMER_API_BASE_URL = "http://89.167.53.180"
-  CONSUMER_API_PREFIX = "/consumer"
-
-[[vm]]
-  size = "shared-cpu-1x"
-  memory = "512mb"
+  CONSUMER_API_BASE_URL = 'http://89.167.53.180'
+  CONSUMER_API_PREFIX = '/consumer'
+  MONITOR_WORKER_BATCH_SIZE = '5'
+  MONITOR_WORKER_TICK_MS = '30000'
 
 [http_service]
   internal_port = 8080
   force_https = true
-  auto_stop_machines = "stop"
+  auto_stop_machines = 'stop'
   auto_start_machines = true
   min_machines_running = 1
 
   [[http_service.checks]]
-  grace_period = "10s"
-  interval = "30s"
-  method = "GET"
-  path = "/health"
-  timeout = "5s"
+    interval = '30s'
+    timeout = '5s'
+    grace_period = '10s'
+    method = 'GET'
+    path = '/health'
+
+[[vm]]
+  size = 'shared-cpu-1x'
+  memory = '512mb'
