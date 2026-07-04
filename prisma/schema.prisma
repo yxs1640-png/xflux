@@ -46,16 +46,21 @@ enum WebhookDeliveryStatus {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  name          String?
-  passwordHash  String
-  planTier      PlanTier  @default(FREE)
-  quotaLimit    Int       @default(1000)
-  quotaUsed     Int       @default(0)
-  quotaResetAt  DateTime  @default(now())
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id                     String    @id @default(cuid())
+  email                  String    @unique
+  name                   String?
+  passwordHash           String
+  planTier               PlanTier  @default(FREE)
+  quotaLimit             Int       @default(1000)
+  quotaUsed              Int       @default(0)
+  quotaResetAt           DateTime  @default(now())
+  stripeCustomerId       String?   @unique
+  stripeSubscriptionId   String?   @unique
+  stripePriceId          String?
+  subscriptionStatus     String?
+  subscriptionPeriodEnd  DateTime?
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
 
   apiKeys       ApiKey[]
   apiLogs       ApiLog[]

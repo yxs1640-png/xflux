@@ -21,15 +21,83 @@ interface Plan {
 interface PlanSelectorProps {
   plans: readonly Plan[];
   currentPlanId: string;
+  stripeEnabled: boolean;
+  hasActiveSubscription: boolean;
 }
 
-export function PlanSelector({ plans, currentPlanId }: PlanSelectorProps) {
+export function PlanSelector({
+  plans,
+  currentPlanId,
+  stripeEnabled,
+  hasActiveSubscription,
+}: PlanSelectorProps) {
   const router = useRouter();
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(
+    null
+  );
 
   const planOrder = ["FREE", "BASIC", "PRO", "ENTERPRISE"];
   const currentIndex = planOrder.indexOf(currentPlanId);
+
+  async function openPortal() {
+    setLoadingPlan("portal");
+    setMessage(null);
+    const res = await fetch("/api/billing/portal", { method: "POST" });
+    const data = await res.json();
+    setLoadingPlan(null);
+
+    if (!res.ok || !data.url) {
+      setMessage({ type: "error", text: data.error || "Failed to open billing portal" });
+      return;
+    }
+
+    window.location.href = data.url;
+  }
+
+  async function mockUpgrade(planId: string, planName: string) {
+    const res = await fetch("/api/subscription/upgrade", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ planId }),
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      setMessage({ type: "error", text: data.error || "Upgrade failed" });
+      return;
+    }
+
+    setMessage({ type: "success", text: `Successfully switched to ${planName} plan.` });
+    router.refresh();
+  }
+
+  async function startCheckout(planId: string) {
+    const res = await fetch("/api/billing/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ planId }),
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      setMessage({ type: "error", text: data.error || "Checkout failed" });
+      return;
+    }
+
+    if (data.updated) {
+      setMessage({ type: "success", text: "Plan updated successfully." });
+      router.refresh();
+      return;
+    }
+
+    if (data.url) {
+      window.location.href = data.url;
+      return;
+    }
+
+    setMessage({ type: "error", text: "Checkout failed" });
+  }
 
   async function handleSelect(plan: Plan) {
     if (plan.id === currentPlanId) return;
@@ -45,29 +113,34 @@ export function PlanSelector({ plans, currentPlanId }: PlanSelectorProps) {
     setLoadingPlan(plan.id);
     setMessage(null);
 
-    const res = await fetch("/api/subscription/upgrade", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ planId: plan.id }),
-    });
+    try {
+      if (plan.id === "FREE") {
+        if (hasActiveSubscription && stripeEnabled) {
+          await openPortal();
+          return;
+        }
+        if (!stripeEnabled) {
+          await mockUpgrade(plan.id, plan.name);
+        }
+        return;
+      }
 
-    const data = await res.json();
-    setLoadingPlan(null);
-
-    if (!res.ok) {
-      setMessage({ type: "error", text: data.error || "Upgrade failed" });
-      return;
+      if (stripeEnabled) {
+        await startCheckout(plan.id);
+      } else {
+        await mockUpgrade(plan.id, plan.name);
+      }
+    } finally {
+      setLoadingPlan(null);
     }
-
-    setMessage({ type: "success", text: `Successfully switched to ${plan.name} plan.` });
-    router.refresh();
   }
 
   function getButtonLabel(plan: Plan, index: number) {
     if (plan.id === currentPlanId) return "Current Plan";
+    if (plan.id === "FREE" && hasActiveSubscription && stripeEnabled) return "Cancel via portal";
     if (index < currentIndex) return `Switch to ${plan.name}`;
     if (plan.id === "ENTERPRISE") return plan.cta;
-    return plan.cta;
+    return stripeEnabled ? plan.cta : `Switch to ${plan.name}`;
   }
 
   return (
@@ -128,7 +201,7 @@ export function PlanSelector({ plans, currentPlanId }: PlanSelectorProps) {
                 disabled={isCurrent || loadingPlan !== null}
                 onClick={() => handleSelect(plan)}
               >
-                {loadingPlan === plan.id ? (
+                {loadingPlan === plan.id || (loadingPlan === "portal" && plan.id === "FREE") ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
                     Processing...
@@ -143,7 +216,9 @@ export function PlanSelector({ plans, currentPlanId }: PlanSelectorProps) {
       </div>
 
       <p className="mt-6 text-sm text-zinc-500">
-        Stripe payment integration coming soon. Plan changes take effect immediately for testing.
+        {stripeEnabled
+          ? "Paid plans are billed monthly through Stripe. Use Manage billing to update payment method or cancel."
+          : "Stripe is not configured — plan changes apply immediately for local testing only."}
       </p>
     </div>
   );

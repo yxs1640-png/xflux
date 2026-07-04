@@ -59,7 +59,9 @@ export default async function SettingsPage() {
               </Link>
             </div>
             <p className="text-sm text-zinc-500">
-              Stripe billing integration coming soon. Contact support for enterprise plans.
+              {user.subscriptionStatus === "active" || user.subscriptionStatus === "trialing"
+                ? "Billed monthly via Stripe. Manage payment method or cancel anytime."
+                : "Upgrade on the billing page to unlock higher limits."}
             </p>
           </CardContent>
         </Card>

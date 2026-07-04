@@ -197,7 +197,7 @@ prisma/
 
 ## Roadmap
 
-- [ ] Stripe billing integration
+- [x] Stripe billing integration (see docs/STRIPE.md)
 - [ ] Real-time WebSocket monitoring
 - [ ] Telegram/Discord notifications
 - [ ] Account pool management

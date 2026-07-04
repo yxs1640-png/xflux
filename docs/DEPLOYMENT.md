@@ -141,6 +141,9 @@ Logs 应出现：
 | `XFLUX_API_SERVER_URL` | ❌ | ❌ | ✅ |
 | `DATABASE_URL` / `DIRECT_URL` | ❌ | ✅ | ✅ |
 | `NEXTAUTH_*` | ❌ | ❌ | ✅ |
+| `STRIPE_*` / `STRIPE_PRICE_*` | ❌ | ❌ | ✅ |
+
+Stripe 配置详见 [docs/STRIPE.md](./STRIPE.md)。
 
 ---
 
