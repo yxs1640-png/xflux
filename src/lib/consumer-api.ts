@@ -51,11 +51,26 @@ async function consumerFetch<T>(
     }
   }
 
-  const res = await fetch(url.toString(), {
-    method: "GET",
-    headers: { "X-Api-Key": apiKey },
-    cache: "no-store",
-  });
+  const controller = new AbortController();
+  const timeoutMs = Number(process.env.XFLUX_UPSTREAM_TIMEOUT_MS || 25_000);
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+  let res: Response;
+  try {
+    res = await fetch(url.toString(), {
+      method: "GET",
+      headers: { "X-Api-Key": apiKey },
+      cache: "no-store",
+      signal: controller.signal,
+    });
+  } catch (err) {
+    if (err instanceof Error && err.name === "AbortError") {
+      throw new ConsumerApiError(`Consumer API timeout after ${timeoutMs}ms`, 504);
+    }
+    throw err;
+  } finally {
+    clearTimeout(timer);
+  }
 
   const text = await res.text();
   if (!res.ok) {

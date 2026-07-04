@@ -12,6 +12,7 @@ import {
 
 const API_SERVER = process.env.XFLUX_API_SERVER_URL?.replace(/\/$/, "");
 const INTERNAL_KEY = process.env.XFLUX_INTERNAL_KEY;
+const UPSTREAM_TIMEOUT_MS = Number(process.env.XFLUX_UPSTREAM_TIMEOUT_MS || 25_000);
 
 function isApiServerConfigured(): boolean {
   return Boolean(
@@ -22,7 +23,30 @@ function isApiServerConfigured(): boolean {
   );
 }
 
-class ApiServerError extends Error {
+/** Vercel often cannot reach Consumer IP directly — prefer Fly in production. */
+function shouldUseConsumerDirect(): boolean {
+  if (!isConsumerApiConfigured()) return false;
+  if (process.env.NODE_ENV === "production" && isApiServerConfigured()) {
+    return false;
+  }
+  return true;
+}
+
+async function fetchWithTimeout(
+  input: string,
+  init: RequestInit = {},
+  timeoutMs = UPSTREAM_TIMEOUT_MS
+): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(input, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+export class ApiServerError extends Error {
   constructor(
     message: string,
     public status: number
@@ -35,7 +59,7 @@ async function fetchFromApiServer<T>(path: string): Promise<T | null> {
   if (!isApiServerConfigured()) return null;
 
   try {
-    const res = await fetch(`${API_SERVER}${path}`, {
+    const res = await fetchWithTimeout(`${API_SERVER}${path}`, {
       headers: { "x-flux-internal-key": INTERNAL_KEY! },
       cache: "no-store",
     });
@@ -48,8 +72,12 @@ async function fetchFromApiServer<T>(path: string): Promise<T | null> {
     return res.json() as Promise<T>;
   } catch (err) {
     if (err instanceof ApiServerError) throw err;
-    console.error("[twitter-proxy] API server error:", err);
-    return null;
+    const message =
+      err instanceof Error && err.name === "AbortError"
+        ? `API server timeout after ${UPSTREAM_TIMEOUT_MS}ms`
+        : "API server unreachable";
+    console.error("[twitter-proxy]", message, err);
+    throw new ApiServerError(message, 504);
   }
 }
 
@@ -82,7 +110,7 @@ export async function getUserByUsername(
 ): Promise<TwitterUser | null> {
   const clean = username.replace("@", "").toLowerCase();
 
-  if (isConsumerApiConfigured()) {
+  if (shouldUseConsumerDirect()) {
     try {
       const user = await getUserByUsernameFromConsumer(clean);
       if (user) return user;
@@ -152,7 +180,7 @@ export async function getUserTweets(
 ): Promise<TwitterTweet[]> {
   const clean = username.replace("@", "").toLowerCase();
 
-  if (isConsumerApiConfigured()) {
+  if (shouldUseConsumerDirect()) {
     try {
       return await getUserTweetsFromConsumer(clean, limit);
     } catch (err) {
@@ -191,7 +219,7 @@ export async function searchTweets(
   query: string,
   limit = 20
 ): Promise<TwitterTweet[]> {
-  if (isConsumerApiConfigured()) {
+  if (shouldUseConsumerDirect()) {
     try {
       return await searchTweetsFromConsumer(query, limit);
     } catch (err) {
@@ -223,7 +251,7 @@ export async function searchTweets(
 }
 
 export async function getTweetById(id: string): Promise<TwitterTweet | null> {
-  if (isConsumerApiConfigured()) {
+  if (shouldUseConsumerDirect()) {
     try {
       return await getTweetByIdFromConsumer(id);
     } catch (err) {
