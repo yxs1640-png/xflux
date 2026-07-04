@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: xflux
+      POSTGRES_PASSWORD: xflux
+      POSTGRES_DB: xflux
+    ports:
+      - "5432:5432"
+    volumes:
+      - xflux_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U xflux -d xflux"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  xflux_pg_data:

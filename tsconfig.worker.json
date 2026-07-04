@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "outDir": "dist",
+    "rootDir": "src",
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "declaration": false
+  },
+  "include": [
+    "src/worker/**/*.ts",
+    "src/lib/db.ts",
+    "src/lib/monitor-poll.ts",
+    "src/lib/monitor-webhook.ts",
+    "src/lib/consumer-api.ts",
+    "src/lib/twitter-normalizers.ts",
+    "src/lib/twitter-types.ts"
+  ]
+}

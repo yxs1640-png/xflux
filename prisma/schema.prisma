@@ -1,0 +1,180 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum PlanTier {
+  FREE
+  BASIC
+  PRO
+  ENTERPRISE
+}
+
+enum JobStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
+enum JobType {
+  TWEET
+  DM
+  MONITOR
+  BATCH
+}
+
+enum MonitorStatus {
+  ACTIVE
+  PAUSED
+  ERROR
+}
+
+enum WebhookDeliveryEvent {
+  TEST
+  HIT
+}
+
+enum WebhookDeliveryStatus {
+  SUCCESS
+  FAILED
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  passwordHash  String
+  planTier      PlanTier  @default(FREE)
+  quotaLimit    Int       @default(1000)
+  quotaUsed     Int       @default(0)
+  quotaResetAt  DateTime  @default(now())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  apiKeys       ApiKey[]
+  apiLogs       ApiLog[]
+  monitorTasks  MonitorTask[]
+  jobs          Job[]
+}
+
+model ApiKey {
+  id          String    @id @default(cuid())
+  userId      String
+  name        String    @default("Default")
+  keyHash     String    @unique
+  keyPrefix   String
+  lastUsedAt  DateTime?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([keyHash])
+}
+
+model ApiLog {
+  id           String   @id @default(cuid())
+  userId       String
+  endpoint     String
+  method       String
+  statusCode   Int
+  responseTime Int
+  createdAt    DateTime @default(now())
+
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}
+
+model MonitorTask {
+  id                    String        @id @default(cuid())
+  userId                String
+  targetUsername        String
+  keywords              String?
+  notificationChannels  Json          @default("[]")
+  isActive              Boolean       @default(true)
+  status                MonitorStatus @default(ACTIVE)
+  checkInterval         Int           @default(300)
+  lastTweetId           String?
+  lastError             String?
+  lastCheckAt           DateTime?
+  webhookUrl            String?
+  webhookSecret         String?
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  user                  User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  hits                  MonitorHit[]
+  deliveries            MonitorWebhookDelivery[]
+
+  @@index([userId])
+  @@index([isActive, lastCheckAt])
+}
+
+model MonitorHit {
+  id               String   @id @default(cuid())
+  taskId           String
+  tweetId          String
+  text             String
+  authorUsername   String
+  tweetCreatedAt   DateTime?
+  detectedAt       DateTime @default(now())
+
+  task             MonitorTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  deliveries       MonitorWebhookDelivery[]
+
+  @@unique([taskId, tweetId])
+  @@index([taskId, detectedAt])
+}
+
+model MonitorWebhookDelivery {
+  id           String                 @id @default(cuid())
+  taskId       String
+  hitId        String?
+  event        WebhookDeliveryEvent
+  status       WebhookDeliveryStatus
+  statusCode   Int?
+  responseTime Int?
+  error        String?
+  createdAt    DateTime               @default(now())
+
+  task         MonitorTask            @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  hit          MonitorHit?            @relation(fields: [hitId], references: [id], onDelete: SetNull)
+
+  @@index([taskId, createdAt])
+}
+
+model Job {
+  id          String    @id @default(cuid())
+  userId      String
+  jobType     JobType
+  payload     Json
+  status      JobStatus @default(PENDING)
+  priority    Int       @default(0)
+  scheduledAt DateTime?
+  executedAt  DateTime?
+  error       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+}
+
+model SubscriptionPlan {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  price       Float
+  quotaLimit  Int
+  features    Json
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}

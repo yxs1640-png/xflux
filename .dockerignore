@@ -1,0 +1,14 @@
+node_modules
+.next
+.git
+.env
+.env.*
+!.env.example
+*.md
+docs
+worker/fly.toml
+api-server/fly.toml
+fly.toml
+.cursor
+coverage
+.DS_Store
