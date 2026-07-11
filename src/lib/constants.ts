@@ -76,6 +76,16 @@ export const PLANS = [
   },
 ] as const;
 
+const PLAN_NAME_BY_ID = Object.fromEntries(PLANS.map((p) => [p.id, p.name])) as Record<
+  string,
+  string
+>;
+
+/** User-facing plan label (e.g. BASIC → Starter). */
+export function getPlanDisplayName(planTier: string): string {
+  return PLAN_NAME_BY_ID[planTier] ?? planTier;
+}
+
 export const API_ENDPOINTS = [
   {
     method: "GET",

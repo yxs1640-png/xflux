@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { PLANS } from "@/lib/constants";
+import { PLANS, getPlanDisplayName } from "@/lib/constants";
 import { PlanSelector } from "@/components/billing/plan-selector";
 import { BillingStatusBanner } from "@/components/billing/billing-status-banner";
 import { ManageBillingButton } from "@/components/billing/manage-billing-button";
@@ -46,7 +46,9 @@ export default async function BillingPage() {
         <div>
           <p className="text-sm text-zinc-500">Current plan</p>
           <div className="flex items-center gap-2 mt-1">
-            <span className="text-lg font-semibold text-white">{user.planTier}</span>
+            <span className="text-lg font-semibold text-white">
+              {getPlanDisplayName(user.planTier)}
+            </span>
             <Badge variant={subscriptionBadgeVariant(user.subscriptionStatus)}>
               {user.subscriptionStatus || (user.planTier === "FREE" ? "Free tier" : "Active")}
             </Badge>

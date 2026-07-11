@@ -129,9 +129,7 @@ export function PlanSelector({
           await openPortal();
           return;
         }
-        if (!stripeEnabled) {
-          await mockUpgrade(plan.id, plan.name);
-        }
+        await mockUpgrade(plan.id, plan.name);
         return;
       }
 
