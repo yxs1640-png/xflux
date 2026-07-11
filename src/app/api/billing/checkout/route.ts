@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
+import type Stripe from "stripe";
 import { z } from "zod";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
@@ -28,11 +29,8 @@ function checkoutErrorMessage(err: unknown): string {
   return "Checkout failed";
 }
 
-function subscriptionPeriodEnd(subscription: { current_period_end?: number | null; items?: { data?: Array<{ current_period_end?: number | null }> } }): Date | null {
-  const end =
-    subscription.current_period_end ??
-    subscription.items?.data?.[0]?.current_period_end ??
-    null;
+function subscriptionPeriodEnd(subscription: Stripe.Subscription): Date | null {
+  const end = subscription.current_period_end;
   return end ? new Date(end * 1000) : null;
 }
 
