@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { PlanTier } from "@prisma/client";
 import { z } from "zod";
 import { authOptions } from "@/lib/auth";
-import { applyPlanToUser, isActiveSubscriptionStatus, resetUserToFree } from "@/lib/billing";
+import { applyMockPlanChange, isActiveSubscriptionStatus, resetUserToFree } from "@/lib/billing";
 import { isStripeConfigured } from "@/lib/stripe";
 import { prisma } from "@/lib/db";
 
@@ -53,6 +53,9 @@ export async function POST(request: NextRequest) {
       }
 
       const updated = await resetUserToFree(session.user.id);
+      if (!updated) {
+        return NextResponse.json({ error: "User not found" }, { status: 404 });
+      }
       return NextResponse.json({
         success: true,
         planTier: updated.planTier,
@@ -60,7 +63,10 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const user = await applyPlanToUser(session.user.id, planId as PlanTier);
+    const user = await applyMockPlanChange(session.user.id, planId as PlanTier);
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
 
     return NextResponse.json({
       success: true,

@@ -177,6 +177,20 @@ export async function PATCH(request: NextRequest) {
   let webhookSecretPlain: string | undefined;
 
   if (typeof body.isActive === "boolean") {
+    if (body.isActive && !task.isActive) {
+      const activeCount = await prisma.monitorTask.count({
+        where: { userId: session.user.id, isActive: true },
+      });
+      const limit = PLAN_MONITOR_LIMITS[task.user.planTier];
+      if (activeCount >= limit) {
+        return NextResponse.json(
+          {
+            error: `Monitor limit reached (${limit} on ${task.user.planTier}). Pause another monitor or upgrade your plan.`,
+          },
+          { status: 403 }
+        );
+      }
+    }
     data.isActive = body.isActive;
     data.status = body.isActive ? MonitorStatus.ACTIVE : MonitorStatus.PAUSED;
   }

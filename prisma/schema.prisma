@@ -61,6 +61,10 @@ model User {
   stripePriceId          String?
   subscriptionStatus     String?
   subscriptionPeriodEnd  DateTime?
+  pendingPlanTier          PlanTier?
+  planChangeEffectiveAt    DateTime?
+  lastPlanChangeSummary    Json?
+  planChangeBannerDismissedAt DateTime?
   signupSource           String?
   signupSourceDetail     String?
   createdAt              DateTime  @default(now())

@@ -2,7 +2,16 @@ import "server-only";
 
 import { PlanTier } from "@prisma/client";
 import type Stripe from "stripe";
-import { applyPlanToUser, resetUserToFree } from "./billing";
+import {
+  applyPlanImmediately,
+  applyPendingPlanChange,
+  clearPendingPlanChange,
+  isPlanDowngrade,
+  isPlanUpgrade,
+  maybeApplyPendingPlanChange,
+  resetUserToFree,
+  schedulePlanDowngrade,
+} from "./billing";
 import { planTierFromPriceId } from "./stripe-plans";
 import { AnalyticsEvents } from "./analytics/events";
 import { identifyServerUser, trackServerEvent } from "./analytics/server";
@@ -27,6 +36,21 @@ function planFromSubscription(subscription: Stripe.Subscription): PlanTier | nul
   return null;
 }
 
+function stripeSnapshot(subscription: Stripe.Subscription) {
+  const customerId =
+    typeof subscription.customer === "string"
+      ? subscription.customer
+      : subscription.customer?.id;
+
+  return {
+    stripeCustomerId: customerId,
+    stripeSubscriptionId: subscription.id,
+    stripePriceId: priceIdFromSubscription(subscription),
+    subscriptionStatus: subscription.status,
+    subscriptionPeriodEnd: periodEnd(subscription),
+  };
+}
+
 async function syncSubscription(
   subscription: Stripe.Subscription,
   fallbackUserId?: string
@@ -34,39 +58,84 @@ async function syncSubscription(
   const userId = subscription.metadata?.userId || fallbackUserId;
   if (!userId) return;
 
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { planTier: true, pendingPlanTier: true },
+  });
+  if (!user) return;
+
   const status = subscription.status;
-  const customerId =
-    typeof subscription.customer === "string"
-      ? subscription.customer
-      : subscription.customer?.id;
+  const snapshot = stripeSnapshot(subscription);
+  const periodEndDate = snapshot.subscriptionPeriodEnd;
 
   if (status === "canceled" || status === "unpaid" || status === "incomplete_expired") {
-    const existing = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { planTier: true },
+    await resetUserToFree(userId, {
+      ...snapshot,
+      subscriptionStatus: status,
     });
-    await resetUserToFree(userId);
     await trackServerEvent(userId, AnalyticsEvents.SUBSCRIPTION_CANCELED, {
-      previous_plan_id: existing?.planTier,
+      previous_plan_id: user.planTier,
       subscription_status: status,
     });
     return;
   }
 
-  const planTier = planFromSubscription(subscription);
-  if (!planTier) return;
+  if (subscription.cancel_at_period_end) {
+    await schedulePlanDowngrade(userId, PlanTier.FREE, periodEndDate, snapshot);
+    await maybeApplyPendingPlanChange(userId);
+    await trackServerEvent(userId, AnalyticsEvents.SUBSCRIPTION_UPDATED, {
+      plan_id: user.planTier,
+      pending_plan_id: PlanTier.FREE,
+      subscription_status: status,
+      via: "stripe_webhook_cancel_scheduled",
+    });
+    return;
+  }
 
-  await applyPlanToUser(userId, planTier, {
-    stripeCustomerId: customerId,
-    stripeSubscriptionId: subscription.id,
-    stripePriceId: priceIdFromSubscription(subscription),
-    subscriptionStatus: status,
-    subscriptionPeriodEnd: periodEnd(subscription),
+  if (user.pendingPlanTier === PlanTier.FREE) {
+    await clearPendingPlanChange(userId);
+  }
+
+  const newPlanTier = planFromSubscription(subscription);
+  if (!newPlanTier) {
+    await prisma.user.update({
+      where: { id: userId },
+      data: snapshot,
+    });
+    await maybeApplyPendingPlanChange(userId);
+    return;
+  }
+
+  if (isPlanDowngrade(user.planTier, newPlanTier)) {
+    await schedulePlanDowngrade(userId, newPlanTier, periodEndDate, snapshot);
+    await maybeApplyPendingPlanChange(userId);
+    await trackServerEvent(userId, AnalyticsEvents.SUBSCRIPTION_UPDATED, {
+      plan_id: user.planTier,
+      pending_plan_id: newPlanTier,
+      subscription_status: status,
+      via: "stripe_webhook_downgrade_scheduled",
+    });
+    return;
+  }
+
+  if (isPlanUpgrade(user.planTier, newPlanTier)) {
+    await applyPlanImmediately(userId, newPlanTier, snapshot);
+    await identifyServerUser(userId, { plan_tier: newPlanTier });
+    await trackServerEvent(userId, AnalyticsEvents.SUBSCRIPTION_UPDATED, {
+      plan_id: newPlanTier,
+      subscription_status: status,
+      via: "stripe_webhook",
+    });
+    return;
+  }
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: snapshot,
   });
-
-  await identifyServerUser(userId, { plan_tier: planTier });
+  await maybeApplyPendingPlanChange(userId);
   await trackServerEvent(userId, AnalyticsEvents.SUBSCRIPTION_UPDATED, {
-    plan_id: planTier,
+    plan_id: newPlanTier,
     subscription_status: status,
     via: "stripe_webhook",
   });
@@ -115,7 +184,9 @@ export async function handleStripeWebhookEvent(event: Stripe.Event) {
           where: { id: userId },
           select: { planTier: true },
         });
+
         await resetUserToFree(userId);
+
         await trackServerEvent(userId, AnalyticsEvents.SUBSCRIPTION_CANCELED, {
           previous_plan_id: existing?.planTier,
           via: "subscription_deleted",

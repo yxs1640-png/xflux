@@ -1,3 +1,4 @@
+import { PlanTier } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import type Stripe from "stripe";
@@ -5,8 +6,10 @@ import { z } from "zod";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import {
-  applyPlanToUser,
+  applyPlanImmediately,
   isActiveSubscriptionStatus,
+  isPlanDowngrade,
+  schedulePlanDowngrade,
 } from "@/lib/billing";
 import { getAppBaseUrl, getStripe, isStripeConfigured } from "@/lib/stripe";
 import {
@@ -97,19 +100,45 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "Subscription item not found" }, { status: 500 });
       }
 
+      const currentPlan = user.planTier as PlanTier;
+      const targetPlan = planId as PlanTier;
+      const isDowngrade = isPlanDowngrade(currentPlan, targetPlan);
+
       const updated = await stripe.subscriptions.update(user.stripeSubscriptionId, {
         items: [{ id: itemId, price: priceId }],
-        proration_behavior: "create_prorations",
+        proration_behavior: isDowngrade ? "none" : "create_prorations",
         metadata: { userId: user.id, planTier: planId },
       });
 
-      await applyPlanToUser(user.id, planId, {
+      const periodEnd = subscriptionPeriodEnd(updated);
+      const stripeFields = {
         stripeCustomerId: customerId,
         stripeSubscriptionId: updated.id,
         stripePriceId: priceId,
         subscriptionStatus: updated.status,
-        subscriptionPeriodEnd: subscriptionPeriodEnd(updated),
-      });
+        subscriptionPeriodEnd: periodEnd,
+      };
+
+      if (isDowngrade) {
+        await schedulePlanDowngrade(user.id, targetPlan, periodEnd, stripeFields);
+
+        await trackServerEvent(user.id, AnalyticsEvents.SUBSCRIPTION_UPDATED, {
+          plan_id: currentPlan,
+          pending_plan_id: targetPlan,
+          subscription_status: updated.status,
+          via: "checkout_downgrade_scheduled",
+        });
+
+        return NextResponse.json({
+          success: true,
+          scheduled: true,
+          currentPlanTier: currentPlan,
+          pendingPlanTier: targetPlan,
+          planChangeEffectiveAt: periodEnd?.toISOString() ?? null,
+        });
+      }
+
+      await applyPlanImmediately(user.id, targetPlan, stripeFields);
 
       await trackServerEvent(user.id, AnalyticsEvents.SUBSCRIPTION_UPDATED, {
         plan_id: planId,

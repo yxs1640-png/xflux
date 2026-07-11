@@ -89,6 +89,18 @@ export function PlanSelector({
       return;
     }
 
+    if (data.scheduled) {
+      const effective = data.planChangeEffectiveAt
+        ? new Date(data.planChangeEffectiveAt).toLocaleDateString()
+        : "the end of your billing period";
+      setMessage({
+        type: "success",
+        text: `Downgrade scheduled. You keep your current plan until ${effective}. Monitor limits will adjust then.`,
+      });
+      router.refresh();
+      return;
+    }
+
     if (data.updated) {
       setMessage({ type: "success", text: "Plan updated successfully." });
       router.refresh();
