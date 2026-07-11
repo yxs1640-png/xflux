@@ -1,11 +1,13 @@
 import { PlanTier } from "@prisma/client";
 
-export const PAID_PLAN_TIERS = ["BASIC", "PRO"] as const;
+export const PAID_PLAN_TIERS = ["BASIC", "GROWTH", "PRO", "SCALE"] as const;
 export type PaidPlanTier = (typeof PAID_PLAN_TIERS)[number];
 
 const PRICE_ENV: Record<PaidPlanTier, string> = {
   BASIC: "STRIPE_PRICE_BASIC",
+  GROWTH: "STRIPE_PRICE_GROWTH",
   PRO: "STRIPE_PRICE_PRO",
+  SCALE: "STRIPE_PRICE_SCALE",
 };
 
 export function getStripePriceId(planTier: PaidPlanTier): string | null {

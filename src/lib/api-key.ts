@@ -1,5 +1,5 @@
 import { prisma } from "./db";
-import { hashApiKey } from "./crypto";
+import { hashApiKey } from "./api-key-crypto";
 
 export async function validateApiKey(
   key: string | null

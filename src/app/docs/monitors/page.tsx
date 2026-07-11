@@ -1,5 +1,7 @@
 import { CodeBlock, Callout, DocHeading } from "@/components/docs/doc-blocks";
 import { PLANS } from "@/lib/constants";
+import { PLAN_MONITOR_MIN_INTERVAL, formatMonitorInterval } from "@/lib/quota";
+import { PlanTier } from "@prisma/client";
 
 export default function MonitorsDocsPage() {
   return (
@@ -61,10 +63,9 @@ export default function MonitorsDocsPage() {
                 <td className="p-3">{p.name}</td>
                 <td className="p-3">{p.monitors}</td>
                 <td className="p-3">
-                  {p.id === "FREE" && "300s (5 min)"}
-                  {p.id === "BASIC" && "60s (1 min)"}
-                  {p.id === "PRO" && "30s"}
-                  {p.id === "ENTERPRISE" && "10s"}
+                  {formatMonitorInterval(
+                    PLAN_MONITOR_MIN_INTERVAL[p.id as PlanTier] ?? 300
+                  )}
                 </td>
               </tr>
             ))}

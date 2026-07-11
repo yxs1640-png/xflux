@@ -2,10 +2,21 @@
 
 import { useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { AnalyticsEvents } from "@/lib/analytics/events";
+import { trackClientEvent } from "@/lib/analytics/client";
+import { useEffect } from "react";
 
 export function BillingStatusBanner() {
   const params = useSearchParams();
   const checkout = params.get("checkout");
+
+  useEffect(() => {
+    if (checkout === "success") {
+      trackClientEvent(AnalyticsEvents.CHECKOUT_COMPLETED, { via: "return_url" });
+    } else if (checkout === "canceled") {
+      trackClientEvent(AnalyticsEvents.CHECKOUT_CANCELED, { via: "return_url" });
+    }
+  }, [checkout]);
 
   if (checkout === "success") {
     return (

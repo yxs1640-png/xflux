@@ -12,7 +12,7 @@ export default function DocsIntroPage() {
           XFlux is a focused X/Twitter platform with two core products: a{" "}
           <strong className="text-white font-medium">Data API</strong> for on-demand requests, and{" "}
           <strong className="text-white font-medium">Monitors</strong> that watch accounts and
-          deliver new tweets to your Dashboard or webhook endpoint.
+          deliver new tweets to your Dashboard. Paid plans can also POST signed webhooks to your URL.
         </p>
       </div>
 
@@ -41,10 +41,10 @@ export default function DocsIntroPage() {
 
       <DocHeading id="why-xflux">Why XFlux?</DocHeading>
       <ul className="list-disc list-inside space-y-2 text-zinc-400 text-sm leading-relaxed">
-        <li>Cheaper than the official X API for read-heavy workloads</li>
+        <li>Monthly plans for read API access and built-in account monitors</li>
         <li>Built-in KOL monitoring — no cron jobs or polling code required</li>
         <li>Dashboard for API keys, usage, monitors, and billing</li>
-        <li>Webhook delivery with HMAC signatures (Basic plan and above)</li>
+        <li>Webhook delivery with HMAC signatures (Starter plan and above)</li>
       </ul>
 
       <DocHeading id="architecture">Architecture</DocHeading>

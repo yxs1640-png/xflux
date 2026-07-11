@@ -14,9 +14,11 @@ import {
   type PaidPlanTier,
 } from "@/lib/stripe-plans";
 import { PLAN_LIMITS } from "@/lib/quota";
+import { AnalyticsEvents } from "@/lib/analytics/events";
+import { trackServerEvent } from "@/lib/analytics/server";
 
 const schema = z.object({
-  planId: z.enum(["BASIC", "PRO"]),
+  planId: z.enum(["BASIC", "GROWTH", "PRO", "SCALE"]),
 });
 
 export async function POST(request: NextRequest) {
@@ -94,6 +96,12 @@ export async function POST(request: NextRequest) {
           : null,
       });
 
+      await trackServerEvent(user.id, AnalyticsEvents.SUBSCRIPTION_UPDATED, {
+        plan_id: planId,
+        subscription_status: updated.status,
+        via: "checkout_existing_subscription",
+      });
+
       return NextResponse.json({
         success: true,
         updated: true,
@@ -117,6 +125,11 @@ export async function POST(request: NextRequest) {
     if (!checkout.url) {
       return NextResponse.json({ error: "Failed to create checkout session" }, { status: 500 });
     }
+
+    await trackServerEvent(user.id, AnalyticsEvents.CHECKOUT_STARTED, {
+      plan_id: planId,
+      checkout_session_id: checkout.id,
+    });
 
     return NextResponse.json({ url: checkout.url });
   } catch (err) {

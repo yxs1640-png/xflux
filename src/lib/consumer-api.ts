@@ -150,16 +150,22 @@ export async function getUserTweetsFromConsumer(
   const user = await getUserByUsernameFromConsumer(username);
   const clean = username.replace("@", "").trim();
   const count = Math.min(Math.max(limit, 1), 100);
+  const validUserId = user?.id && /^\d+$/.test(user.id) ? user.id : undefined;
 
   const attempts: Array<Record<string, string | number | undefined>> = [
-    { user_id: user?.id, username: clean, screenname: clean, count },
-    { userId: user?.id, username: clean, count },
     { q: `from:${clean}`, count },
-  ].filter((p) => Object.values(p).some((v) => v !== undefined && v !== ""));
+    { query: `from:${clean}`, count },
+    ...(validUserId
+      ? [
+          { user_id: validUserId, username: clean, screenname: clean, count },
+          { userId: validUserId, username: clean, count },
+        ]
+      : [{ username: clean, screenname: clean, count }]),
+  ];
 
   let lastError: ConsumerApiError | null = null;
 
-  for (const endpoint of ["UserTweets", "UserMedia", "Search"]) {
+  for (const endpoint of ["Search", "UserTweets", "UserMedia"]) {
     for (const params of attempts) {
       try {
         const raw = await consumerFetch<unknown>(endpoint, params);
@@ -167,7 +173,7 @@ export async function getUserTweetsFromConsumer(
         if (tweets.length) {
           return tweets.map((t) => ({
             ...t,
-            author_id: user?.id ?? t.author_id,
+            author_id: validUserId ?? user?.id ?? t.author_id,
             author: user ?? t.author,
           }));
         }
@@ -180,7 +186,7 @@ export async function getUserTweetsFromConsumer(
     }
   }
 
-  if (lastError) throw lastError;
+  if (lastError && lastError.status >= 500) throw lastError;
   return [];
 }
 

@@ -99,7 +99,7 @@ export async function POST(request: NextRequest) {
   if (body.webhookUrl?.trim()) {
     if (!PLAN_WEBHOOK_ACCESS[user.planTier as PlanTier]) {
       return NextResponse.json(
-        { error: "Webhooks require Basic plan or higher." },
+        { error: "Webhooks require Starter plan or higher." },
         { status: 403 }
       );
     }
@@ -200,7 +200,7 @@ export async function PATCH(request: NextRequest) {
   if (body.webhookUrl !== undefined) {
     if (!PLAN_WEBHOOK_ACCESS[task.user.planTier]) {
       return NextResponse.json(
-        { error: "Webhooks require Basic plan or higher." },
+        { error: "Webhooks require Starter plan or higher." },
         { status: 403 }
       );
     }
@@ -229,7 +229,7 @@ export async function PATCH(request: NextRequest) {
   if (body.regenerateSecret && !body.webhookUrl && task.webhookUrl) {
     if (!PLAN_WEBHOOK_ACCESS[task.user.planTier]) {
       return NextResponse.json(
-        { error: "Webhooks require Basic plan or higher." },
+        { error: "Webhooks require Starter plan or higher." },
         { status: 403 }
       );
     }

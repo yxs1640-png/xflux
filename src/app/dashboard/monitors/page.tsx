@@ -19,6 +19,8 @@ import {
   Trash2,
   Webhook,
 } from "lucide-react";
+import { AnalyticsEvents } from "@/lib/analytics/events";
+import { trackClientEvent } from "@/lib/analytics/client";
 
 interface MonitorHit {
   id: string;
@@ -107,6 +109,9 @@ function MonitorWebhookPanel({
     if (res.ok) {
       onUpdate(data.monitor, data.webhookSecretPlain);
       if (data.webhookSecretPlain) setPlainSecret(data.webhookSecretPlain);
+      if (url.trim()) {
+        trackClientEvent(AnalyticsEvents.WEBHOOK_CONFIGURED, { monitor_id: monitor.id });
+      }
     } else {
       alert(data.error || "Failed to save webhook");
     }
@@ -137,6 +142,11 @@ function MonitorWebhookPanel({
     const data = await res.json();
     if (res.ok) {
       onUpdate({ ...monitor, deliveries: data.deliveries });
+      trackClientEvent(AnalyticsEvents.WEBHOOK_TESTED, {
+        monitor_id: monitor.id,
+        success: data.result.success,
+        status_code: data.result.statusCode ?? null,
+      });
       alert(
         data.result.success
           ? `Test delivered (${data.result.statusCode}, ${data.result.responseTime}ms)`
@@ -166,7 +176,7 @@ function MonitorWebhookPanel({
         <div className="mt-3 space-y-3">
           {!canWebhook ? (
             <p className="text-sm text-zinc-500">
-              Webhooks require Basic plan or higher.{" "}
+              Webhooks require Starter plan or higher.{" "}
               <Link href="/dashboard/billing" className="text-sky-400 hover:underline">
                 Upgrade
               </Link>
@@ -284,6 +294,7 @@ export default function MonitorsPage() {
   async function createMonitor(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
+    const hadKeywords = Boolean(keywords.trim());
     const res = await fetch("/api/monitors", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -291,9 +302,14 @@ export default function MonitorsPage() {
     });
     setLoading(false);
     if (res.ok) {
+      const data = await res.json();
       setUsername("");
       setKeywords("");
       fetchMonitors();
+      trackClientEvent(AnalyticsEvents.MONITOR_CREATED, {
+        has_keywords: hadKeywords,
+        check_interval: data.monitor?.checkInterval,
+      });
     } else {
       const data = await res.json();
       alert(data.error || "Failed to create monitor");
@@ -322,6 +338,23 @@ export default function MonitorsPage() {
       const data = await res.json();
       if (data.monitor) updateMonitor(data.monitor);
       else fetchMonitors();
+
+      const r = data.result;
+      trackClientEvent(AnalyticsEvents.MONITOR_CHECKED, {
+        monitor_id: id,
+        new_hits: r?.newHits ?? 0,
+        baselined: Boolean(r?.baselined),
+        had_error: Boolean(r?.error),
+      });
+      if (r?.error) {
+        alert(`Check failed: ${r.error}`);
+      } else if (r?.baselined) {
+        alert("Baseline set. Future checks will alert on new tweets only.");
+      } else if (r?.newHits > 0) {
+        alert(`Found ${r.newHits} new tweet(s).`);
+      } else {
+        alert("Check complete. No new tweets since last check.");
+      }
     } else {
       const data = await res.json();
       alert(data.error || "Check failed");
@@ -333,7 +366,8 @@ export default function MonitorsPage() {
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white">Monitors</h1>
         <p className="text-zinc-400">
-          Track KOL tweets automatically.{" "}
+          Poll accounts for new tweets on your plan schedule. Use Check now or enable the background
+          worker.{" "}
           <Link href="/docs/monitors" className="text-sky-400 hover:underline">
             Documentation
           </Link>

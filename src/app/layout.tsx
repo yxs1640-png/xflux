@@ -5,8 +5,8 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "XFlux — Affordable X/Twitter API Proxy",
   description:
-    "Cheap, stable X/Twitter API proxy for scraping, search, monitoring, and automation. 90% cheaper than official API.",
-  keywords: ["Twitter API", "X API", "API proxy", "social media automation"],
+    "X/Twitter read API for profiles, timelines, and search, plus account monitors with optional signed HTTP webhooks on paid plans.",
+  keywords: ["Twitter API", "X API", "API proxy", "Twitter monitoring", "webhooks"],
 };
 
 export default function RootLayout({

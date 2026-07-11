@@ -2,12 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { generateApiKey, hashPassword } from "@/lib/crypto";
+import { normalizeUserSourceFields, userSourceSchema } from "@/lib/user-source-schema";
+import { AnalyticsEvents } from "@/lib/analytics/events";
+import { identifyServerUser, trackServerEvent } from "@/lib/analytics/server";
 
-const schema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
-  name: z.string().optional(),
-});
+const schema = z
+  .object({
+    email: z.string().email(),
+    password: z.string().min(8),
+    name: z.string().optional(),
+  })
+  .and(userSourceSchema);
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,12 +32,15 @@ export async function POST(request: NextRequest) {
 
     const passwordHash = await hashPassword(data.password);
     const { key, hash, prefix } = generateApiKey();
+    const source = normalizeUserSourceFields(data);
 
     const user = await prisma.user.create({
       data: {
         email: data.email.toLowerCase(),
         name: data.name,
         passwordHash,
+        signupSource: source.userSource,
+        signupSourceDetail: source.userSourceDetail,
         apiKeys: {
           create: {
             name: "Default",
@@ -41,6 +49,18 @@ export async function POST(request: NextRequest) {
           },
         },
       },
+    });
+
+    await identifyServerUser(user.id, {
+      email: user.email,
+      name: user.name ?? undefined,
+      plan_tier: user.planTier,
+      signup_source: source.userSource,
+      signup_source_detail: source.userSourceDetail ?? undefined,
+    });
+    await trackServerEvent(user.id, AnalyticsEvents.SIGNUP_COMPLETED, {
+      signup_source: source.userSource,
+      signup_source_detail: source.userSourceDetail,
     });
 
     return NextResponse.json({

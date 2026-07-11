@@ -81,6 +81,7 @@ export default async function BillingPage() {
         plans={PLANS}
         currentPlanId={user.planTier}
         stripeEnabled={stripeEnabled}
+        stripeConfigured={isStripeConfigured()}
         hasActiveSubscription={hasActiveSubscription}
       />
     </div>

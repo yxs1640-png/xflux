@@ -4,6 +4,9 @@ import { PlanTier } from "@prisma/client";
 import type Stripe from "stripe";
 import { applyPlanToUser, resetUserToFree } from "./billing";
 import { planTierFromPriceId } from "./stripe-plans";
+import { AnalyticsEvents } from "./analytics/events";
+import { identifyServerUser, trackServerEvent } from "./analytics/server";
+import { prisma } from "./db";
 
 function periodEnd(subscription: Stripe.Subscription): Date | null {
   const end = subscription.current_period_end;
@@ -19,7 +22,7 @@ function planFromSubscription(subscription: Stripe.Subscription): PlanTier | nul
   if (fromPrice) return fromPrice;
 
   const meta = subscription.metadata?.planTier;
-  if (meta === "BASIC" || meta === "PRO") return meta;
+  if (meta === "BASIC" || meta === "GROWTH" || meta === "PRO" || meta === "SCALE") return meta;
 
   return null;
 }
@@ -38,7 +41,15 @@ async function syncSubscription(
       : subscription.customer?.id;
 
   if (status === "canceled" || status === "unpaid" || status === "incomplete_expired") {
+    const existing = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { planTier: true },
+    });
     await resetUserToFree(userId);
+    await trackServerEvent(userId, AnalyticsEvents.SUBSCRIPTION_CANCELED, {
+      previous_plan_id: existing?.planTier,
+      subscription_status: status,
+    });
     return;
   }
 
@@ -51,6 +62,13 @@ async function syncSubscription(
     stripePriceId: priceIdFromSubscription(subscription),
     subscriptionStatus: status,
     subscriptionPeriodEnd: periodEnd(subscription),
+  });
+
+  await identifyServerUser(userId, { plan_tier: planTier });
+  await trackServerEvent(userId, AnalyticsEvents.SUBSCRIPTION_UPDATED, {
+    plan_id: planTier,
+    subscription_status: status,
+    via: "stripe_webhook",
   });
 }
 
@@ -75,6 +93,10 @@ export async function handleStripeWebhookEvent(event: Stripe.Event) {
         subscription.metadata.planTier = session.metadata.planTier;
       }
       await syncSubscription(subscription, userId);
+      await trackServerEvent(userId, AnalyticsEvents.CHECKOUT_COMPLETED, {
+        plan_id: session.metadata?.planTier,
+        checkout_session_id: session.id,
+      });
       break;
     }
 
@@ -88,7 +110,17 @@ export async function handleStripeWebhookEvent(event: Stripe.Event) {
     case "customer.subscription.deleted": {
       const subscription = event.data.object as Stripe.Subscription;
       const userId = subscription.metadata?.userId;
-      if (userId) await resetUserToFree(userId);
+      if (userId) {
+        const existing = await prisma.user.findUnique({
+          where: { id: userId },
+          select: { planTier: true },
+        });
+        await resetUserToFree(userId);
+        await trackServerEvent(userId, AnalyticsEvents.SUBSCRIPTION_CANCELED, {
+          previous_plan_id: existing?.planTier,
+          via: "subscription_deleted",
+        });
+      }
       break;
     }
 

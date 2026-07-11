@@ -32,7 +32,7 @@ export default async function HomePage() {
               <h2 className="text-3xl font-bold text-white">Simple, transparent pricing</h2>
               <p className="mt-4 text-zinc-400">Start free, scale as you grow</p>
             </div>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
               {PLANS.map((plan) => (
                 <Card
                   key={plan.id}

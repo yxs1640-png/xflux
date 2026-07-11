@@ -3,25 +3,39 @@ import { prisma } from "./db";
 
 export const PLAN_LIMITS: Record<PlanTier, number> = {
   FREE: 1_000,
-  BASIC: 50_000,
-  PRO: 500_000,
-  ENTERPRISE: 999_999_999,
+  BASIC: 150_000,
+  GROWTH: 500_000,
+  PRO: 1_200_000,
+  SCALE: 4_000_000,
+  ENTERPRISE: 4_000_000,
 };
 
 export const PLAN_MONITOR_LIMITS: Record<PlanTier, number> = {
   FREE: 1,
-  BASIC: 5,
+  BASIC: 3,
+  GROWTH: 8,
   PRO: 20,
-  ENTERPRISE: 999,
+  SCALE: 50,
+  ENTERPRISE: 50,
 };
 
 /** Minimum check interval in seconds per plan tier */
 export const PLAN_MONITOR_MIN_INTERVAL: Record<PlanTier, number> = {
   FREE: 300,
-  BASIC: 60,
+  BASIC: 120,
+  GROWTH: 60,
   PRO: 30,
-  ENTERPRISE: 10,
+  SCALE: 15,
+  ENTERPRISE: 15,
 };
+
+export function formatMonitorInterval(seconds: number): string {
+  if (seconds >= 60 && seconds % 60 === 0) {
+    const min = seconds / 60;
+    return min === 1 ? "60s (1 min)" : `${seconds}s (${min} min)`;
+  }
+  return `${seconds}s`;
+}
 
 export function getDefaultMonitorInterval(planTier: PlanTier): number {
   return PLAN_MONITOR_MIN_INTERVAL[planTier];
@@ -30,7 +44,9 @@ export function getDefaultMonitorInterval(planTier: PlanTier): number {
 export const PLAN_WEBHOOK_ACCESS: Record<PlanTier, boolean> = {
   FREE: false,
   BASIC: true,
+  GROWTH: true,
   PRO: true,
+  SCALE: true,
   ENTERPRISE: true,
 };
 

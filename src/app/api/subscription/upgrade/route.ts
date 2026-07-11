@@ -7,7 +7,7 @@ import { applyPlanToUser } from "@/lib/billing";
 import { isStripeConfigured } from "@/lib/stripe";
 
 const schema = z.object({
-  planId: z.enum(["FREE", "BASIC", "PRO", "ENTERPRISE"]),
+  planId: z.enum(["FREE", "BASIC", "GROWTH", "PRO", "SCALE", "ENTERPRISE"]),
 });
 
 /** Dev-only fallback when Stripe is not configured. */
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
 
     if (planId === "ENTERPRISE") {
       return NextResponse.json(
-        { error: "Enterprise plans require contacting sales." },
+        { error: "Enterprise is deprecated. Use Scale instead." },
         { status: 400 }
       );
     }

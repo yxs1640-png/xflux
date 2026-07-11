@@ -7,6 +7,8 @@ import { Header } from "@/components/layout/header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { AnalyticsEvents } from "@/lib/analytics/events";
+import { trackClientEvent } from "@/lib/analytics/client";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -31,6 +33,8 @@ export default function LoginPage() {
       setError("Invalid email or password");
       return;
     }
+
+    trackClientEvent(AnalyticsEvents.LOGIN_COMPLETED);
 
     window.location.href = "/dashboard";
   }

@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Copy, Plus, Trash2 } from "lucide-react";
 import { formatDate } from "@/lib/utils";
+import { AnalyticsEvents } from "@/lib/analytics/events";
+import { trackClientEvent } from "@/lib/analytics/client";
 
 interface ApiKeyItem {
   id: string;
@@ -47,12 +49,16 @@ export default function ApiKeysPage() {
       setCreatedKey(data.key);
       setNewKeyName("");
       fetchKeys();
+      trackClientEvent(AnalyticsEvents.API_KEY_CREATED, {
+        key_count: keys.length + 1,
+      });
     }
   }
 
   async function revokeKey(id: string) {
     if (!confirm("Revoke this API key?")) return;
     await fetch(`/api/keys?id=${id}`, { method: "DELETE" });
+    trackClientEvent(AnalyticsEvents.API_KEY_REVOKED);
     fetchKeys();
   }
 

@@ -14,7 +14,8 @@ export function Footer() {
               <span className="font-bold text-white">XFlux</span>
             </div>
             <p className="text-sm text-zinc-500">
-              Affordable & stable X/Twitter API proxy. Built for developers and automation.
+              X/Twitter read API and account monitors for developers. Paid plans include signed HTTP
+              webhooks.
             </p>
           </div>
           <div>
@@ -22,24 +23,26 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-zinc-500">
               <li><Link href="/docs" className="hover:text-white transition-colors">API Docs</Link></li>
               <li><Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
+              <li><Link href="/feedback" className="hover:text-white transition-colors">Feedback</Link></li>
               <li><Link href="/dashboard" className="hover:text-white transition-colors">Dashboard</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="mb-4 text-sm font-semibold text-white">Features</h4>
             <ul className="space-y-2 text-sm text-zinc-500">
-              <li>Data Scraping</li>
+              <li>User & tweet lookup</li>
               <li>Search API</li>
-              <li>Real-time Monitor</li>
-              <li>Auto Posting & DM</li>
+              <li>Account monitors</li>
+              <li>HTTP webhooks (paid)</li>
             </ul>
           </div>
           <div>
             <h4 className="mb-4 text-sm font-semibold text-white">Legal</h4>
             <ul className="space-y-2 text-sm text-zinc-500">
-              <li>Terms of Service</li>
-              <li>Privacy Policy</li>
-              <li>Acceptable Use</li>
+              <li><Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
+              <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/refund" className="hover:text-white transition-colors">Refund Policy</Link></li>
+              <li><Link href="/acceptable-use" className="hover:text-white transition-colors">Acceptable Use</Link></li>
             </ul>
           </div>
         </div>

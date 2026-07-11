@@ -5,13 +5,13 @@ export default function WebhooksDocsPage() {
     <>
       <h1 className="text-4xl font-bold text-white mb-4">Webhooks</h1>
       <p className="text-zinc-400 mb-8">
-        Receive signed HTTP POST requests when a monitor detects a new tweet. Available on Basic
+        Receive signed HTTP POST requests when a monitor detects a new tweet. Available on Starter
         plan and above.
       </p>
 
       <DocHeading id="setup">Setup</DocHeading>
       <ol className="list-decimal list-inside space-y-2 text-zinc-400 text-sm leading-relaxed">
-        <li>Upgrade to Basic or higher</li>
+        <li>Upgrade to Starter or higher</li>
         <li>Dashboard → Monitors → expand Webhook section on a monitor</li>
         <li>Enter your HTTPS endpoint URL and save</li>
         <li>Copy the signing secret shown once — store it securely</li>

@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Check, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { AnalyticsEvents } from "@/lib/analytics/events";
+import { trackClientEvent } from "@/lib/analytics/client";
 
 interface Plan {
   id: string;
@@ -22,6 +24,7 @@ interface PlanSelectorProps {
   plans: readonly Plan[];
   currentPlanId: string;
   stripeEnabled: boolean;
+  stripeConfigured: boolean;
   hasActiveSubscription: boolean;
 }
 
@@ -29,6 +32,7 @@ export function PlanSelector({
   plans,
   currentPlanId,
   stripeEnabled,
+  stripeConfigured,
   hasActiveSubscription,
 }: PlanSelectorProps) {
   const router = useRouter();
@@ -37,7 +41,7 @@ export function PlanSelector({
     null
   );
 
-  const planOrder = ["FREE", "BASIC", "PRO", "ENTERPRISE"];
+  const planOrder = ["FREE", "BASIC", "GROWTH", "PRO", "SCALE", "ENTERPRISE"];
   const currentIndex = planOrder.indexOf(currentPlanId);
 
   async function openPortal() {
@@ -102,13 +106,19 @@ export function PlanSelector({
   async function handleSelect(plan: Plan) {
     if (plan.id === currentPlanId) return;
 
-    if (plan.id === "ENTERPRISE") {
-      setMessage({
-        type: "error",
-        text: "Enterprise plans require contacting sales@xflux.dev",
-      });
-      return;
-    }
+    const action =
+      plan.id === "FREE" && hasActiveSubscription
+        ? "cancel_via_portal"
+        : planOrder.indexOf(plan.id) < currentIndex
+          ? "downgrade"
+          : "upgrade";
+
+    trackClientEvent(AnalyticsEvents.PLAN_SELECTED, {
+      plan_id: plan.id,
+      plan_name: plan.name,
+      action,
+      current_plan_id: currentPlanId,
+    });
 
     setLoadingPlan(plan.id);
     setMessage(null);
@@ -125,7 +135,14 @@ export function PlanSelector({
         return;
       }
 
-      if (stripeEnabled) {
+      if (stripeConfigured) {
+        if (!stripeEnabled) {
+          setMessage({
+            type: "error",
+            text: "Stripe price IDs are missing. Run npm run stripe:bootstrap and restart the dev server.",
+          });
+          return;
+        }
         await startCheckout(plan.id);
       } else {
         await mockUpgrade(plan.id, plan.name);
@@ -139,7 +156,6 @@ export function PlanSelector({
     if (plan.id === currentPlanId) return "Current Plan";
     if (plan.id === "FREE" && hasActiveSubscription && stripeEnabled) return "Cancel via portal";
     if (index < currentIndex) return `Switch to ${plan.name}`;
-    if (plan.id === "ENTERPRISE") return plan.cta;
     return stripeEnabled ? plan.cta : `Switch to ${plan.name}`;
   }
 
@@ -158,7 +174,7 @@ export function PlanSelector({
         </div>
       )}
 
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {plans.map((plan, index) => {
           const isCurrent = plan.id === currentPlanId;
           return (

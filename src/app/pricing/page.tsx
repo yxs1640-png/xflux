@@ -24,11 +24,12 @@ export default async function PricingPage() {
           <div className="text-center mb-16">
             <h1 className="text-4xl font-bold text-white">Pricing</h1>
             <p className="mt-4 text-zinc-400 max-w-xl mx-auto">
-              Pay only for what you use. All plans include API access, documentation, and dashboard.
+              Monthly plans for read API access and account monitors. HTTP webhooks on Starter and
+              above.
             </p>
           </div>
 
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {PLANS.map((plan) => (
               <Card
                 key={plan.id}

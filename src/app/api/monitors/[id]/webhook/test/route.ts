@@ -28,7 +28,7 @@ export async function POST(
 
   if (!PLAN_WEBHOOK_ACCESS[task.user.planTier as PlanTier]) {
     return NextResponse.json(
-      { error: "Webhooks require Basic plan or higher." },
+      { error: "Webhooks require Starter plan or higher." },
       { status: 403 }
     );
   }
