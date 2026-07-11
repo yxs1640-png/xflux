@@ -47,12 +47,12 @@ export default function DocsIntroPage() {
         <li>Webhook delivery with HMAC signatures (Starter plan and above)</li>
       </ul>
 
-      <DocHeading id="architecture">Architecture</DocHeading>
-      <Callout title="How it works">
+      <DocHeading id="how-it-works">How it works</DocHeading>
+      <Callout title="Two products, one platform">
         <p className="leading-relaxed">
-          Your app calls <code className="text-sky-400">/api/v1/*</code> with an API key. Monitor
-          tasks run on a background worker that polls X data and writes hits to your database.
-          When a webhook URL is configured, new hits trigger signed POST requests to your server.
+          Call <code className="text-sky-400">/api/v1/*</code> with your API key for on-demand data.
+          Monitors watch accounts on a schedule and surface new tweets in your Dashboard. On paid
+          plans, you can also receive signed webhook POSTs when a monitor detects a new tweet.
         </p>
       </Callout>
 

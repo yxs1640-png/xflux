@@ -139,7 +139,7 @@ export function PlanSelector({
         if (!stripeEnabled) {
           setMessage({
             type: "error",
-            text: "Stripe price IDs are missing. Run npm run stripe:bootstrap and restart the dev server.",
+            text: "Billing is temporarily unavailable. Please try again later or contact support.",
           });
           return;
         }

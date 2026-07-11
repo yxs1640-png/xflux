@@ -35,11 +35,6 @@ export default function QuickstartPage() {
         New tweets after that appear as hits.
       </p>
 
-      <Callout title="Local development">
-        Replace the base URL with <code className="text-sky-400">http://localhost:3000/api/v1</code>{" "}
-        when running <code className="text-zinc-300">npm run dev</code>.
-      </Callout>
-
       <DocHeading id="next">Next steps</DocHeading>
       <ul className="list-disc list-inside space-y-2 text-zinc-400 text-sm">
         <li>
@@ -52,7 +47,7 @@ export default function QuickstartPage() {
           <Link href="/docs/monitors" className="text-sky-400 hover:underline">
             Monitors
           </Link>{" "}
-          — intervals, keywords, worker setup
+          — intervals, keywords, and polling
         </li>
         <li>
           <Link href="/docs/webhooks" className="text-sky-400 hover:underline">

@@ -73,31 +73,20 @@ export default function MonitorsDocsPage() {
         </table>
       </div>
 
-      <DocHeading id="worker-local">Background worker (local)</DocHeading>
-      <p className="text-zinc-400 text-sm mb-4">
-        For automatic polling during development, add to <code className="text-zinc-300">.env</code>:
+      <DocHeading id="polling">How polling works</DocHeading>
+      <p className="text-zinc-400 text-sm leading-relaxed mb-4">
+        XFlux checks your monitors automatically on your plan&apos;s schedule (see intervals
+        below). You can also click <strong className="text-white">Check now</strong> on any monitor
+        to poll immediately — useful right after creating a monitor or when testing.
       </p>
-      <CodeBlock>{`MONITOR_WORKER_ENABLED="true"
-MONITOR_WORKER_TICK_MS="30000"
-MONITOR_WORKER_BATCH_SIZE="5"`}</CodeBlock>
-      <p className="text-zinc-400 text-sm mt-4">
-        Restart <code className="text-zinc-300">npm run dev</code>. The worker runs inside the
-        Next.js server process via instrumentation.
-      </p>
+      <Callout title="First check = baseline">
+        The first successful poll records the latest tweet ID without creating hits. Only tweets
+        posted after that appear as hits in your Dashboard.
+      </Callout>
 
-      <DocHeading id="worker-fly">Background worker (production)</DocHeading>
-      <p className="text-zinc-400 text-sm mb-4">
-        Deploy the standalone worker to Fly.io (see deployment guide). It needs the same{" "}
-        <code className="text-zinc-300">DATABASE_URL</code> and{" "}
-        <code className="text-zinc-300">CONSUMER_API_KEY</code> as your backend.
-      </p>
-      <CodeBlock>{`# From project root
-fly launch --config worker/fly.toml --no-deploy
-fly secrets set DATABASE_URL="..." DIRECT_URL="..." CONSUMER_API_KEY="..." -c worker/fly.toml
-fly deploy -c worker/fly.toml`}</CodeBlock>
-
-      <Callout title="Manual checks">
-        Use the refresh button on each monitor to poll immediately without waiting for the worker.
+      <Callout variant="warning" title="Account availability">
+        Most public X accounts work reliably. A small number of restricted or high-profile accounts
+        may fail to poll. If you see an error, try another account or contact support.
       </Callout>
     </>
   );

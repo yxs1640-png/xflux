@@ -17,6 +17,7 @@
     "stripe:bootstrap": "node scripts/stripe-setup.mjs bootstrap",
     "test:smoke": "bash scripts/smoke-test.sh",
     "test:monitor": "node scripts/test-monitor.mjs",
+    "commit:push": "bash scripts/commit-push.sh",
     "deploy:push": "bash scripts/push-deploy.sh"
   },
   "dependencies": {

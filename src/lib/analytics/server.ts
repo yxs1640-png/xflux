@@ -29,27 +29,35 @@ export async function trackServerEvent(
   event: AnalyticsEventName,
   properties?: Record<string, unknown>
 ): Promise<void> {
-  const ph = getServerPostHog();
-  if (!ph) return;
+  try {
+    const ph = getServerPostHog();
+    if (!ph) return;
 
-  ph.capture({
-    distinctId,
-    event,
-    properties,
-  });
-  await ph.flush();
+    ph.capture({
+      distinctId,
+      event,
+      properties,
+    });
+    await ph.flush();
+  } catch (err) {
+    console.error("[analytics] trackServerEvent failed:", err);
+  }
 }
 
 export async function identifyServerUser(
   distinctId: string,
   properties?: AnalyticsPersonProperties
 ): Promise<void> {
-  const ph = getServerPostHog();
-  if (!ph) return;
+  try {
+    const ph = getServerPostHog();
+    if (!ph) return;
 
-  ph.identify({
-    distinctId,
-    properties,
-  });
-  await ph.flush();
+    ph.identify({
+      distinctId,
+      properties,
+    });
+    await ph.flush();
+  } catch (err) {
+    console.error("[analytics] identifyServerUser failed:", err);
+  }
 }

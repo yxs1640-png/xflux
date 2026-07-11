@@ -17,13 +17,13 @@ export async function GET(
     } catch (err) {
       if (err instanceof ConsumerApiError) {
         return NextResponse.json(
-          { error: err.message, code: "UPSTREAM_ERROR" },
+          { error: "Upstream data source error", code: "UPSTREAM_ERROR" },
           { status: err.status >= 400 && err.status < 600 ? err.status : 502 }
         );
       }
       if (err instanceof Error) {
         return NextResponse.json(
-          { error: err.message, code: "UPSTREAM_ERROR" },
+          { error: "Upstream data source unavailable", code: "UPSTREAM_ERROR" },
           { status: 502 }
         );
       }

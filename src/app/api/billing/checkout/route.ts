@@ -17,6 +17,25 @@ import { PLAN_LIMITS } from "@/lib/quota";
 import { AnalyticsEvents } from "@/lib/analytics/events";
 import { trackServerEvent } from "@/lib/analytics/server";
 
+function checkoutErrorMessage(err: unknown): string {
+  if (err && typeof err === "object" && "type" in err && (err as { type?: string }).type?.startsWith("Stripe")) {
+    const stripeErr = err as { message?: string };
+    return stripeErr.message || "Stripe checkout failed";
+  }
+  if (err instanceof Error && err.message) {
+    return err.message;
+  }
+  return "Checkout failed";
+}
+
+function subscriptionPeriodEnd(subscription: { current_period_end?: number | null; items?: { data?: Array<{ current_period_end?: number | null }> } }): Date | null {
+  const end =
+    subscription.current_period_end ??
+    subscription.items?.data?.[0]?.current_period_end ??
+    null;
+  return end ? new Date(end * 1000) : null;
+}
+
 const schema = z.object({
   planId: z.enum(["BASIC", "GROWTH", "PRO", "SCALE"]),
 });
@@ -91,9 +110,7 @@ export async function POST(request: NextRequest) {
         stripeSubscriptionId: updated.id,
         stripePriceId: priceId,
         subscriptionStatus: updated.status,
-        subscriptionPeriodEnd: updated.current_period_end
-          ? new Date(updated.current_period_end * 1000)
-          : null,
+        subscriptionPeriodEnd: subscriptionPeriodEnd(updated),
       });
 
       await trackServerEvent(user.id, AnalyticsEvents.SUBSCRIPTION_UPDATED, {
@@ -137,6 +154,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
     }
     console.error("[billing/checkout]", err);
-    return NextResponse.json({ error: "Checkout failed" }, { status: 500 });
+    return NextResponse.json({ error: checkoutErrorMessage(err) }, { status: 500 });
   }
 }

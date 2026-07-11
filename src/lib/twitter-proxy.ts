@@ -165,13 +165,11 @@ export async function getUserByUsername(
 
   if (isConsumerApiConfigured() || isApiServerConfigured()) {
     throw new Error(
-      "User profile not found — upstream returned no data. Try /api/v1/search?q=from:username or check CONSUMER_API_KEY."
+      "User profile not found — try search or verify the username."
     );
   }
 
-  throw new Error(
-    "Twitter data source not configured. Set CONSUMER_API_KEY in .env and restart npm run dev."
-  );
+  throw new Error("Data source temporarily unavailable. Please try again later.");
 }
 
 export async function getUserTweets(

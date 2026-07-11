@@ -41,6 +41,15 @@ function sortTweetsNewestFirst<T extends { id: string; created_at: string }>(twe
   });
 }
 
+function userFacingPollError(err: unknown): string {
+  if (!(err instanceof Error)) return "Poll failed";
+  const msg = err.message;
+  if (/Consumer API|CONSUMER_API|upstream/i.test(msg)) {
+    return "Unable to fetch tweets for this account. Try another username or contact support.";
+  }
+  return msg;
+}
+
 export async function pollMonitorTask(taskId: string): Promise<PollMonitorResult> {
   const task = await prisma.monitorTask.findUnique({ where: { id: taskId } });
   if (!task) {
@@ -136,7 +145,7 @@ export async function pollMonitorTask(taskId: string): Promise<PollMonitorResult
 
     return { taskId, checked: true, newHits, baselined: false };
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Poll failed";
+    const message = userFacingPollError(err);
     await prisma.monitorTask.update({
       where: { id: taskId },
       data: {

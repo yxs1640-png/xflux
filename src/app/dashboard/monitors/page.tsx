@@ -366,14 +366,11 @@ export default function MonitorsPage() {
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white">Monitors</h1>
         <p className="text-zinc-400">
-          Poll accounts for new tweets on your plan schedule. Use Check now or enable the background
-          worker.{" "}
+          Track accounts for new tweets on your plan schedule. Use{" "}
+          <strong className="text-white">Check now</strong> to poll immediately.{" "}
           <Link href="/docs/monitors" className="text-sky-400 hover:underline">
             Documentation
           </Link>
-          {" · "}
-          Set <code className="text-sky-400 text-sm">MONITOR_WORKER_ENABLED=true</code> for local
-          polling.
         </p>
       </div>
 
