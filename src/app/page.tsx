@@ -7,6 +7,7 @@ import { StatsBar } from "@/components/landing/stats-bar";
 import { Features } from "@/components/landing/features";
 import { PriceComparison } from "@/components/landing/price-comparison";
 import { HowItWorks } from "@/components/landing/how-it-works";
+import { UseCases } from "@/components/landing/use-cases";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getHomepagePlans } from "@/lib/constants";
@@ -27,6 +28,7 @@ export default async function HomePage() {
       <main>
         <Hero isLoggedIn={isLoggedIn} />
         <StatsBar />
+        <UseCases registerHref={isLoggedIn ? "/dashboard" : "/register?src=homepage_usecases"} />
         <PriceComparison registerHref={isLoggedIn ? "/dashboard" : "/register?src=homepage_compare"} />
         <HowItWorks />
         <Features />
