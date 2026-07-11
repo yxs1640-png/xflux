@@ -51,14 +51,12 @@ export function UserSourceSelect({
       {value === "other" && (
         <div>
           <label className="mb-1.5 block text-sm text-zinc-400">
-            Please specify
-            <span className="text-red-400 ml-0.5">*</span>
+            Please specify <span className="text-zinc-500">(optional)</span>
           </label>
           <Input
             value={detail}
             onChange={(e) => onDetailChange(e.target.value)}
             placeholder="e.g. Discord community, conference, ad..."
-            required
             maxLength={200}
           />
         </div>

@@ -285,3 +285,8 @@ export async function postTweet(
 ): Promise<{ id: string; text: string }> {
   throw new Error("Posting is not supported yet.");
 }
+
+export function isTwitterDataSourceConfigured(): boolean {
+  if (shouldUseConsumerDirect()) return true;
+  return isApiServerConfigured() || Boolean(process.env.TWITTER_BEARER_TOKEN?.trim());
+}

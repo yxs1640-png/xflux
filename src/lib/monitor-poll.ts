@@ -1,6 +1,6 @@
 import { MonitorStatus, type MonitorHit, type MonitorTask } from "@prisma/client";
 import { prisma } from "./db";
-import { getUserTweetsFromConsumer, isConsumerApiConfigured } from "./consumer-api";
+import { getUserTweets, isTwitterDataSourceConfigured } from "./twitter-proxy";
 
 export interface PollMonitorResult {
   taskId: string;
@@ -51,8 +51,8 @@ export async function pollMonitorTask(taskId: string): Promise<PollMonitorResult
     return { taskId, checked: false, newHits: 0, baselined: false, error: "Monitor is paused" };
   }
 
-  if (!isConsumerApiConfigured()) {
-    const message = "Consumer API not configured";
+  if (!isTwitterDataSourceConfigured()) {
+    const message = "Twitter data source not configured";
     await prisma.monitorTask.update({
       where: { id: taskId },
       data: { status: MonitorStatus.ERROR, lastError: message, lastCheckAt: new Date() },
@@ -61,7 +61,7 @@ export async function pollMonitorTask(taskId: string): Promise<PollMonitorResult
   }
 
   try {
-    const rawTweets = await getUserTweetsFromConsumer(task.targetUsername, 20);
+    const rawTweets = await getUserTweets(task.targetUsername, 20);
     const tweets = sortTweetsNewestFirst(rawTweets);
 
     if (tweets.length === 0) {
