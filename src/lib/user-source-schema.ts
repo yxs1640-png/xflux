@@ -4,14 +4,18 @@ import { USER_SOURCE_IDS, type UserSourceId } from "./user-source-config";
 const userSourceEnum = z.enum(USER_SOURCE_IDS as [UserSourceId, ...UserSourceId[]]);
 
 export const userSourceSchema = z.object({
-  userSource: userSourceEnum,
+  userSource: userSourceEnum.optional(),
   userSourceDetail: z.string().max(200).optional(),
 });
 
 export function normalizeUserSourceFields(data: {
-  userSource: UserSourceId;
+  userSource?: UserSourceId;
   userSourceDetail?: string;
 }) {
+  if (!data.userSource) {
+    return { userSource: null, userSourceDetail: null };
+  }
+
   return {
     userSource: data.userSource,
     userSourceDetail:

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
@@ -5,6 +6,7 @@ import { PLAN_LIMITS } from "@/lib/quota";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { UsageChart } from "@/components/dashboard/usage-chart";
+import { WelcomeApiKeyBanner } from "@/components/dashboard/welcome-api-key-banner";
 import { Activity, Key, Radar, Zap } from "lucide-react";
 import { formatNumber } from "@/lib/utils";
 import { buildDailyChartData } from "@/lib/chart-data";
@@ -68,6 +70,10 @@ export default async function DashboardPage() {
 
   return (
     <div>
+      <Suspense fallback={null}>
+        <WelcomeApiKeyBanner />
+      </Suspense>
+
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white">Dashboard</h1>

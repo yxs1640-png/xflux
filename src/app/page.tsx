@@ -5,18 +5,21 @@ import { Footer } from "@/components/layout/footer";
 import { Hero } from "@/components/landing/hero";
 import { StatsBar } from "@/components/landing/stats-bar";
 import { Features } from "@/components/landing/features";
+import { PriceComparison } from "@/components/landing/price-comparison";
+import { HowItWorks } from "@/components/landing/how-it-works";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { PLANS } from "@/lib/constants";
+import { getHomepagePlans } from "@/lib/constants";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check } from "lucide-react";
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
   const isLoggedIn = !!session;
-  const planHref = isLoggedIn ? "/dashboard/billing" : "/register";
+  const registerHref = isLoggedIn ? "/dashboard/billing" : "/register?src=homepage_pricing";
   const pricingHref = isLoggedIn ? "/dashboard/billing" : "/pricing";
-  const ctaHref = isLoggedIn ? "/dashboard" : "/register";
+  const ctaHref = isLoggedIn ? "/dashboard" : "/register?src=homepage_footer";
+  const homepagePlans = getHomepagePlans();
 
   return (
     <>
@@ -24,6 +27,8 @@ export default async function HomePage() {
       <main>
         <Hero isLoggedIn={isLoggedIn} />
         <StatsBar />
+        <PriceComparison registerHref={isLoggedIn ? "/dashboard" : "/register?src=homepage_compare"} />
+        <HowItWorks />
         <Features />
 
         <section className="py-24 bg-zinc-900/20">
@@ -32,8 +37,8 @@ export default async function HomePage() {
               <h2 className="text-3xl font-bold text-white">Simple, transparent pricing</h2>
               <p className="mt-4 text-zinc-400">Start free, scale as you grow</p>
             </div>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-              {PLANS.map((plan) => (
+            <div className="grid gap-6 md:grid-cols-2 max-w-3xl mx-auto">
+              {homepagePlans.map((plan) => (
                 <Card
                   key={plan.id}
                   className={plan.highlighted ? "border-sky-500/50 ring-1 ring-sky-500/20" : ""}
@@ -62,7 +67,7 @@ export default async function HomePage() {
                         </li>
                       ))}
                     </ul>
-                    <Link href={planHref}>
+                    <Link href={registerHref}>
                       <Button
                         variant={plan.highlighted ? "primary" : "outline"}
                         className="w-full"
@@ -77,7 +82,7 @@ export default async function HomePage() {
             </div>
             <div className="text-center mt-8">
               <Link href={pricingHref} className="text-sm text-sky-400 hover:text-sky-300">
-                View full pricing details →
+                View all plans and limits →
               </Link>
             </div>
           </div>
@@ -91,7 +96,7 @@ export default async function HomePage() {
             <p className="text-zinc-400 mb-8">
               {isLoggedIn
                 ? "Your API key is ready. Head to the dashboard to get started."
-                : "Get your API key in under a minute. 1,000 free calls every month."}
+                : "Get your API key in under a minute. 1,000 free calls every month — no credit card."}
             </p>
             <Link href={ctaHref}>
               <Button size="lg">

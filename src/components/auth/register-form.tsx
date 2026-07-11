@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
+import { Check } from "lucide-react";
 import { Header } from "@/components/layout/header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +12,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { UserSourceSelect } from "@/components/user-source-select";
 import { isValidUserSource } from "@/lib/user-source-config";
 import { identifyClient } from "@/lib/analytics/client";
+
+const WELCOME_API_KEY_STORAGE = "xflux_welcome_api_key";
+
+const TRUST_POINTS = [
+  "1,000 free API calls every month",
+  "No credit card required",
+  "API key ready in under 60 seconds",
+];
 
 export function RegisterForm() {
   const searchParams = useSearchParams();
@@ -19,7 +29,6 @@ export function RegisterForm() {
   const [userSource, setUserSource] = useState("");
   const [userSourceDetail, setUserSourceDetail] = useState("");
   const [error, setError] = useState("");
-  const [apiKey, setApiKey] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -38,72 +47,72 @@ export function RegisterForm() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        name,
+        name: name || undefined,
         email,
         password,
-        userSource,
-        userSourceDetail: userSource === "other" ? userSourceDetail : undefined,
+        ...(userSource
+          ? {
+              userSource,
+              userSourceDetail: userSource === "other" ? userSourceDetail : undefined,
+            }
+          : {}),
       }),
     });
 
     const data = await res.json();
-    setLoading(false);
 
     if (!res.ok) {
+      setLoading(false);
       setError(data.error || "Registration failed");
       return;
     }
 
     identifyClient(data.userId, {
       email: data.email,
-      signup_source: userSource,
+      signup_source: userSource || undefined,
       signup_source_detail: userSource === "other" ? userSourceDetail : undefined,
       plan_tier: "FREE",
     });
 
-    setApiKey(data.apiKey);
-  }
+    sessionStorage.setItem(WELCOME_API_KEY_STORAGE, data.apiKey);
 
-  if (apiKey) {
-    return (
-      <>
-        <Header />
-        <main className="flex min-h-screen items-center justify-center pt-16 px-4">
-          <Card className="w-full max-w-lg">
-            <CardHeader className="text-center">
-              <CardTitle>Account created!</CardTitle>
-              <CardDescription>
-                Save your API key — it won&apos;t be shown again.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="rounded-lg bg-zinc-800 p-4 font-mono text-sm text-sky-400 break-all">
-                {apiKey}
-              </div>
-              <p className="text-sm text-zinc-500">
-                Use this key in the Authorization header:{" "}
-                <code className="text-zinc-300">Bearer {apiKey.slice(0, 20)}...</code>
-              </p>
-              <Link href="/login">
-                <Button className="w-full">Continue to Sign In</Button>
-              </Link>
-            </CardContent>
-          </Card>
-        </main>
-      </>
-    );
+    const result = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+
+    setLoading(false);
+
+    if (result?.error) {
+      setError("Account created but sign-in failed. Please sign in manually.");
+      return;
+    }
+
+    window.location.href = "/dashboard?welcome=1";
   }
 
   return (
     <>
       <Header />
-      <main className="flex min-h-screen items-center justify-center pt-16 px-4">
+      <main className="flex min-h-screen items-center justify-center pt-16 px-4 pb-12">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
             <CardTitle>Create your account</CardTitle>
-            <CardDescription>Get 1,000 free API calls per month</CardDescription>
+            <CardDescription>
+              Start with 1,000 free API calls per month — upgrade anytime.
+            </CardDescription>
           </CardHeader>
           <CardContent>
+            <ul className="mb-6 space-y-2">
+              {TRUST_POINTS.map((point) => (
+                <li key={point} className="flex items-start gap-2 text-sm text-zinc-400">
+                  <Check className="h-4 w-4 text-sky-400 shrink-0 mt-0.5" />
+                  {point}
+                </li>
+              ))}
+            </ul>
+
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
                 <div className="rounded-lg bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400">
@@ -144,9 +153,12 @@ export function RegisterForm() {
                 onChange={setUserSource}
                 detail={userSourceDetail}
                 onDetailChange={setUserSourceDetail}
+                required={false}
+                label="How did you hear about XFlux?"
+                description="Optional — helps us improve."
               />
               <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Creating account..." : "Create Account"}
+                {loading ? "Creating account..." : "Create free account"}
               </Button>
             </form>
             <p className="mt-6 text-center text-sm text-zinc-500">

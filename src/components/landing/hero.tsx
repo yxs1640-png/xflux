@@ -1,8 +1,12 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Check } from "lucide-react";
 import { LEGAL } from "@/lib/legal-config";
 import { HeroActions } from "@/components/landing/hero-actions";
+
+const TRUST_POINTS = [
+  "Free forever tier",
+  "No credit card",
+  "API key in under 60 seconds",
+];
 
 export function Hero({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   return (
@@ -26,11 +30,21 @@ export function Hero({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
         </h1>
 
         <p className="mx-auto mt-6 max-w-2xl text-lg text-zinc-400">
-          REST access to public profiles, timelines, and search — plus scheduled account
-          monitors with Dashboard history. Paid plans can receive signed HTTP webhooks on new hits.
+          Official X API is expensive and slow to approve. XFlux gives you profiles, timelines,
+          search, and account monitors —{" "}
+          <span className="text-zinc-300">1,000 free calls/month, no credit card.</span>
         </p>
 
         <HeroActions isLoggedIn={isLoggedIn} />
+
+        <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-zinc-500">
+          {TRUST_POINTS.map((point) => (
+            <li key={point} className="flex items-center gap-2">
+              <Check className="h-4 w-4 text-sky-400" />
+              {point}
+            </li>
+          ))}
+        </ul>
 
         <div className="mt-16 mx-auto max-w-3xl">
           <div className="rounded-xl border border-zinc-800 bg-zinc-900/80 p-4 text-left font-mono text-sm">

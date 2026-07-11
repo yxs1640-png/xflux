@@ -11,7 +11,7 @@ export const PLANS = [
       "Dashboard hit history",
       "Self-serve documentation",
     ],
-    cta: "Get Started",
+    cta: "Start Free — No card",
     highlighted: false,
   },
   {
@@ -117,8 +117,16 @@ export const API_ENDPOINTS = [
 ];
 
 export const STATS = [
-  { label: "Read Endpoints", value: "4" },
   { label: "Free Monthly Quota", value: "1,000" },
-  { label: "Webhook Auth", value: "HMAC-SHA256" },
-  { label: "Paid Plans", value: "From $19" },
+  { label: "Paid Plans From", value: "$19/mo" },
+  { label: "Signup Approval", value: "Instant" },
+  { label: "Monitors + Webhooks", value: "Included" },
 ];
+
+/** Plans shown on the homepage pricing teaser (Free + highlighted tier). */
+export function getHomepagePlans() {
+  const highlighted = PLANS.find((p) => p.highlighted);
+  return [PLANS[0], highlighted ?? PLANS[2]].filter(
+    (plan, index, arr) => arr.findIndex((p) => p.id === plan.id) === index
+  );
+}

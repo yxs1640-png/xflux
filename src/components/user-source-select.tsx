@@ -20,7 +20,7 @@ export function UserSourceSelect({
   onDetailChange,
   label = "How did you hear about XFlux?",
   description = "Helps us understand which channels work best.",
-  required = true,
+  required = false,
   className,
 }: UserSourceSelectProps) {
   return (

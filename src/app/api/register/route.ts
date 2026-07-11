@@ -55,12 +55,12 @@ export async function POST(request: NextRequest) {
       email: user.email,
       name: user.name ?? undefined,
       plan_tier: user.planTier,
-      signup_source: source.userSource,
-      signup_source_detail: source.userSourceDetail ?? undefined,
+      ...(source.userSource ? { signup_source: source.userSource } : {}),
+      ...(source.userSourceDetail ? { signup_source_detail: source.userSourceDetail } : {}),
     });
     await trackServerEvent(user.id, AnalyticsEvents.SIGNUP_COMPLETED, {
-      signup_source: source.userSource,
-      signup_source_detail: source.userSourceDetail,
+      ...(source.userSource ? { signup_source: source.userSource } : {}),
+      ...(source.userSourceDetail ? { signup_source_detail: source.userSourceDetail } : {}),
     });
 
     return NextResponse.json({

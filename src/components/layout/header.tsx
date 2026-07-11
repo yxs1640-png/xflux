@@ -54,7 +54,7 @@ export function Header() {
                   Sign in
                 </Button>
               </Link>
-              <Link href="/register">
+              <Link href="/register?src=header">
                 <Button size="sm">Get API Key</Button>
               </Link>
             </>
