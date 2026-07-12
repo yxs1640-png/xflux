@@ -3,7 +3,7 @@ export const LEGAL = {
   companyName: "XFlux, Inc.",
   entityType: "Delaware C Corporation",
   stateOfIncorporation: "Delaware, United States",
-  website: "https://xfluxapi.com",
+  website: "https://www.xfluxapi.com",
   supportEmail: "support@xfluxapi.com",
   legalEmail: "legal@xfluxapi.com",
   effectiveDate: "June 14, 2026",
