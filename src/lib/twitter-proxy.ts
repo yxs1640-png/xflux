@@ -96,7 +96,7 @@ async function fetchFromTwitterApi<T>(
   try {
     const res = await fetch(url.toString(), {
       headers: { Authorization: `Bearer ${token}` },
-      next: { revalidate: 60 },
+      cache: "no-store",
     });
     if (!res.ok) return null;
     return res.json() as Promise<T>;
