@@ -1,6 +1,14 @@
 import Link from "next/link";
+import { pageMetadata } from "@/lib/seo";
 import { DocHeading } from "@/components/docs/doc-blocks";
 import { PLANS } from "@/lib/constants";
+
+export const metadata = pageMetadata({
+  title: "Plans & Limits",
+  description:
+    "XFlux plan tiers, API quotas, monitor limits, polling intervals, and webhook access by subscription level.",
+  path: "/docs/limits",
+});
 
 export default function LimitsDocsPage() {
   return (

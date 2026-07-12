@@ -1,7 +1,15 @@
+import { pageMetadata } from "@/lib/seo";
 import { CodeBlock, Callout, DocHeading } from "@/components/docs/doc-blocks";
 import { PLANS } from "@/lib/constants";
 import { PLAN_MONITOR_MIN_INTERVAL, formatMonitorInterval } from "@/lib/quota";
 import { PlanTier } from "@prisma/client";
+
+export const metadata = pageMetadata({
+  title: "Account Monitors",
+  description:
+    "Monitor X/Twitter accounts on a schedule, view hits in the Dashboard, and receive signed HTTP webhooks on paid plans.",
+  path: "/docs/monitors",
+});
 
 export default function MonitorsDocsPage() {
   return (

@@ -1,4 +1,12 @@
+import { pageMetadata } from "@/lib/seo";
 import { CodeBlock, Callout, DocHeading } from "@/components/docs/doc-blocks";
+
+export const metadata = pageMetadata({
+  title: "Webhooks",
+  description:
+    "Configure signed HTTP webhooks for XFlux account monitors. Verify HMAC-SHA256 signatures on incoming tweet hit events.",
+  path: "/docs/webhooks",
+});
 
 export default function WebhooksDocsPage() {
   return (

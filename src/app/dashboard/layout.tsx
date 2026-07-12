@@ -1,11 +1,16 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 import { authOptions } from "@/lib/auth";
 import { DashboardSidebar } from "@/components/dashboard/sidebar";
 import { PlanChangeBanner } from "@/components/billing/plan-change-banner";
 import { maybeApplyPendingPlanChange } from "@/lib/billing";
 import { type PlanChangeSummary } from "@/lib/plan-limits-shared";
 import { prisma } from "@/lib/db";
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 function parsePlanChangeSummary(value: unknown): PlanChangeSummary | null {
   if (!value || typeof value !== "object") return null;

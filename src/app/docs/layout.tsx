@@ -1,6 +1,14 @@
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { DocsSidebar } from "@/components/docs/docs-sidebar";
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata({
+  title: "Documentation",
+  description:
+    "XFlux documentation for the X/Twitter read API, account monitors, webhooks, quotas, and quickstart guides.",
+  path: "/docs",
+});
 
 export default function DocsLayout({
   children,

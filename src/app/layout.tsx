@@ -1,12 +1,41 @@
 import type { Metadata } from "next";
 import { Providers } from "@/components/providers";
+import { DEFAULT_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/seo";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "XFlux — Affordable X/Twitter API Proxy",
-  description:
-    "X/Twitter read API for profiles, timelines, and search, plus account monitors with optional signed HTTP webhooks on paid plans.",
-  keywords: ["Twitter API", "X API", "API proxy", "Twitter monitoring", "webhooks"],
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: `${SITE_NAME} — Affordable X/Twitter API & Account Monitors`,
+    template: `%s | ${SITE_NAME}`,
+  },
+  description: DEFAULT_DESCRIPTION,
+  keywords: [
+    "Twitter API",
+    "X API",
+    "Twitter API alternative",
+    "affordable Twitter API",
+    "Twitter API proxy",
+    "Twitter monitoring",
+    "account monitor",
+    "webhooks",
+  ],
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: SITE_NAME,
+    title: `${SITE_NAME} — Affordable X/Twitter API & Account Monitors`,
+    description: DEFAULT_DESCRIPTION,
+    url: SITE_URL,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${SITE_NAME} — Affordable X/Twitter API & Account Monitors`,
+    description: DEFAULT_DESCRIPTION,
+  },
+  alternates: {
+    canonical: SITE_URL,
+  },
 };
 
 export default function RootLayout({

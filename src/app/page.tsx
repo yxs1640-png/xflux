@@ -8,11 +8,20 @@ import { Features } from "@/components/landing/features";
 import { PriceComparison } from "@/components/landing/price-comparison";
 import { HowItWorks } from "@/components/landing/how-it-works";
 import { UseCases } from "@/components/landing/use-cases";
+import { HomeJsonLd } from "@/components/seo/json-ld";
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getHomepagePlans } from "@/lib/constants";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check } from "lucide-react";
+
+export const metadata = pageMetadata({
+  title: "Affordable X/Twitter API & Account Monitors",
+  description:
+    "Official X API is expensive and slow to approve. XFlux offers read API access, account monitors, and webhooks — start free with 1,000 calls/month, no credit card.",
+  path: "/",
+});
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
@@ -24,6 +33,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <HomeJsonLd />
       <Header />
       <main>
         <Hero isLoggedIn={isLoggedIn} />

@@ -1,16 +1,17 @@
 import { getServerSession } from "next-auth";
-import type { Metadata } from "next";
 import { authOptions } from "@/lib/auth";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { FeedbackForm } from "@/components/feedback/feedback-form";
 import { prisma } from "@/lib/db";
 import { isValidUserSource } from "@/lib/user-source-config";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Feedback — XFlux",
+export const metadata = pageMetadata({
+  title: "Feedback",
   description: "Tell us what you need from XFlux and what would make you use it more.",
-};
+  path: "/feedback",
+});
 
 export default async function FeedbackPage() {
   const session = await getServerSession(authOptions);

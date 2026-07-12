@@ -1,6 +1,13 @@
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { LEGAL } from "@/lib/legal-config";
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata({
+  title: "Privacy Policy",
+  description: `How ${LEGAL.companyName} collects, uses, and protects your data on the XFlux platform.`,
+  path: "/privacy",
+});
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (

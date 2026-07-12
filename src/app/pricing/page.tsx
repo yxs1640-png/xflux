@@ -5,9 +5,17 @@ import { authOptions } from "@/lib/auth";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { PLANS } from "@/lib/constants";
+import { pageMetadata } from "@/lib/seo";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
+
+export const metadata = pageMetadata({
+  title: "Pricing",
+  description:
+    "Transparent X/Twitter API and monitor pricing. Free tier with 1,000 calls/month. Paid plans from $19/mo with webhooks, faster polling, and higher quotas.",
+  path: "/pricing",
+});
 
 export default async function PricingPage() {
   const session = await getServerSession(authOptions);

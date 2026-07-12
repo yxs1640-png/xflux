@@ -1,6 +1,13 @@
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { LEGAL } from "@/lib/legal-config";
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata({
+  title: "Refund Policy",
+  description: `Refund and cancellation policy for XFlux subscriptions billed through Stripe.`,
+  path: "/refund",
+});
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (

@@ -1,6 +1,14 @@
 import Link from "next/link";
+import { pageMetadata } from "@/lib/seo";
 import { CodeBlock, Callout, DocHeading } from "@/components/docs/doc-blocks";
 import { DOC_BASE_URL } from "@/lib/docs-nav";
+
+export const metadata = pageMetadata({
+  title: "Quickstart",
+  description:
+    "Get started with the XFlux X/Twitter API in minutes. Create an account, copy your API key, and make your first request.",
+  path: "/docs/quickstart",
+});
 
 export default function QuickstartPage() {
   return (

@@ -1,8 +1,16 @@
+import { pageMetadata } from "@/lib/seo";
 import { CodeBlock, Callout, DocHeading } from "@/components/docs/doc-blocks";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { API_ENDPOINTS } from "@/lib/constants";
 import { DOC_BASE_URL } from "@/lib/docs-nav";
+
+export const metadata = pageMetadata({
+  title: "API Reference",
+  description:
+    "XFlux REST API reference for X/Twitter user profiles, timelines, tweet lookup, and search. Bearer token authentication with monthly quotas.",
+  path: "/docs/api",
+});
 
 export default function ApiDocsPage() {
   return (

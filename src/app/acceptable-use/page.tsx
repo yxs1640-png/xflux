@@ -1,6 +1,13 @@
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { LEGAL } from "@/lib/legal-config";
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata({
+  title: "Acceptable Use Policy",
+  description: `Acceptable use rules for the XFlux X/Twitter API and monitoring services.`,
+  path: "/acceptable-use",
+});
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
