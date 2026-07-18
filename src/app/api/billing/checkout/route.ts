@@ -11,6 +11,7 @@ import {
   isPlanDowngrade,
   schedulePlanDowngrade,
 } from "@/lib/billing";
+import { isBillingCheckoutEnabled } from "@/lib/billing-config";
 import { getAppBaseUrl, getStripe, isStripeConfigured } from "@/lib/stripe";
 import {
   getStripePriceId,
@@ -45,6 +46,16 @@ export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (!isBillingCheckoutEnabled()) {
+    return NextResponse.json(
+      {
+        error:
+          "Paid plans are coming soon. The Free tier is fully available — contact support for early access.",
+      },
+      { status: 503 }
+    );
   }
 
   if (!isStripeConfigured()) {

@@ -12,7 +12,8 @@ import { HomeJsonLd } from "@/components/seo/json-ld";
 import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { getHomepagePlans } from "@/lib/constants";
+import { getHomepagePlans, PAID_PLAN_COMING_SOON_LABEL } from "@/lib/constants";
+import { isBillingCheckoutEnabled } from "@/lib/billing-config";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check } from "lucide-react";
 
@@ -26,6 +27,7 @@ export const metadata = pageMetadata({
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
   const isLoggedIn = !!session;
+  const checkoutEnabled = isBillingCheckoutEnabled();
   const registerHref = isLoggedIn ? "/dashboard/billing" : "/register?src=homepage_pricing";
   const pricingHref = isLoggedIn ? "/dashboard/billing" : "/pricing";
   const ctaHref = isLoggedIn ? "/dashboard" : "/register?src=homepage_footer";
@@ -50,7 +52,10 @@ export default async function HomePage() {
               <p className="mt-4 text-zinc-400">Start free, scale as you grow</p>
             </div>
             <div className="grid gap-6 md:grid-cols-2 max-w-3xl mx-auto">
-              {homepagePlans.map((plan) => (
+              {homepagePlans.map((plan) => {
+                const isPaidPlan = plan.price > 0;
+                const paidLocked = isPaidPlan && !checkoutEnabled;
+                return (
                 <Card
                   key={plan.id}
                   className={plan.highlighted ? "border-sky-500/50 ring-1 ring-sky-500/20" : ""}
@@ -79,18 +84,42 @@ export default async function HomePage() {
                         </li>
                       ))}
                     </ul>
-                    <Link href={registerHref}>
+                    {paidLocked ? (
                       <Button
                         variant={plan.highlighted ? "primary" : "outline"}
                         className="w-full"
                         size="sm"
+                        disabled
                       >
-                        {isLoggedIn ? "Upgrade" : plan.cta}
+                        {PAID_PLAN_COMING_SOON_LABEL}
                       </Button>
-                    </Link>
+                    ) : (
+                      <Link
+                        href={
+                          isLoggedIn
+                            ? isPaidPlan
+                              ? "/dashboard/billing"
+                              : "/dashboard"
+                            : registerHref
+                        }
+                      >
+                        <Button
+                          variant={plan.highlighted ? "primary" : "outline"}
+                          className="w-full"
+                          size="sm"
+                        >
+                          {isLoggedIn
+                            ? isPaidPlan
+                              ? "View billing"
+                              : "Go to Dashboard"
+                            : plan.cta}
+                        </Button>
+                      </Link>
+                    )}
                   </CardContent>
                 </Card>
-              ))}
+              );
+              })}
             </div>
             <div className="text-center mt-8">
               <Link href={pricingHref} className="text-sm text-sky-400 hover:text-sky-300">

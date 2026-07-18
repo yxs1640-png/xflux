@@ -8,6 +8,7 @@ import { Check, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AnalyticsEvents } from "@/lib/analytics/events";
 import { trackClientEvent } from "@/lib/analytics/client";
+import { PAID_PLAN_COMING_SOON_LABEL } from "@/lib/constants";
 
 interface Plan {
   id: string;
@@ -23,6 +24,7 @@ interface Plan {
 interface PlanSelectorProps {
   plans: readonly Plan[];
   currentPlanId: string;
+  checkoutEnabled: boolean;
   stripeEnabled: boolean;
   stripeConfigured: boolean;
   hasActiveSubscription: boolean;
@@ -31,6 +33,7 @@ interface PlanSelectorProps {
 export function PlanSelector({
   plans,
   currentPlanId,
+  checkoutEnabled,
   stripeEnabled,
   stripeConfigured,
   hasActiveSubscription,
@@ -146,10 +149,10 @@ export function PlanSelector({
       }
 
       if (stripeConfigured) {
-        if (!stripeEnabled) {
+        if (!checkoutEnabled || !stripeEnabled) {
           setMessage({
             type: "error",
-            text: "Billing is temporarily unavailable. Please try again later or contact support.",
+            text: "Paid plans are coming soon. The Free tier is fully available.",
           });
           return;
         }
@@ -162,8 +165,17 @@ export function PlanSelector({
     }
   }
 
+  function isPaidPlan(plan: Plan) {
+    return plan.id !== "FREE";
+  }
+
+  function isPaidPlanLocked(plan: Plan) {
+    return isPaidPlan(plan) && (!checkoutEnabled || (stripeConfigured && !stripeEnabled));
+  }
+
   function getButtonLabel(plan: Plan, index: number) {
     if (plan.id === currentPlanId) return "Current Plan";
+    if (isPaidPlanLocked(plan)) return PAID_PLAN_COMING_SOON_LABEL;
     if (plan.id === "FREE" && hasActiveSubscription && stripeEnabled) return "Cancel via portal";
     if (index < currentIndex) return `Switch to ${plan.name}`;
     return stripeEnabled ? plan.cta : `Switch to ${plan.name}`;
@@ -224,7 +236,7 @@ export function PlanSelector({
               <Button
                 variant={isCurrent ? "secondary" : plan.highlighted ? "primary" : "outline"}
                 className="w-full"
-                disabled={isCurrent || loadingPlan !== null}
+                disabled={isCurrent || loadingPlan !== null || isPaidPlanLocked(plan)}
                 onClick={() => handleSelect(plan)}
               >
                 {loadingPlan === plan.id || (loadingPlan === "portal" && plan.id === "FREE") ? (
@@ -242,9 +254,11 @@ export function PlanSelector({
       </div>
 
       <p className="mt-6 text-sm text-zinc-500">
-        {stripeEnabled
-          ? "Paid plans are billed monthly through Stripe. Use Manage billing to update payment method or cancel."
-          : "Stripe is not configured — plan changes apply immediately for local testing only."}
+        {!checkoutEnabled
+          ? "Paid plans are coming soon. The Free tier is fully available during early access."
+          : stripeEnabled
+            ? "Paid plans are billed monthly through Stripe. Use Manage billing to update payment method or cancel."
+            : "Stripe is not configured — plan changes apply immediately for local testing only."}
       </p>
     </div>
   );

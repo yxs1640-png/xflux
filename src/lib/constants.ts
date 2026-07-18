@@ -76,6 +76,8 @@ export const PLANS = [
   },
 ] as const;
 
+export const PAID_PLAN_COMING_SOON_LABEL = "Coming soon";
+
 const PLAN_NAME_BY_ID = Object.fromEntries(PLANS.map((p) => [p.id, p.name])) as Record<
   string,
   string

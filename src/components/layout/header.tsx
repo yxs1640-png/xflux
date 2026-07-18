@@ -40,7 +40,7 @@ export function Header() {
               </span>
               <Link href="/dashboard/billing">
                 <Button variant="outline" size="sm">
-                  Upgrade
+                  Billing
                 </Button>
               </Link>
               <Link href="/dashboard">

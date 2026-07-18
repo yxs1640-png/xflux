@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { isBillingCheckoutEnabled } from "@/lib/billing-config";
+import { isActiveSubscriptionStatus } from "@/lib/billing";
 import { getAppBaseUrl, getStripe, isStripeConfigured } from "@/lib/stripe";
 
 export async function POST() {
@@ -20,6 +22,14 @@ export async function POST() {
   const user = await prisma.user.findUnique({ where: { id: session.user.id } });
   if (!user) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
+  }
+
+  const hasActiveSubscription = isActiveSubscriptionStatus(user.subscriptionStatus);
+  if (!isBillingCheckoutEnabled() && !hasActiveSubscription) {
+    return NextResponse.json(
+      { error: "Paid plans are coming soon. Self-serve billing is not open yet." },
+      { status: 503 }
+    );
   }
 
   const stripe = getStripe();

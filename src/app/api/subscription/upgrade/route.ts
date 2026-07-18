@@ -4,6 +4,7 @@ import { PlanTier } from "@prisma/client";
 import { z } from "zod";
 import { authOptions } from "@/lib/auth";
 import { applyMockPlanChange, isActiveSubscriptionStatus, resetUserToFree } from "@/lib/billing";
+import { isBillingCheckoutEnabled } from "@/lib/billing-config";
 import { isStripeConfigured } from "@/lib/stripe";
 import { prisma } from "@/lib/db";
 
@@ -29,14 +30,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (isStripeConfigured()) {
-      if (planId !== "FREE") {
+    if (planId !== "FREE") {
+      if (!isBillingCheckoutEnabled()) {
+        return NextResponse.json(
+          { error: "Paid plans are coming soon. Use the Free tier or contact support." },
+          { status: 503 }
+        );
+      }
+      if (process.env.NODE_ENV === "production" || isStripeConfigured()) {
         return NextResponse.json(
           { error: "Use Stripe checkout for plan changes" },
           { status: 400 }
         );
       }
+    }
 
+    if (isStripeConfigured()) {
       const user = await prisma.user.findUnique({ where: { id: session.user.id } });
       if (!user) {
         return NextResponse.json({ error: "User not found" }, { status: 404 });

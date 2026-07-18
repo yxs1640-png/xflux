@@ -9,8 +9,9 @@ import { ManageBillingButton } from "@/components/billing/manage-billing-button"
 import { Badge } from "@/components/ui/badge";
 import { PLAN_LIMITS } from "@/lib/quota";
 import { isActiveSubscriptionStatus } from "@/lib/billing";
+import { BillingComingSoonBanner } from "@/components/billing/billing-coming-soon-banner";
+import { isBillingCheckoutEnabled, isPaidBillingAvailable } from "@/lib/billing-config";
 import { isStripeConfigured } from "@/lib/stripe";
-import { stripePlansConfigured } from "@/lib/stripe-plans";
 import { formatNumber, formatDateOnly } from "@/lib/utils";
 
 function subscriptionBadgeVariant(status: string | null | undefined) {
@@ -28,7 +29,8 @@ export default async function BillingPage() {
   if (!user) return null;
 
   const limit = PLAN_LIMITS[user.planTier];
-  const stripeEnabled = isStripeConfigured() && stripePlansConfigured();
+  const checkoutEnabled = isBillingCheckoutEnabled();
+  const stripeEnabled = isPaidBillingAvailable();
   const hasActiveSubscription = isActiveSubscriptionStatus(user.subscriptionStatus);
 
   return (
@@ -36,6 +38,8 @@ export default async function BillingPage() {
       <Suspense fallback={null}>
         <BillingStatusBanner />
       </Suspense>
+
+      {!checkoutEnabled && <BillingComingSoonBanner />}
 
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white">Billing & Plans</h1>
@@ -72,7 +76,7 @@ export default async function BillingPage() {
             </div>
           </>
         )}
-        {stripeEnabled && user.stripeCustomerId && (
+        {user.stripeCustomerId && (stripeEnabled || hasActiveSubscription) && (
           <div className="ml-auto">
             <ManageBillingButton />
           </div>
@@ -82,6 +86,7 @@ export default async function BillingPage() {
       <PlanSelector
         plans={PLANS}
         currentPlanId={user.planTier}
+        checkoutEnabled={checkoutEnabled}
         stripeEnabled={stripeEnabled}
         stripeConfigured={isStripeConfigured()}
         hasActiveSubscription={hasActiveSubscription}

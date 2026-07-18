@@ -4,7 +4,8 @@ import Link from "next/link";
 import { authOptions } from "@/lib/auth";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { PLANS } from "@/lib/constants";
+import { PLANS, PAID_PLAN_COMING_SOON_LABEL } from "@/lib/constants";
+import { isBillingCheckoutEnabled } from "@/lib/billing-config";
 import { pageMetadata } from "@/lib/seo";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ export const metadata = pageMetadata({
 
 export default async function PricingPage() {
   const session = await getServerSession(authOptions);
+  const checkoutEnabled = isBillingCheckoutEnabled();
 
   if (session) {
     redirect("/dashboard/billing");
@@ -35,6 +37,11 @@ export default async function PricingPage() {
               Monthly plans for read API access and account monitors. HTTP webhooks on Starter and
               above.
             </p>
+            {!checkoutEnabled && (
+              <p className="mt-3 text-sm text-amber-200/80">
+                Paid plans are coming soon — start with the Free tier today (no credit card).
+              </p>
+            )}
           </div>
 
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
@@ -66,14 +73,20 @@ export default async function PricingPage() {
                       </li>
                     ))}
                   </ul>
-                  <Link href="/register">
-                    <Button
-                      variant={plan.highlighted ? "primary" : "outline"}
-                      className="w-full"
-                    >
-                      {plan.cta}
+                  {plan.price === 0 || checkoutEnabled ? (
+                    <Link href="/register">
+                      <Button
+                        variant={plan.highlighted ? "primary" : "outline"}
+                        className="w-full"
+                      >
+                        {plan.cta}
+                      </Button>
+                    </Link>
+                  ) : (
+                    <Button variant="outline" className="w-full" disabled>
+                      {PAID_PLAN_COMING_SOON_LABEL}
                     </Button>
-                  </Link>
+                  )}
                 </CardContent>
               </Card>
             ))}

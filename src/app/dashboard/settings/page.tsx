@@ -6,6 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { isBillingCheckoutEnabled } from "@/lib/billing-config";
+import { PAID_PLAN_COMING_SOON_LABEL } from "@/lib/constants";
 
 export default async function SettingsPage() {
   const session = await getServerSession(authOptions);
@@ -14,6 +16,8 @@ export default async function SettingsPage() {
   });
 
   if (!user) return null;
+
+  const checkoutEnabled = isBillingCheckoutEnabled();
 
   return (
     <div>
@@ -54,14 +58,24 @@ export default async function SettingsPage() {
                 <p className="text-white font-medium">Current Plan</p>
                 <Badge variant="sky" className="mt-1">{user.planTier}</Badge>
               </div>
-              <Link href="/dashboard/billing">
-                <Button variant="outline" size="sm">Upgrade</Button>
-              </Link>
+              {checkoutEnabled ? (
+                <Link href="/dashboard/billing">
+                  <Button variant="outline" size="sm">
+                    Upgrade
+                  </Button>
+                </Link>
+              ) : (
+                <Button variant="outline" size="sm" disabled>
+                  {PAID_PLAN_COMING_SOON_LABEL}
+                </Button>
+              )}
             </div>
             <p className="text-sm text-zinc-500">
               {user.subscriptionStatus === "active" || user.subscriptionStatus === "trialing"
                 ? "Billed monthly via Stripe. Manage payment method or cancel anytime."
-                : "Upgrade on the billing page to unlock higher limits."}
+                : checkoutEnabled
+                  ? "Upgrade on the billing page to unlock higher limits."
+                  : "Paid plans are coming soon. The Free tier is fully available."}
             </p>
           </CardContent>
         </Card>
