@@ -19,7 +19,7 @@
 |------|------|------|
 | 业务范围 | **只做 X** | 全部工程、文档、营销围绕 Twitter/X；不扩展 LinkedIn、通用 Scrape 等 |
 | 产品双核 | **API ∥ Monitor** | 首页、定价、Dashboard 同等突出；Monitor 不是 API 的附属功能 |
-| 商业模式 | **订阅制** | Free / Basic / Pro / Enterprise 月费 + 配额；暂不做 PAYG 充值 |
+| 商业模式 | **订阅制** | Free / Starter / Growth / Pro / Scale 月费 + 配额；Stripe Live 收款；暂不做 PAYG 充值 |
 
 ---
 
@@ -117,7 +117,7 @@
 - API 超额 → 429，提示升级
 - Monitor 超额（任务数或 interval 不达标）→ 创建/更新时拒绝
 - Monitor 轮询 **不计入** API 配额（成本在 XFlux 侧用套餐价覆盖）
-- 账单：MVP 为 Dashboard 内 mock 升级；Stripe 接入后同一套套餐 ID
+- 账单：Production 走 Stripe Checkout + Webhook；本地无 Stripe 时可用 mock 升级
 
 **对外话术：** 同时展示「API 调用量」和「Monitor 槽位」，避免用户误以为监控会吃掉 API 额度。
 

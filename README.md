@@ -10,7 +10,7 @@ Affordable & stable X/Twitter API proxy service — MVP built with Next.js 15, T
 - **REST API proxy** — User profiles, tweets, search (mock + optional live Twitter API v2)
 - **Dashboard** — Usage stats, API logs, quota tracking
 - **Monitors** — KOL tweet monitoring task management
-- **Docs** — API documentation page
+- **Billing** — Stripe Checkout subscriptions (Starter / Growth / Pro / Scale); see [docs/STRIPE.md](docs/STRIPE.md)
 
 ## Tech Stack
 
@@ -113,6 +113,7 @@ Open [http://localhost:3000](http://localhost:3000)
 | `NEXTAUTH_URL` | Yes | App URL (e.g. `http://localhost:3000`) |
 | `NEXTAUTH_SECRET` | Yes | Random 32+ char secret |
 | `TWITTER_BEARER_TOKEN` | No | Twitter API v2 bearer token for live data |
+| `STRIPE_*` / `BILLING_CHECKOUT_ENABLED` | Prod | Live billing on Vercel — see [docs/STRIPE.md](docs/STRIPE.md) |
 
 Generate a secret:
 
@@ -197,7 +198,7 @@ prisma/
 
 ## Roadmap
 
-- [x] Stripe billing integration (see docs/STRIPE.md)
+- [x] Stripe billing (Live on production — [docs/STRIPE.md](docs/STRIPE.md))
 - [ ] Real-time WebSocket monitoring
 - [ ] Telegram/Discord notifications
 - [ ] Account pool management

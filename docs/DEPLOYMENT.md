@@ -142,8 +142,24 @@ Logs 应出现：
 | `DATABASE_URL` / `DIRECT_URL` | ❌ | ✅ | ✅ |
 | `NEXTAUTH_*` | ❌ | ❌ | ✅ |
 | `STRIPE_*` / `STRIPE_PRICE_*` | ❌ | ❌ | ✅ |
+| `BILLING_CHECKOUT_ENABLED` | ❌ | ❌ | ✅（Production 设为 `true` 开放付费） |
 
-Stripe 配置详见 [docs/STRIPE.md](./STRIPE.md)。
+### Vercel Production — Stripe Live（付费上线）
+
+```env
+STRIPE_SECRET_KEY=sk_live_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+STRIPE_PRICE_BASIC=price_...
+STRIPE_PRICE_GROWTH=price_...
+STRIPE_PRICE_PRO=price_...
+STRIPE_PRICE_SCALE=price_...
+BILLING_CHECKOUT_ENABLED=true
+NEXTAUTH_URL=https://xfluxapi.com
+```
+
+Webhook URL（Stripe Dashboard → Webhooks）：`https://xfluxapi.com/api/webhooks/stripe`
+
+完整步骤见 [docs/STRIPE.md](./STRIPE.md)。本地开发继续用 Test 密钥，不要与 Production 混用。
 
 ---
 
@@ -184,3 +200,4 @@ Basic+ 套餐在 Dashboard → Monitors 配置 Webhook。详见 `/docs/webhooks`
 | API | `CONSUMER_API_KEY` 或 Fly | Vercel → Fly api-server |
 | Monitor 轮询 | `MONITOR_WORKER_ENABLED=true` | Fly worker |
 | Monitor 手动 | Dashboard Check now | 同左 |
+| 付费订阅 | Stripe **Test** + `stripe listen` | Stripe **Live** + `BILLING_CHECKOUT_ENABLED=true` |

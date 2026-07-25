@@ -33,7 +33,7 @@ Use the text below when applying for **Stripe Atlas** (Delaware C-Corp) and acti
 > 1. **XFlux API** — REST endpoints to look up public X/Twitter profiles, tweets, and search results. Customers authenticate with API keys and are billed based on monthly call quotas.
 > 2. **XFlux Monitor** — A background monitoring service that watches public X accounts for new posts and delivers alerts via dashboard and optional customer-configured webhooks.
 >
-> Revenue is recurring subscription revenue (Free, Basic, Pro tiers). We do not sell consumer physical goods. We do not operate a marketplace. Payment processing is handled by Stripe.
+> Revenue is recurring subscription revenue (Free, Starter, Growth, Pro, and Scale tiers). We do not sell consumer physical goods. We do not operate a marketplace. Payment processing is handled by Stripe.
 >
 > We comply with applicable platform terms, prohibit illegal scraping or abuse, and publish Terms of Service, Privacy Policy, and Refund Policy on our website.
 
@@ -41,7 +41,7 @@ Use the text below when applying for **Stripe Atlas** (Delaware C-Corp) and acti
 
 ## Stripe Live — “Product or service description”
 
-> Subscription SaaS: API access and social account monitoring for public X (Twitter) data. Monthly plans from $0–$99 with usage quotas.
+> Subscription SaaS: API access and social account monitoring for public X (Twitter) data. Monthly plans from $0–$249 with usage quotas.
 
 ---
 
@@ -90,16 +90,27 @@ Prepare in English:
 
 ---
 
-## Checklist before Stripe Live
+## Stripe Live checklist
 
-- [ ] Atlas application submitted; EIN received
-- [ ] US business bank account opened (Mercury / Relay / etc.)
-- [ ] Legal pages live on production URL
-- [ ] `support@xflux.dev` (or your email) receives mail
-- [ ] Stripe Test checkout verified end-to-end
-- [ ] Webhook endpoint configured for **Live** mode with new `whsec_...`
-- [ ] Customer Portal enabled in Stripe Dashboard
-- [ ] CPA consulted for US + China tax reporting
+### Done / in progress (XFlux)
+
+- [x] Atlas application submitted (XFLUX, Inc., Delaware C-Corp)
+- [x] Legal pages live: `/terms` `/privacy` `/refund` `/acceptable-use`
+- [x] Stripe Payments activated (Live)
+- [x] Mercury application submitted (awaiting approval)
+- [ ] EIN received → upload to Mercury + Atlas + Stripe
+- [ ] Mercury approved → link bank in Stripe for payouts
+- [ ] Vercel Production: Live `STRIPE_*` + `BILLING_CHECKOUT_ENABLED=true` + Redeploy
+- [ ] End-to-end Live test ($19 Starter + webhook 200)
+- [ ] 83(b) proof filed and archived
+
+### Reference (full launch)
+
+- [ ] `support@xfluxapi.com` receives mail (Cloudflare Email Routing)
+- [ ] Stripe Test checkout verified locally (before first Live deploy)
+- [ ] Live Webhook: `https://xfluxapi.com/api/webhooks/stripe` + `whsec_...`
+- [ ] Customer Portal: activate link; four paid products; quantity changes off
+- [ ] CPA consulted for US + China tax reporting (1120, 5472, DE franchise tax)
 
 ---
 

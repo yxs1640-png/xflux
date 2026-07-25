@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 /**
- * Stripe test-mode setup helper.
+ * Stripe setup helper (Test + Live).
  *
  * Usage:
- *   node scripts/stripe-setup.mjs check       # validate .env
- *   node scripts/stripe-setup.mjs bootstrap   # create test products/prices (needs sk_test_)
+ *   node scripts/stripe-setup.mjs check              # validate .env (test keys)
+ *   node scripts/stripe-setup.mjs bootstrap          # create test products/prices (sk_test_)
+ *   node scripts/stripe-setup.mjs check-live         # validate live keys in .env
+ *   node scripts/stripe-setup.mjs bootstrap-live     # create live products/prices (sk_live_)
  */
 
 import fs from "node:fs";
@@ -57,7 +59,8 @@ function loadEnvFile() {
   return env;
 }
 
-function validateEnv(env) {
+function validateEnv(env, mode = "test") {
+  const expectLive = mode === "live";
   const results = [];
   for (const key of REQUIRED) {
     const value = env[key]?.trim() ?? "";
@@ -68,11 +71,14 @@ function validateEnv(env) {
       note = "missing";
       ok = false;
     } else if (key === "STRIPE_SECRET_KEY") {
-      if (!value.startsWith("sk_test_")) {
-        ok = value.startsWith("sk_");
-        note = value.startsWith("sk_live_")
-          ? "live key — use sk_test_ for local testing"
-          : "expected sk_test_...";
+      if (expectLive) {
+        ok = value.startsWith("sk_live_");
+        if (!ok) note = value.startsWith("sk_test_") ? "test key — need sk_live_" : "expected sk_live_...";
+      } else {
+        ok = value.startsWith("sk_test_");
+        if (!ok) {
+          note = value.startsWith("sk_live_") ? "live key — use sk_test_ for local testing" : "expected sk_test_...";
+        }
       }
     } else if (key === "STRIPE_WEBHOOK_SECRET") {
       ok = value.startsWith("whsec_");
@@ -84,6 +90,16 @@ function validateEnv(env) {
 
     results.push({ key, ok, note });
   }
+
+  const billing = env.BILLING_CHECKOUT_ENABLED?.trim().toLowerCase();
+  if (expectLive) {
+    results.push({
+      key: "BILLING_CHECKOUT_ENABLED",
+      ok: billing === "true",
+      note: billing === "true" ? "ok" : billing || "set true on Vercel Production",
+    });
+  }
+
   return results;
 }
 
@@ -101,16 +117,21 @@ function upsertEnvValue(key, value) {
   fs.writeFileSync(ENV_PATH, content);
 }
 
-async function bootstrap(env) {
+async function bootstrap(env, mode = "test") {
+  const expectLive = mode === "live";
   const secret = env.STRIPE_SECRET_KEY?.trim();
-  if (!secret?.startsWith("sk_test_")) {
+  const prefix = expectLive ? "sk_live_" : "sk_test_";
+  if (!secret?.startsWith(prefix)) {
     console.error(
-      "Set STRIPE_SECRET_KEY=sk_test_... in .env first (Stripe Dashboard → Test mode → API keys)."
+      expectLive
+        ? "Set STRIPE_SECRET_KEY=sk_live_... in .env (Stripe Dashboard → Live mode → API keys)."
+        : "Set STRIPE_SECRET_KEY=sk_test_... in .env (Stripe Dashboard → Test mode → API keys)."
     );
     process.exit(1);
   }
 
   const stripe = new Stripe(secret);
+  console.log(expectLive ? "Live mode bootstrap:\n" : "Test mode bootstrap:\n");
   const existing = await stripe.products.list({ limit: 100, active: true });
 
   for (const spec of PRODUCTS) {
@@ -180,23 +201,66 @@ async function verifyPrices(env) {
   }
 }
 
+function printLiveNextSteps() {
+  console.log("\nNext steps for production:");
+  console.log("  1. Stripe Dashboard (Live) → Webhooks → Add endpoint");
+  console.log("     URL: https://xfluxapi.com/api/webhooks/stripe");
+  console.log("     Events: checkout.session.completed, customer.subscription.*");
+  console.log("  2. Copy Live whsec_... → STRIPE_WEBHOOK_SECRET on Vercel Production");
+  console.log("  3. Copy all Live STRIPE_* vars + BILLING_CHECKOUT_ENABLED=true to Vercel");
+  console.log("  4. Redeploy Production, then pay $19 Starter with a real card to verify");
+}
+
 async function main() {
   const cmd = process.argv[2] ?? "check";
   const env = loadEnvFile();
 
   if (cmd === "bootstrap") {
-    await bootstrap(env);
+    await bootstrap(env, "test");
     console.log("\nNext: set STRIPE_WEBHOOK_SECRET (run `stripe listen` in another terminal).");
     return;
   }
 
+  if (cmd === "bootstrap-live") {
+    await bootstrap(env, "live");
+    printLiveNextSteps();
+    return;
+  }
+
+  if (cmd === "check-live") {
+    console.log("Stripe Live configuration:\n");
+    const results = validateEnv(env, "live");
+    let allOk = true;
+    for (const { key, ok, note } of results) {
+      const status = ok ? "ok" : note || "invalid";
+      console.log(`  ${ok ? "✓" : "✗"} ${key}: ${status}`);
+      if (!ok) allOk = false;
+    }
+    if (env.STRIPE_SECRET_KEY?.startsWith("sk_live_")) {
+      console.log("");
+      try {
+        await verifyPrices(env);
+      } catch (err) {
+        console.error("  ✗ Stripe API error:", err.message);
+        allOk = false;
+      }
+    }
+    console.log("");
+    if (allOk) {
+      console.log("Live Stripe env looks ready. Deploy to Vercel Production and run a $19 test checkout.");
+    } else {
+      printLiveNextSteps();
+    }
+    process.exit(allOk ? 0 : 1);
+  }
+
   if (cmd !== "check") {
-    console.error("Usage: node scripts/stripe-setup.mjs [check|bootstrap]");
+    console.error("Usage: node scripts/stripe-setup.mjs [check|bootstrap|check-live|bootstrap-live]");
     process.exit(1);
   }
 
   console.log("Stripe test-mode configuration:\n");
-  const results = validateEnv(env);
+  const results = validateEnv(env, "test");
   let allOk = true;
   for (const { key, ok, note } of results) {
     const status = ok ? "ok" : note || "invalid";
