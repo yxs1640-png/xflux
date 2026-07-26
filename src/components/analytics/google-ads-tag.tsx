@@ -1,6 +1,7 @@
 import Script from "next/script";
+import { getGoogleAdsId } from "@/lib/google-ads-config";
 
-const googleAdsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID?.trim();
+const googleAdsId = getGoogleAdsId();
 
 export function GoogleAdsTag() {
   if (!googleAdsId) return null;

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GoogleAdsConversionScript } from "@/components/analytics/google-ads-conversion";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
@@ -9,5 +10,10 @@ export const metadata = pageMetadata({
 });
 
 export default function RegisterLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return (
+    <>
+      <GoogleAdsConversionScript />
+      {children}
+    </>
+  );
 }

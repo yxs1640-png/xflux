@@ -1,36 +1,31 @@
-"use client";
+import Script from "next/script";
+import { getGoogleAdsConversionSendTo } from "@/lib/google-ads-config";
 
-import { useEffect } from "react";
+/** Fires Google Ads conversion on register (page-view goal). */
+export function GoogleAdsConversionScript() {
+  const sendTo = getGoogleAdsConversionSendTo();
+  if (!sendTo) return null;
 
-declare global {
-  interface Window {
-    gtag?: (...args: unknown[]) => void;
-  }
-}
-
-/** Fires a Google Ads conversion once (e.g. register page view). */
-export function GoogleAdsConversion() {
-  useEffect(() => {
-    const adsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID?.trim();
-    const label = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL?.trim();
-    if (!adsId || !label) return;
-
-    const sendTo = `${adsId}/${label}`;
-
-    const fire = () => {
-      if (typeof window.gtag !== "function") return false;
-      window.gtag("event", "conversion", { send_to: sendTo });
-      return true;
-    };
-
-    if (fire()) return;
-
-    const timer = window.setInterval(() => {
-      if (fire()) window.clearInterval(timer);
-    }, 500);
-
-    return () => window.clearInterval(timer);
-  }, []);
-
-  return null;
+  return (
+    <Script id="google-ads-conversion" strategy="afterInteractive">
+      {`
+        (function () {
+          var sendTo = ${JSON.stringify(sendTo)};
+          function fire() {
+            if (typeof gtag === "function") {
+              gtag("event", "conversion", { send_to: sendTo });
+              return true;
+            }
+            return false;
+          }
+          if (fire()) return;
+          var attempts = 0;
+          var timer = setInterval(function () {
+            attempts += 1;
+            if (fire() || attempts > 20) clearInterval(timer);
+          }, 300);
+        })();
+      `}
+    </Script>
+  );
 }

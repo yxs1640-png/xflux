@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import { RegisterForm } from "@/components/auth/register-form";
-import { GoogleAdsConversion } from "@/components/analytics/google-ads-conversion";
 
 export default function RegisterPage() {
   return (
@@ -11,7 +10,6 @@ export default function RegisterPage() {
         </main>
       }
     >
-      <GoogleAdsConversion />
       <RegisterForm />
     </Suspense>
   );
