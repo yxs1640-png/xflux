@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GoogleAdsTag } from "@/components/analytics/google-ads-tag";
 import { Providers } from "@/components/providers";
 import { DEFAULT_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/seo";
 import "./globals.css";
@@ -46,6 +47,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen antialiased">
+        <GoogleAdsTag />
         <Providers>{children}</Providers>
       </body>
     </html>
