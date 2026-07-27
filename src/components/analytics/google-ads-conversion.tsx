@@ -1,29 +1,17 @@
-import { getGoogleAdsConversionSendTo, getGoogleAdsId } from "@/lib/google-ads-config";
+"use client";
 
-/**
- * Google Ads event snippet for /register.
- * Must be plain SSR <script> tags — Tag Assistant does not see afterInteractive scripts.
- */
-export function GoogleAdsRegisterConversionTags() {
-  const id = getGoogleAdsId();
+import { getGoogleAdsConversionSendTo } from "@/lib/google-ads-config";
+
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void;
+  }
+}
+
+/** Fire Google Ads sign-up conversion after /api/register succeeds. */
+export function fireGoogleAdsSignupConversion(): void {
   const sendTo = getGoogleAdsConversionSendTo();
-  if (!id || !sendTo) return null;
+  if (!sendTo || typeof window.gtag !== "function") return;
 
-  return (
-    <>
-      {/* eslint-disable-next-line @next/next/no-sync-scripts */}
-      <script async src={`https://www.googletagmanager.com/gtag/js?id=${id}`} />
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', ${JSON.stringify(id)});
-gtag('event', 'conversion', {'send_to': ${JSON.stringify(sendTo)}});
-          `.trim(),
-        }}
-      />
-    </>
-  );
+  window.gtag("event", "conversion", { send_to: sendTo });
 }

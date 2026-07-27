@@ -12,6 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { UserSourceSelect } from "@/components/user-source-select";
 import { isValidUserSource } from "@/lib/user-source-config";
 import { identifyClient } from "@/lib/analytics/client";
+import { fireGoogleAdsSignupConversion } from "@/components/analytics/google-ads-conversion";
 
 const WELCOME_API_KEY_STORAGE = "xflux_welcome_api_key";
 
@@ -78,6 +79,8 @@ export function RegisterForm() {
       signup_source_detail: userSource === "other" ? userSourceDetail : undefined,
       plan_tier: "FREE",
     });
+
+    fireGoogleAdsSignupConversion();
 
     sessionStorage.setItem(WELCOME_API_KEY_STORAGE, data.apiKey);
 
