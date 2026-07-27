@@ -35,6 +35,11 @@ export function RegisterForm() {
     const src = searchParams.get("src");
     if (src && isValidUserSource(src)) {
       setUserSource(src);
+      return;
+    }
+    const utmSource = searchParams.get("utm_source")?.toLowerCase();
+    if (utmSource === "google") {
+      setUserSource("google_search");
     }
   }, [searchParams]);
 
