@@ -2,16 +2,17 @@ import "server-only";
 
 import { PostHog } from "posthog-node";
 import type { AnalyticsEventName, AnalyticsPersonProperties } from "./events";
+import { getPostHogHost, getPostHogKey } from "./posthog-config";
 
 let posthogServer: PostHog | null = null;
 
 function getServerPostHog(): PostHog | null {
-  const key = process.env.NEXT_PUBLIC_POSTHOG_KEY?.trim();
+  const key = getPostHogKey();
   if (!key) return null;
 
   if (!posthogServer) {
     posthogServer = new PostHog(key, {
-      host: process.env.NEXT_PUBLIC_POSTHOG_HOST?.trim() || "https://us.i.posthog.com",
+      host: getPostHogHost(),
       flushAt: 1,
       flushInterval: 0,
     });
@@ -21,7 +22,7 @@ function getServerPostHog(): PostHog | null {
 }
 
 export function isServerAnalyticsEnabled(): boolean {
-  return Boolean(process.env.NEXT_PUBLIC_POSTHOG_KEY?.trim());
+  return Boolean(getPostHogKey());
 }
 
 export async function trackServerEvent(

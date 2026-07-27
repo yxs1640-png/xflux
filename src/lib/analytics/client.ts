@@ -2,19 +2,20 @@
 
 import posthog from "posthog-js";
 import type { AnalyticsEventName, AnalyticsPersonProperties } from "./events";
+import { getPostHogHost, getPostHogKey } from "./posthog-config";
 
 let posthogInitialized = false;
 
 export function isAnalyticsEnabled(): boolean {
-  return Boolean(process.env.NEXT_PUBLIC_POSTHOG_KEY?.trim());
+  return Boolean(getPostHogKey());
 }
 
 export function initPostHogClient(): void {
-  const key = process.env.NEXT_PUBLIC_POSTHOG_KEY?.trim();
+  const key = getPostHogKey();
   if (!key || typeof window === "undefined" || posthogInitialized) return;
 
   posthog.init(key, {
-    api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST?.trim() || "https://us.i.posthog.com",
+    api_host: getPostHogHost(),
     person_profiles: "identified_only",
     capture_pageview: false,
     capture_pageleave: true,
