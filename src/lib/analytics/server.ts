@@ -38,7 +38,10 @@ export async function trackServerEvent(
       event,
       properties,
     });
-    await ph.flush();
+    // Never block API responses on analytics delivery.
+    void ph.flush().catch((err) => {
+      console.error("[analytics] trackServerEvent flush failed:", err);
+    });
   } catch (err) {
     console.error("[analytics] trackServerEvent failed:", err);
   }
@@ -56,7 +59,9 @@ export async function identifyServerUser(
       distinctId,
       properties,
     });
-    await ph.flush();
+    void ph.flush().catch((err) => {
+      console.error("[analytics] identifyServerUser flush failed:", err);
+    });
   } catch (err) {
     console.error("[analytics] identifyServerUser failed:", err);
   }
