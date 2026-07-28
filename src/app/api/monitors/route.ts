@@ -29,22 +29,29 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const monitors = await prisma.monitorTask.findMany({
-    where: { userId: session.user.id },
-    orderBy: { createdAt: "desc" },
-    include: {
-      hits: {
-        orderBy: { detectedAt: "desc" },
-        take: 3,
+  const [monitors, user] = await Promise.all([
+    prisma.monitorTask.findMany({
+      where: { userId: session.user.id },
+      orderBy: { createdAt: "desc" },
+      include: {
+        hits: {
+          orderBy: { detectedAt: "desc" },
+          take: 3,
+        },
+        deliveries: {
+          orderBy: { createdAt: "desc" },
+          take: 5,
+        },
       },
-      deliveries: {
-        orderBy: { createdAt: "desc" },
-        take: 5,
-      },
-    },
-  });
+    }),
+    prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { planTier: true },
+    }),
+  ]);
 
   return NextResponse.json({
+    planTier: user?.planTier ?? "FREE",
     monitors: monitors.map(serializeMonitor),
   });
 }

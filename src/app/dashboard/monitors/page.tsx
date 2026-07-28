@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+import { PlanTier } from "@prisma/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -265,8 +265,8 @@ function MonitorWebhookPanel({
 }
 
 export default function MonitorsPage() {
-  const { data: session } = useSession();
-  const canWebhook = session?.user?.planTier !== "FREE";
+  const [planTier, setPlanTier] = useState<PlanTier>("FREE");
+  const canWebhook = planTier !== "FREE";
   const [monitors, setMonitors] = useState<Monitor[]>([]);
   const [username, setUsername] = useState("");
   const [keywords, setKeywords] = useState("");
@@ -278,6 +278,7 @@ export default function MonitorsPage() {
     if (res.ok) {
       const data = await res.json();
       setMonitors(data.monitors);
+      if (data.planTier) setPlanTier(data.planTier);
     }
   }
 

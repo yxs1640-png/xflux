@@ -1,20 +1,26 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/db";
+import { cache } from "react";
 import { PLAN_LIMITS } from "@/lib/quota";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { UsageChart } from "@/components/dashboard/usage-chart";
 import { formatNumber } from "@/lib/utils";
 import { buildDailyChartData } from "@/lib/chart-data";
+import { ensurePendingPlanApplied, requireDashboardSession } from "@/lib/dashboard-session";
+import { prisma } from "@/lib/db";
 
-export default async function UsagePage() {
-  const session = await getServerSession(authOptions);
-  const user = await prisma.user.findUnique({
-    where: { id: session!.user.id },
+const getUsagePageData = cache(async () => {
+  const session = await requireDashboardSession();
+  await ensurePendingPlanApplied(session.user.id);
+
+  return prisma.user.findUnique({
+    where: { id: session.user.id },
     include: {
       apiLogs: { orderBy: { createdAt: "desc" }, take: 500 },
     },
   });
+});
+
+export default async function UsagePage() {
+  const user = await getUsagePageData();
 
   if (!user) return null;
 

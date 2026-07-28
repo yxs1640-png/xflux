@@ -1,12 +1,8 @@
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
 import type { Metadata } from "next";
-import { authOptions } from "@/lib/auth";
 import { DashboardSidebar } from "@/components/dashboard/sidebar";
 import { PlanChangeBanner } from "@/components/billing/plan-change-banner";
-import { maybeApplyPendingPlanChange } from "@/lib/billing";
 import { type PlanChangeSummary } from "@/lib/plan-limits-shared";
-import { prisma } from "@/lib/db";
+import { getDashboardUserRecord } from "@/lib/dashboard-session";
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
@@ -24,23 +20,7 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOptions);
-  if (!session) redirect("/login");
-
-  await maybeApplyPendingPlanChange(session.user.id);
-
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: {
-      planTier: true,
-      pendingPlanTier: true,
-      planChangeEffectiveAt: true,
-      lastPlanChangeSummary: true,
-      planChangeBannerDismissedAt: true,
-      monitorTasks: { where: { isActive: true }, select: { id: true } },
-    },
-  });
-
+  const user = await getDashboardUserRecord();
   const lastPlanChangeSummary = parsePlanChangeSummary(user?.lastPlanChangeSummary);
 
   return (

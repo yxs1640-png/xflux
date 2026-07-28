@@ -1,7 +1,4 @@
 import { Suspense } from "react";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/db";
 import { PLANS, getPlanDisplayName } from "@/lib/constants";
 import { PlanSelector } from "@/components/billing/plan-selector";
 import { BillingStatusBanner } from "@/components/billing/billing-status-banner";
@@ -13,6 +10,7 @@ import { BillingComingSoonBanner } from "@/components/billing/billing-coming-soo
 import { isBillingCheckoutEnabled, isPaidBillingAvailable } from "@/lib/billing-config";
 import { isStripeConfigured } from "@/lib/stripe";
 import { formatNumber, formatDateOnly } from "@/lib/utils";
+import { getDashboardUserRecord } from "@/lib/dashboard-session";
 
 function subscriptionBadgeVariant(status: string | null | undefined) {
   if (status === "active" || status === "trialing") return "sky" as const;
@@ -21,10 +19,7 @@ function subscriptionBadgeVariant(status: string | null | undefined) {
 }
 
 export default async function BillingPage() {
-  const session = await getServerSession(authOptions);
-  const user = await prisma.user.findUnique({
-    where: { id: session!.user.id },
-  });
+  const user = await getDashboardUserRecord();
 
   if (!user) return null;
 

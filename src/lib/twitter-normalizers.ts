@@ -26,14 +26,28 @@ function isStubUser(user: TwitterUser): boolean {
   return user.id.startsWith("user_");
 }
 
+function looksLikeTweetId(id: string): boolean {
+  return /^\d{16,}$/.test(id);
+}
+
 function isUsableUser(user: TwitterUser | null): user is TwitterUser {
-  if (!user || isStubUser(user)) return false;
+  if (!user || isStubUser(user) || looksLikeTweetId(user.id)) return false;
 
   const hasMetrics =
     user.followers_count > 0 || user.following_count > 0 || user.tweet_count > 0;
-  const hasCreatedAt = user.created_at !== new Date(0).toISOString();
+  if (hasMetrics) return true;
 
-  return hasMetrics || hasCreatedAt;
+  if (user.name.toLowerCase() === user.username.toLowerCase()) return false;
+
+  return user.created_at !== new Date(0).toISOString();
+}
+
+function userScore(user: TwitterUser): number {
+  return (
+    user.followers_count * 1_000_000 +
+    user.tweet_count * 1_000 +
+    user.following_count
+  );
 }
 
 function buildUserFromLegacy(
@@ -46,10 +60,15 @@ function buildUserFromLegacy(
     legacy.screen_name,
     legacy.screenName,
     legacy.username,
+    core?.screen_name,
+    core?.screenName,
     fallbackUsername
   ).replace("@", "");
 
   if (!username) return null;
+
+  const relationshipCounts = resultNode ? asRecord(resultNode.relationship_counts) : null;
+  const publicMetrics = resultNode ? asRecord(resultNode.public_metrics) : null;
 
   return {
     id: pickString(
@@ -62,16 +81,99 @@ function buildUserFromLegacy(
     username,
     name: pickString(legacy.name, core?.name, username),
     description: pickString(legacy.description, legacy.bio) || undefined,
-    followers_count: pickNumber(legacy.followers_count, legacy.follower_count),
-    following_count: pickNumber(legacy.friends_count, legacy.following_count),
-    tweet_count: pickNumber(legacy.statuses_count, legacy.tweet_count, legacy.media_count),
+    followers_count: pickNumber(
+      legacy.followers_count,
+      legacy.follower_count,
+      relationshipCounts?.followers,
+      publicMetrics?.followers_count,
+      resultNode?.followers_count
+    ),
+    following_count: pickNumber(
+      legacy.friends_count,
+      legacy.following_count,
+      relationshipCounts?.following,
+      publicMetrics?.following_count,
+      resultNode?.following_count
+    ),
+    tweet_count: pickNumber(
+      legacy.statuses_count,
+      legacy.tweet_count,
+      legacy.media_count,
+      publicMetrics?.tweet_count,
+      resultNode?.tweet_count
+    ),
     profile_image_url:
       pickString(legacy.profile_image_url_https, legacy.profile_image_url) || undefined,
     verified: Boolean(
       legacy.verified || legacy.is_blue_verified || resultNode?.is_blue_verified
     ),
-    created_at: pickString(legacy.created_at) || new Date(0).toISOString(),
+    created_at: pickString(legacy.created_at, core?.created_at) || new Date(0).toISOString(),
   };
+}
+
+function buildUserFromModernResult(
+  resultNode: Record<string, unknown>,
+  fallbackUsername?: string,
+  wrapperRestId?: string
+): TwitterUser | null {
+  const core = asRecord(resultNode.core);
+  const relationshipCounts = asRecord(resultNode.relationship_counts);
+  const tweetCounts = asRecord(resultNode.tweet_counts);
+  const verification = asRecord(resultNode.verification);
+  const profileBio = asRecord(resultNode.profile_bio);
+  const avatar = asRecord(resultNode.avatar);
+
+  const username = pickString(core?.screen_name, core?.screenName, fallbackUsername).replace(
+    "@",
+    ""
+  );
+  if (!username) return null;
+
+  return {
+    id: pickString(resultNode.rest_id, wrapperRestId, `user_${username}`),
+    username,
+    name: pickString(core?.name, username),
+    description: pickString(profileBio?.description) || undefined,
+    followers_count: pickNumber(relationshipCounts?.followers),
+    following_count: pickNumber(relationshipCounts?.following),
+    tweet_count: pickNumber(tweetCounts?.tweets, tweetCounts?.media_tweets),
+    profile_image_url: pickString(avatar?.image_url) || undefined,
+    verified: Boolean(verification?.is_blue_verified || verification?.verified),
+    created_at: pickString(core?.created_at) || new Date(0).toISOString(),
+  };
+}
+
+function findProfileResultNode(root: Record<string, unknown>): Record<string, unknown> | null {
+  return (
+    asRecord(asRecord(asRecord(root.data)?.user_results)?.result) ??
+    asRecord(asRecord(asRecord(root.data)?.user)?.result) ??
+    asRecord(asRecord(root.user_results)?.result) ??
+    asRecord(asRecord(root.user)?.result) ??
+    asRecord(root.result) ??
+    asRecord(asRecord(root.data)?.user)
+  );
+}
+
+export function mapConsumerProfilePassthrough(
+  raw: unknown,
+  fallbackUsername: string
+): TwitterUser | null {
+  const root = asRecord(raw);
+  if (!root) return null;
+
+  const resultNode = findProfileResultNode(root);
+  if (!resultNode) return null;
+
+  const userResults =
+    asRecord(asRecord(root.data)?.user_results) ?? asRecord(root.user_results);
+  const wrapperRestId = pickString(userResults?.rest_id);
+
+  const legacy = asRecord(resultNode.legacy);
+  if (legacy) {
+    return buildUserFromLegacy(legacy, resultNode, fallbackUsername);
+  }
+
+  return buildUserFromModernResult(resultNode, fallbackUsername, wrapperRestId);
 }
 
 export function normalizeUser(raw: unknown, fallbackUsername?: string): TwitterUser | null {
@@ -232,28 +334,22 @@ export function extractTweetsFromResponse(raw: unknown): TwitterTweet[] {
 }
 
 export function extractUserFromResponse(raw: unknown, username?: string): TwitterUser | null {
-  let best: TwitterUser | null = null;
+  const acc: { best: TwitterUser | null } = { best: null };
+  const expected = username?.replace("@", "").trim().toLowerCase();
 
   function consider(user: TwitterUser | null) {
-    if (!user || isStubUser(user)) return;
-    const score =
-      (user.followers_count > 0 ? 1_000_000_000 : 0) +
-      user.following_count +
-      user.tweet_count +
-      (user.created_at !== new Date(0).toISOString() ? 1 : 0);
-    const bestScore = best
-      ? (best.followers_count > 0 ? 1_000_000_000 : 0) +
-        best.following_count +
-        best.tweet_count +
-        (best.created_at !== new Date(0).toISOString() ? 1 : 0)
-      : -1;
-    if (score > bestScore) best = user;
+    if (!user || !isUsableUser(user)) return;
+    if (expected && user.username.toLowerCase() !== expected) return;
+    const score = userScore(user);
+    if (!acc.best || score > userScore(acc.best)) acc.best = user;
   }
 
   consider(normalizeUser(raw, username));
 
   const root = asRecord(raw);
-  if (!root) return best;
+  if (!root) {
+    return acc.best && isUsableUser(acc.best) ? acc.best : null;
+  }
 
   const queue: unknown[] = [root];
   while (queue.length) {
@@ -268,5 +364,18 @@ export function extractUserFromResponse(raw: unknown, username?: string): Twitte
     }
   }
 
-  return best && isUsableUser(best) ? best : null;
+  if (!acc.best) return null;
+  if (!isUsableUser(acc.best)) return null;
+
+  if (
+    expected &&
+    acc.best.username.toLowerCase() === expected &&
+    acc.best.followers_count === 0 &&
+    acc.best.following_count === 0 &&
+    acc.best.tweet_count === 0
+  ) {
+    return null;
+  }
+
+  return acc.best;
 }

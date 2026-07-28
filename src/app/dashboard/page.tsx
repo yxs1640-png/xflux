@@ -1,7 +1,5 @@
+import { cache } from "react";
 import { Suspense } from "react";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/db";
 import { PLAN_LIMITS } from "@/lib/quota";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,11 +8,15 @@ import { WelcomeApiKeyBanner } from "@/components/dashboard/welcome-api-key-bann
 import { Activity, Key, Radar, Zap } from "lucide-react";
 import { formatNumber } from "@/lib/utils";
 import { buildDailyChartData } from "@/lib/chart-data";
+import { ensurePendingPlanApplied, requireDashboardSession } from "@/lib/dashboard-session";
+import { prisma } from "@/lib/db";
 
-export default async function DashboardPage() {
-  const session = await getServerSession(authOptions);
+const getDashboardHomeData = cache(async () => {
+  const session = await requireDashboardSession();
+  await ensurePendingPlanApplied(session.user.id);
+
   const user = await prisma.user.findUnique({
-    where: { id: session!.user.id },
+    where: { id: session.user.id },
     include: {
       apiKeys: { where: { isActive: true } },
       monitorTasks: { where: { isActive: true } },
@@ -35,6 +37,15 @@ export default async function DashboardPage() {
       task: { select: { targetUsername: true } },
     },
   });
+
+  return { user, recentHits };
+});
+
+export default async function DashboardPage() {
+  const data = await getDashboardHomeData();
+  if (!data) return null;
+
+  const { user, recentHits } = data;
 
   const limit = PLAN_LIMITS[user.planTier];
   const usagePercent = Math.round((user.quotaUsed / limit) * 100);

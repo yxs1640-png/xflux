@@ -1,6 +1,3 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/db";
 import { formatDateOnly } from "@/lib/utils";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,12 +5,10 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { isBillingCheckoutEnabled } from "@/lib/billing-config";
 import { PAID_PLAN_COMING_SOON_LABEL } from "@/lib/constants";
+import { getDashboardUserRecord } from "@/lib/dashboard-session";
 
 export default async function SettingsPage() {
-  const session = await getServerSession(authOptions);
-  const user = await prisma.user.findUnique({
-    where: { id: session!.user.id },
-  });
+  const user = await getDashboardUserRecord();
 
   if (!user) return null;
 

@@ -1,10 +1,14 @@
 import { config } from "../config.js";
 import {
   extractTweetsFromResponse,
-  extractUserFromResponse,
+  mapConsumerProfilePassthrough,
   type TwitterTweet,
   type TwitterUser,
 } from "./normalizers.js";
+
+function isRetryableConsumerStatus(status: number): boolean {
+  return status === 400 || status === 404 || status === 405;
+}
 
 export class ConsumerApiError extends Error {
   constructor(
@@ -55,50 +59,32 @@ async function consumerFetch<T>(
   }
 }
 
-const USER_LOOKUP_ATTEMPTS: Array<{
-  endpoint: string;
-  params: (username: string) => Record<string, string | number | undefined>;
-}> = [
-  { endpoint: "UserResultByScreenName", params: (u) => ({ username: u }) },
-  { endpoint: "UserResultByScreenName", params: (u) => ({ screenname: u }) },
-  { endpoint: "UserResultByScreenName", params: (u) => ({ screen_name: u }) },
-  { endpoint: "UserByScreenName", params: (u) => ({ username: u }) },
-  { endpoint: "GetUserByScreenName", params: (u) => ({ username: u }) },
-];
+const PROFILE_PARAM_KEYS = ["username", "screenname", "screen_name"] as const;
 
 export async function fetchUserByUsername(username: string): Promise<TwitterUser> {
   const clean = username.replace("@", "").trim();
   let lastError: ConsumerApiError | null = null;
 
-  for (const attempt of USER_LOOKUP_ATTEMPTS) {
+  for (const paramKey of PROFILE_PARAM_KEYS) {
     try {
-      const raw = await consumerFetch<unknown>(attempt.endpoint, attempt.params(clean));
-      const user = extractUserFromResponse(raw, clean);
+      const raw = await consumerFetch<unknown>("UserResultByScreenName", {
+        [paramKey]: clean,
+      });
+      const user = mapConsumerProfilePassthrough(raw, clean);
       if (user) return user;
     } catch (err) {
       if (err instanceof ConsumerApiError) {
         lastError = err;
-        if (err.status !== 404 && err.status !== 400) throw err;
+        if (!isRetryableConsumerStatus(err.status)) throw err;
       } else {
         throw err;
       }
     }
   }
 
-  try {
-    const raw = await consumerFetch<unknown>("Search", {
-      q: `from:${clean}`,
-      query: `from:${clean}`,
-      count: 5,
-    });
-    const user = extractUserFromResponse(raw, clean);
-    if (user) return user;
-  } catch (err) {
-    if (err instanceof ConsumerApiError) lastError = err;
-    else throw err;
+  if (lastError && lastError.status !== 404 && lastError.status !== 400) {
+    throw lastError;
   }
-
-  if (lastError) throw lastError;
   throw new ConsumerApiError(`User @${clean} not found`, 404);
 }
 
@@ -119,7 +105,7 @@ export async function fetchUserTweets(
       count,
     });
   } catch (err) {
-    if (err instanceof ConsumerApiError && (err.status === 404 || err.status === 400)) {
+    if (err instanceof ConsumerApiError && isRetryableConsumerStatus(err.status)) {
       raw = await consumerFetch<unknown>("UserMedia", {
         user_id: user.id,
         userId: user.id,

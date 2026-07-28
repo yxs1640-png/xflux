@@ -1,7 +1,7 @@
 import type { TwitterTweet, TwitterUser } from "./twitter-types";
 import {
   extractTweetsFromResponse,
-  extractUserFromResponse,
+  mapConsumerProfilePassthrough,
 } from "./twitter-normalizers";
 
 function getConsumerEnv() {
@@ -16,6 +16,10 @@ function getConsumerEnv() {
 export function isConsumerApiConfigured(): boolean {
   const { apiKey } = getConsumerEnv();
   return Boolean(apiKey && apiKey.length > 3 && !apiKey.startsWith("replace"));
+}
+
+function isRetryableConsumerStatus(status: number): boolean {
+  return status === 400 || status === 404 || status === 405;
 }
 
 class ConsumerApiError extends Error {
@@ -84,17 +88,7 @@ async function consumerFetch<T>(
   }
 }
 
-const USER_LOOKUP_ATTEMPTS: Array<{
-  endpoint: string;
-  params: (username: string) => Record<string, string | number | undefined>;
-}> = [
-  { endpoint: "UserResultByScreenName", params: (u) => ({ username: u }) },
-  { endpoint: "UserResultByScreenName", params: (u) => ({ screenname: u }) },
-  { endpoint: "UserResultByScreenName", params: (u) => ({ screen_name: u }) },
-  { endpoint: "UserByScreenName", params: (u) => ({ username: u }) },
-  { endpoint: "UserByScreenName", params: (u) => ({ screenname: u }) },
-  { endpoint: "GetUserByScreenName", params: (u) => ({ username: u }) },
-];
+const PROFILE_PARAM_KEYS = ["username", "screenname", "screen_name"] as const;
 
 export async function getUserByUsernameFromConsumer(
   username: string
@@ -102,42 +96,25 @@ export async function getUserByUsernameFromConsumer(
   const clean = username.replace("@", "").trim();
   let lastError: ConsumerApiError | null = null;
 
-  for (const attempt of USER_LOOKUP_ATTEMPTS) {
+  for (const paramKey of PROFILE_PARAM_KEYS) {
     try {
-      const raw = await consumerFetch<unknown>(attempt.endpoint, attempt.params(clean));
-      const user = extractUserFromResponse(raw, clean);
+      const raw = await consumerFetch<unknown>("UserResultByScreenName", {
+        [paramKey]: clean,
+      });
+      const user = mapConsumerProfilePassthrough(raw, clean);
       if (user) return user;
     } catch (err) {
       if (err instanceof ConsumerApiError) {
         lastError = err;
-        if (err.status !== 404 && err.status !== 400) throw err;
+        if (!isRetryableConsumerStatus(err.status)) throw err;
       } else {
         throw err;
       }
     }
   }
 
-  try {
-    const raw = await consumerFetch<unknown>("Search", {
-      q: `from:${clean}`,
-      query: `from:${clean}`,
-      count: 5,
-    });
-    const user = extractUserFromResponse(raw, clean);
-    if (user) return user;
-
-    const tweets = extractTweetsFromResponse(raw);
-    const withAuthor = tweets.find((t) => t.author?.username.toLowerCase() === clean);
-    if (withAuthor?.author) return withAuthor.author;
-  } catch (err) {
-    if (err instanceof ConsumerApiError && err.status !== 404 && err.status !== 400) {
-      throw err;
-    }
-    if (err instanceof ConsumerApiError) lastError = err;
-  }
-
   if (lastError && process.env.NODE_ENV === "development") {
-    console.warn(`[consumer-api] User @${clean} not found after all attempts`, lastError.message);
+    console.warn(`[consumer-api] User @${clean} not found`, lastError.message);
   }
 
   return null;
@@ -180,7 +157,7 @@ export async function getUserTweetsFromConsumer(
       } catch (err) {
         if (err instanceof ConsumerApiError) {
           lastError = err;
-          if (err.status !== 404 && err.status !== 400) throw err;
+          if (!isRetryableConsumerStatus(err.status)) throw err;
         }
       }
     }
