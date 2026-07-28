@@ -8,10 +8,28 @@ declare global {
   }
 }
 
-/** Fire Google Ads sign-up conversion after /api/register succeeds. */
-export function fireGoogleAdsSignupConversion(): void {
-  const sendTo = getGoogleAdsConversionSendTo();
-  if (!sendTo || typeof window.gtag !== "function") return;
+const CONVERSION_TIMEOUT_MS = 500;
 
-  window.gtag("event", "conversion", { send_to: sendTo });
+/** Fire Google Ads sign-up conversion; resolves after beacon sends or timeout. */
+export function fireGoogleAdsSignupConversion(): Promise<void> {
+  const sendTo = getGoogleAdsConversionSendTo();
+  if (!sendTo || typeof window.gtag !== "function") {
+    return Promise.resolve();
+  }
+
+  return new Promise((resolve) => {
+    let settled = false;
+    const done = () => {
+      if (settled) return;
+      settled = true;
+      resolve();
+    };
+
+    window.gtag!("event", "conversion", {
+      send_to: sendTo,
+      event_callback: done,
+    });
+
+    window.setTimeout(done, CONVERSION_TIMEOUT_MS);
+  });
 }

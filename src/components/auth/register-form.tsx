@@ -80,8 +80,6 @@ export function RegisterForm() {
       plan_tier: "FREE",
     });
 
-    fireGoogleAdsSignupConversion();
-
     sessionStorage.setItem(WELCOME_API_KEY_STORAGE, data.apiKey);
 
     const result = await signIn("credentials", {
@@ -97,6 +95,7 @@ export function RegisterForm() {
       return;
     }
 
+    await fireGoogleAdsSignupConversion();
     window.location.href = "/dashboard?welcome=1";
   }
 
