@@ -55,19 +55,51 @@ async function consumerFetch<T>(
   }
 }
 
+const USER_LOOKUP_ATTEMPTS: Array<{
+  endpoint: string;
+  params: (username: string) => Record<string, string | number | undefined>;
+}> = [
+  { endpoint: "UserResultByScreenName", params: (u) => ({ username: u }) },
+  { endpoint: "UserResultByScreenName", params: (u) => ({ screenname: u }) },
+  { endpoint: "UserResultByScreenName", params: (u) => ({ screen_name: u }) },
+  { endpoint: "UserByScreenName", params: (u) => ({ username: u }) },
+  { endpoint: "GetUserByScreenName", params: (u) => ({ username: u }) },
+];
+
 export async function fetchUserByUsername(username: string): Promise<TwitterUser> {
   const clean = username.replace("@", "").trim();
-  const raw = await consumerFetch<unknown>("UserResultByScreenName", {
-    username: clean,
-    screenname: clean,
-  });
+  let lastError: ConsumerApiError | null = null;
 
-  const user = extractUserFromResponse(raw, clean);
-  if (!user) {
-    throw new ConsumerApiError(`User @${clean} not found`, 404);
+  for (const attempt of USER_LOOKUP_ATTEMPTS) {
+    try {
+      const raw = await consumerFetch<unknown>(attempt.endpoint, attempt.params(clean));
+      const user = extractUserFromResponse(raw, clean);
+      if (user) return user;
+    } catch (err) {
+      if (err instanceof ConsumerApiError) {
+        lastError = err;
+        if (err.status !== 404 && err.status !== 400) throw err;
+      } else {
+        throw err;
+      }
+    }
   }
 
-  return user;
+  try {
+    const raw = await consumerFetch<unknown>("Search", {
+      q: `from:${clean}`,
+      query: `from:${clean}`,
+      count: 5,
+    });
+    const user = extractUserFromResponse(raw, clean);
+    if (user) return user;
+  } catch (err) {
+    if (err instanceof ConsumerApiError) lastError = err;
+    else throw err;
+  }
+
+  if (lastError) throw lastError;
+  throw new ConsumerApiError(`User @${clean} not found`, 404);
 }
 
 export async function fetchUserTweets(

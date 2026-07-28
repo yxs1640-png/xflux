@@ -257,11 +257,28 @@ export function extractTweetsFromResponse(raw: unknown): TwitterTweet[] {
 }
 
 export function extractUserFromResponse(raw: unknown, username?: string): TwitterUser | null {
-  const direct = normalizeUser(raw, username);
-  if (direct && isUsableUser(direct)) return direct;
+  let best: TwitterUser | null = null;
+
+  function consider(user: TwitterUser | null) {
+    if (!user || isStubUser(user)) return;
+    const score =
+      (user.followers_count > 0 ? 1_000_000_000 : 0) +
+      user.following_count +
+      user.tweet_count +
+      (user.created_at !== new Date(0).toISOString() ? 1 : 0);
+    const bestScore = best
+      ? (best.followers_count > 0 ? 1_000_000_000 : 0) +
+        best.following_count +
+        best.tweet_count +
+        (best.created_at !== new Date(0).toISOString() ? 1 : 0)
+      : -1;
+    if (score > bestScore) best = user;
+  }
+
+  consider(normalizeUser(raw, username));
 
   const root = asRecord(raw);
-  if (!root) return null;
+  if (!root) return best;
 
   const queue: unknown[] = [root];
   while (queue.length) {
@@ -269,13 +286,12 @@ export function extractUserFromResponse(raw: unknown, username?: string): Twitte
     const obj = asRecord(current);
     if (!obj) continue;
 
-    const user = normalizeUser(obj, username);
-    if (user && isUsableUser(user)) return user;
+    consider(normalizeUser(obj, username));
 
     for (const value of Object.values(obj)) {
       if (value && typeof value === "object") queue.push(value);
     }
   }
 
-  return null;
+  return best && isUsableUser(best) ? best : null;
 }
