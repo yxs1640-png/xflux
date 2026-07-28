@@ -8,28 +8,19 @@ declare global {
   }
 }
 
-const CONVERSION_TIMEOUT_MS = 500;
+function hasGtmDebugParam(): boolean {
+  if (typeof window === "undefined") return false;
+  return new URLSearchParams(window.location.search).has("gtm_debug");
+}
 
-/** Fire Google Ads sign-up conversion; resolves after beacon sends or timeout. */
-export function fireGoogleAdsSignupConversion(): Promise<void> {
+/** Fire Google Ads sign-up conversion (beacon survives page navigation). */
+export function fireGoogleAdsSignupConversion(): void {
   const sendTo = getGoogleAdsConversionSendTo();
-  if (!sendTo || typeof window.gtag !== "function") {
-    return Promise.resolve();
-  }
+  if (!sendTo || typeof window.gtag !== "function") return;
 
-  return new Promise((resolve) => {
-    let settled = false;
-    const done = () => {
-      if (settled) return;
-      settled = true;
-      resolve();
-    };
-
-    window.gtag!("event", "conversion", {
-      send_to: sendTo,
-      event_callback: done,
-    });
-
-    window.setTimeout(done, CONVERSION_TIMEOUT_MS);
+  window.gtag("event", "conversion", {
+    send_to: sendTo,
+    transport_type: "beacon",
+    ...(hasGtmDebugParam() ? { debug_mode: true } : {}),
   });
 }

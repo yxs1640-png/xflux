@@ -13,6 +13,7 @@ import { UserSourceSelect } from "@/components/user-source-select";
 import { isValidUserSource } from "@/lib/user-source-config";
 import { identifyClient } from "@/lib/analytics/client";
 import { fireGoogleAdsSignupConversion } from "@/components/analytics/google-ads-conversion";
+import { getGoogleAdsId } from "@/lib/google-ads-config";
 
 const WELCOME_API_KEY_STORAGE = "xflux_welcome_api_key";
 
@@ -33,6 +34,12 @@ export function RegisterForm() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    const gtmDebug = searchParams.get("gtm_debug");
+    const adsId = getGoogleAdsId();
+    if (gtmDebug && adsId && typeof window.gtag === "function") {
+      window.gtag("config", adsId, { debug_mode: true });
+    }
+
     const src = searchParams.get("src");
     if (src && isValidUserSource(src)) {
       setUserSource(src);
@@ -95,7 +102,7 @@ export function RegisterForm() {
       return;
     }
 
-    await fireGoogleAdsSignupConversion();
+    fireGoogleAdsSignupConversion();
     window.location.href = "/dashboard?welcome=1";
   }
 
