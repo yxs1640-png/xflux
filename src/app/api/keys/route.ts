@@ -4,6 +4,8 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { generateApiKey } from "@/lib/crypto";
 
+export const preferredRegion = "bom1";
+
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session) {

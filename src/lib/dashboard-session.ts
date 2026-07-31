@@ -32,12 +32,29 @@ export const ensurePendingPlanApplied = cache(async (userId: string) => {
 /** Shared user row for layout + settings/billing (deduped per navigation). */
 export const getDashboardUserRecord = cache(async () => {
   const session = await requireDashboardSession();
-  await ensurePendingPlanApplied(session.user.id);
 
-  return prisma.user.findUnique({
+  let user = await prisma.user.findUnique({
     where: { id: session.user.id },
     include: {
       monitorTasks: { where: { isActive: true }, select: { id: true } },
     },
   });
+
+  if (!user) return null;
+
+  const pendingDue =
+    user.pendingPlanTier &&
+    (!user.planChangeEffectiveAt || new Date() >= user.planChangeEffectiveAt);
+
+  if (pendingDue) {
+    await maybeApplyPendingPlanChange(session.user.id);
+    user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      include: {
+        monitorTasks: { where: { isActive: true }, select: { id: true } },
+      },
+    });
+  }
+
+  return user;
 });

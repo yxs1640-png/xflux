@@ -8,49 +8,59 @@ import { WelcomeApiKeyBanner } from "@/components/dashboard/welcome-api-key-bann
 import { Activity, Key, Radar, Zap } from "lucide-react";
 import { formatNumber } from "@/lib/utils";
 import { buildDailyChartData } from "@/lib/chart-data";
-import { ensurePendingPlanApplied, requireDashboardSession } from "@/lib/dashboard-session";
+import { requireDashboardSession } from "@/lib/dashboard-session";
 import { prisma } from "@/lib/db";
 
 const getDashboardHomeData = cache(async () => {
   const session = await requireDashboardSession();
-  await ensurePendingPlanApplied(session.user.id);
+  const userId = session.user.id;
 
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    include: {
-      apiKeys: { where: { isActive: true } },
-      monitorTasks: { where: { isActive: true } },
-      apiLogs: {
-        orderBy: { createdAt: "desc" },
-        take: 100,
+  const [user, recentHits, apiLogs] = await Promise.all([
+    prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        apiKeys: { where: { isActive: true } },
+        monitorTasks: { where: { isActive: true } },
       },
-    },
-  });
+    }),
+    prisma.monitorHit.findMany({
+      where: { task: { userId } },
+      orderBy: { detectedAt: "desc" },
+      take: 5,
+      include: {
+        task: { select: { targetUsername: true } },
+      },
+    }),
+    prisma.apiLog.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+      take: 35,
+      select: {
+        id: true,
+        method: true,
+        endpoint: true,
+        statusCode: true,
+        responseTime: true,
+        createdAt: true,
+      },
+    }),
+  ]);
 
   if (!user) return null;
 
-  const recentHits = await prisma.monitorHit.findMany({
-    where: { task: { userId: user.id } },
-    orderBy: { detectedAt: "desc" },
-    take: 5,
-    include: {
-      task: { select: { targetUsername: true } },
-    },
-  });
-
-  return { user, recentHits };
+  return { user, recentHits, apiLogs };
 });
 
 export default async function DashboardPage() {
   const data = await getDashboardHomeData();
   if (!data) return null;
 
-  const { user, recentHits } = data;
+  const { user, recentHits, apiLogs } = data;
 
   const limit = PLAN_LIMITS[user.planTier];
   const usagePercent = Math.round((user.quotaUsed / limit) * 100);
 
-  const last7Days = buildDailyChartData(user.apiLogs, 7);
+  const last7Days = buildDailyChartData(apiLogs, 7);
 
   const stats = [
     {
@@ -125,13 +135,13 @@ export default async function DashboardPage() {
             <CardDescription>Latest requests to your API key</CardDescription>
           </CardHeader>
           <CardContent>
-            {user.apiLogs.length === 0 ? (
+            {apiLogs.length === 0 ? (
               <p className="text-sm text-zinc-500 py-8 text-center">
                 No API calls yet. Try the example in Docs.
               </p>
             ) : (
               <div className="space-y-3 max-h-64 overflow-y-auto">
-                {user.apiLogs.slice(0, 10).map((log) => (
+                {apiLogs.slice(0, 10).map((log) => (
                   <div
                     key={log.id}
                     className="flex items-center justify-between text-sm border-b border-zinc-800 pb-2"

@@ -4,37 +4,52 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { UsageChart } from "@/components/dashboard/usage-chart";
 import { formatNumber } from "@/lib/utils";
 import { buildDailyChartData } from "@/lib/chart-data";
-import { ensurePendingPlanApplied, requireDashboardSession } from "@/lib/dashboard-session";
+import { requireDashboardSession } from "@/lib/dashboard-session";
 import { prisma } from "@/lib/db";
+
+export const preferredRegion = "bom1";
+
+function thirtyDaysAgo() {
+  const d = new Date();
+  d.setUTCDate(d.getUTCDate() - 30);
+  d.setUTCHours(0, 0, 0, 0);
+  return d;
+}
 
 const getUsagePageData = cache(async () => {
   const session = await requireDashboardSession();
-  await ensurePendingPlanApplied(session.user.id);
+  const userId = session.user.id;
+  const since = thirtyDaysAgo();
 
-  return prisma.user.findUnique({
-    where: { id: session.user.id },
-    include: {
-      apiLogs: { orderBy: { createdAt: "desc" }, take: 500 },
-    },
-  });
+  const [user, logs, endpointGroups] = await Promise.all([
+    prisma.user.findUnique({
+      where: { id: userId },
+      select: { planTier: true, quotaUsed: true },
+    }),
+    prisma.apiLog.findMany({
+      where: { userId, createdAt: { gte: since } },
+      select: { createdAt: true },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.apiLog.groupBy({
+      by: ["endpoint"],
+      where: { userId, createdAt: { gte: since } },
+      _count: { endpoint: true },
+      orderBy: { _count: { endpoint: "desc" } },
+      take: 10,
+    }),
+  ]);
+
+  return { user, logs, endpointGroups };
 });
 
 export default async function UsagePage() {
-  const user = await getUsagePageData();
+  const { user, logs, endpointGroups } = await getUsagePageData();
 
   if (!user) return null;
 
   const limit = PLAN_LIMITS[user.planTier];
-
-  const endpointStats = user.apiLogs.reduce(
-    (acc, log) => {
-      acc[log.endpoint] = (acc[log.endpoint] || 0) + 1;
-      return acc;
-    },
-    {} as Record<string, number>
-  );
-
-  const last30Days = buildDailyChartData(user.apiLogs, 30);
+  const last30Days = buildDailyChartData(logs, 30);
 
   return (
     <div>
@@ -80,19 +95,16 @@ export default async function UsagePage() {
           <CardTitle>Top Endpoints</CardTitle>
         </CardHeader>
         <CardContent>
-          {Object.keys(endpointStats).length === 0 ? (
+          {endpointGroups.length === 0 ? (
             <p className="text-zinc-500 text-sm">No data yet.</p>
           ) : (
             <div className="space-y-3">
-              {Object.entries(endpointStats)
-                .sort(([, a], [, b]) => b - a)
-                .slice(0, 10)
-                .map(([endpoint, count]) => (
-                  <div key={endpoint} className="flex justify-between text-sm">
-                    <span className="font-mono text-zinc-300">{endpoint}</span>
-                    <span className="text-zinc-500">{count} calls</span>
-                  </div>
-                ))}
+              {endpointGroups.map(({ endpoint, _count }) => (
+                <div key={endpoint} className="flex justify-between text-sm">
+                  <span className="font-mono text-zinc-300">{endpoint}</span>
+                  <span className="text-zinc-500">{_count.endpoint} calls</span>
+                </div>
+              ))}
             </div>
           )}
         </CardContent>
