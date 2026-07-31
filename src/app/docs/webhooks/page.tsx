@@ -1,20 +1,27 @@
+import Link from "next/link";
 import { pageMetadata } from "@/lib/seo";
 import { CodeBlock, Callout, DocHeading } from "@/components/docs/doc-blocks";
 
 export const metadata = pageMetadata({
-  title: "Webhooks",
+  title: "Twitter Webhook Integration — Signed HTTP Webhooks",
   description:
-    "Configure signed HTTP webhooks for XFlux account monitors. Verify HMAC-SHA256 signatures on incoming tweet hit events.",
+    "Twitter webhook integration for XFlux account monitors. Receive signed HTTP POST webhooks when tracked X/Twitter accounts publish new tweets. HMAC-SHA256 verification guide included.",
   path: "/docs/webhooks",
 });
 
 export default function WebhooksDocsPage() {
   return (
     <>
-      <h1 className="text-4xl font-bold text-white mb-4">Webhooks</h1>
-      <p className="text-zinc-400 mb-8">
+      <h1 className="text-4xl font-bold text-white mb-4">
+        Twitter Webhook Integration
+      </h1>
+      <p className="text-zinc-400 mb-4">
         Receive signed HTTP POST requests when a monitor detects a new tweet. Available on Starter
-        plan and above.
+        plan and above. For a product overview, see{" "}
+        <Link href="/twitter-webhook" className="text-sky-400 hover:underline">
+          Twitter webhook integration
+        </Link>
+        .
       </p>
 
       <DocHeading id="setup">Setup</DocHeading>

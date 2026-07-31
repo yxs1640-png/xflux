@@ -22,6 +22,7 @@ export function Footer() {
             <h4 className="mb-4 text-sm font-semibold text-white">Product</h4>
             <ul className="space-y-2 text-sm text-zinc-500">
               <li><Link href="/docs" className="hover:text-white transition-colors">API Docs</Link></li>
+              <li><Link href="/twitter-webhook" className="hover:text-white transition-colors">Twitter Webhooks</Link></li>
               <li><Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
               <li><Link href="/feedback" className="hover:text-white transition-colors">Feedback</Link></li>
               <li><Link href="/dashboard" className="hover:text-white transition-colors">Dashboard</Link></li>
@@ -30,6 +31,7 @@ export function Footer() {
           <div>
             <h4 className="mb-4 text-sm font-semibold text-white">Features</h4>
             <ul className="space-y-2 text-sm text-zinc-500">
+              <li><Link href="/twitter-webhook" className="hover:text-white transition-colors">Twitter webhook integration</Link></li>
               <li>User & tweet lookup</li>
               <li>Search API</li>
               <li>Account monitors</li>

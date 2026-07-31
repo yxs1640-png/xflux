@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { pageMetadata } from "@/lib/seo";
 import { CodeBlock, Callout, DocHeading } from "@/components/docs/doc-blocks";
 import { PLANS } from "@/lib/constants";
@@ -5,19 +6,23 @@ import { PLAN_MONITOR_MIN_INTERVAL, formatMonitorInterval } from "@/lib/quota";
 import { PlanTier } from "@prisma/client";
 
 export const metadata = pageMetadata({
-  title: "Account Monitors",
+  title: "X/Twitter Account Monitors & Webhooks",
   description:
-    "Monitor X/Twitter accounts on a schedule, view hits in the Dashboard, and receive signed HTTP webhooks on paid plans.",
+    "Monitor X/Twitter accounts on a schedule. View hits in the Dashboard or receive signed HTTP webhooks on paid plans — Twitter webhook integration without building your own poller.",
   path: "/docs/monitors",
 });
 
 export default function MonitorsDocsPage() {
   return (
     <>
-      <h1 className="text-4xl font-bold text-white mb-4">Monitors</h1>
-      <p className="text-zinc-400 mb-8">
+      <h1 className="text-4xl font-bold text-white mb-4">Account Monitors</h1>
+      <p className="text-zinc-400 mb-4">
         Monitors watch X accounts on a schedule and record new tweets as hits. They are a core
-        product alongside the API — not billed against API quota.
+        product alongside the API — not billed against API quota. Paid plans include{" "}
+        <Link href="/twitter-webhook" className="text-sky-400 hover:underline">
+          Twitter webhook integration
+        </Link>{" "}
+        to your HTTPS endpoint.
       </p>
 
       <DocHeading id="concepts">Concepts</DocHeading>
