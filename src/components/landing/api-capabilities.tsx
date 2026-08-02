@@ -8,6 +8,7 @@ const CAPABILITIES = [
     icon: User,
     title: "Profiles & users",
     description: "Lookup public profiles by @username — id, bio, followers, verification.",
+    useCase: "CRM enrichment, author cards, verification checks",
     endpoints: ["GET /api/v1/users/:username"],
     href: "/docs/api",
   },
@@ -15,6 +16,7 @@ const CAPABILITIES = [
     icon: MessageSquare,
     title: "Timelines",
     description: "Fetch recent tweets from any public account timeline.",
+    useCase: "Feed widgets, backtests, content archives",
     endpoints: ["GET /api/v1/users/:username/tweets"],
     href: "/docs/api",
   },
@@ -22,6 +24,7 @@ const CAPABILITIES = [
     icon: Search,
     title: "Search",
     description: "Search public posts by keyword, hashtag, or from:username.",
+    useCase: "Brand monitoring, trend research, RAG ingestion",
     endpoints: ["GET /api/v1/search?q="],
     href: "/docs/api",
   },
@@ -29,6 +32,7 @@ const CAPABILITIES = [
     icon: List,
     title: "Tweet lookup",
     description: "Retrieve a single tweet by ID for enrichment or moderation pipelines.",
+    useCase: "Link unfurling, moderation, fact-check tools",
     endpoints: ["GET /api/v1/tweets/:id"],
     href: "/docs/api",
   },
@@ -36,6 +40,7 @@ const CAPABILITIES = [
     icon: Radar,
     title: "Account monitors",
     description: "Background polling for new tweets — no cron jobs or scraping scripts.",
+    useCase: "KOL tracking, competitor watches, alert rules",
     endpoints: ["Dashboard → Monitors"],
     href: "/docs/monitors",
   },
@@ -43,6 +48,7 @@ const CAPABILITIES = [
     icon: Webhook,
     title: "Signed webhooks",
     description: "HTTP POST to your URL when a monitor detects a new tweet. HMAC verified.",
+    useCase: "Slack bots, trading signals, real-time AI agents",
     endpoints: ["POST your-endpoint (Starter+)"],
     href: "/twitter-webhook",
   },
@@ -72,6 +78,9 @@ export function ApiCapabilities() {
                   </div>
                   <CardTitle className="text-lg">{cap.title}</CardTitle>
                   <CardDescription>{cap.description}</CardDescription>
+                  <p className="text-xs text-zinc-500 mt-2">
+                    <span className="text-zinc-600">Use for:</span> {cap.useCase}
+                  </p>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-2">

@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getUserByUsername } from "@/lib/twitter-proxy";
+import { getUserTweets } from "@/lib/twitter-proxy";
 import { ConsumerApiError } from "@/lib/consumer-api";
-import { isAllowedDemoUsername, normalizeUsername } from "@/lib/demo-config";
+import {
+  DEMO_LIMIT,
+  isAllowedDemoUsername,
+  normalizeUsername,
+} from "@/lib/demo-config";
 import { getDemoCache, setDemoCache } from "@/lib/demo-cache";
 
 /** Public homepage demo — allowlisted usernames, cached, no API key required. */
@@ -12,22 +16,24 @@ export async function GET(request: NextRequest) {
 
   if (!isAllowedDemoUsername(username)) {
     return NextResponse.json(
-      { error: "Demo supports elonmusk, sama, or x only. Sign up for full API access." },
+      {
+        error:
+          "Demo supports elonmusk, sama, or x only. Sign up for full timeline access.",
+      },
       { status: 400 }
     );
   }
 
-  const cacheKey = `profile:${username}`;
+  const cacheKey = `timeline:${username}`;
   const cached = getDemoCache(cacheKey);
   if (cached) return NextResponse.json(cached);
 
   try {
-    const user = await getUserByUsername(username);
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
-
-    const body = { data: user, demo: true };
+    const tweets = await getUserTweets(username, DEMO_LIMIT);
+    const body = {
+      data: tweets,
+      meta: { username, count: tweets.length, demo: true },
+    };
     setDemoCache(cacheKey, body);
     return NextResponse.json(body);
   } catch (err) {

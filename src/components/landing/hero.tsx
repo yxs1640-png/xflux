@@ -4,8 +4,8 @@ import { ApiPlayground } from "@/components/landing/api-playground";
 
 const TRUST_POINTS = [
   "1,000 free API calls / month",
-  "Account monitors + webhooks",
-  "API key in under 60 seconds",
+  "Profile, search & timeline REST API",
+  "Monitors + signed webhooks (paid)",
 ];
 
 export function Hero({ isLoggedIn = false }: { isLoggedIn?: boolean }) {

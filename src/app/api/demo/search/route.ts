@@ -1,33 +1,34 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getUserByUsername } from "@/lib/twitter-proxy";
+import { searchTweets } from "@/lib/twitter-proxy";
 import { ConsumerApiError } from "@/lib/consumer-api";
-import { isAllowedDemoUsername, normalizeUsername } from "@/lib/demo-config";
+import { DEMO_LIMIT, resolveDemoSearchQuery } from "@/lib/demo-config";
 import { getDemoCache, setDemoCache } from "@/lib/demo-cache";
 
-/** Public homepage demo — allowlisted usernames, cached, no API key required. */
+/** Public homepage demo — allowlisted queries, cached, no API key required. */
 export async function GET(request: NextRequest) {
-  const username = normalizeUsername(
-    request.nextUrl.searchParams.get("username") || "elonmusk"
-  );
+  const raw = request.nextUrl.searchParams.get("q") || "";
+  const query = resolveDemoSearchQuery(raw);
 
-  if (!isAllowedDemoUsername(username)) {
+  if (!query) {
     return NextResponse.json(
-      { error: "Demo supports elonmusk, sama, or x only. Sign up for full API access." },
+      {
+        error:
+          "Demo supports preset queries only. Try: from:elonmusk, ai agents lang:en, or $BTC -filter:replies. Sign up for full search.",
+      },
       { status: 400 }
     );
   }
 
-  const cacheKey = `profile:${username}`;
+  const cacheKey = `search:${query.toLowerCase()}`;
   const cached = getDemoCache(cacheKey);
   if (cached) return NextResponse.json(cached);
 
   try {
-    const user = await getUserByUsername(username);
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
-
-    const body = { data: user, demo: true };
+    const tweets = await searchTweets(query, DEMO_LIMIT);
+    const body = {
+      data: tweets,
+      meta: { query, count: tweets.length, demo: true },
+    };
     setDemoCache(cacheKey, body);
     return NextResponse.json(body);
   } catch (err) {
