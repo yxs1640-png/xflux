@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Check, Copy, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { markOnboardingKeySaved } from "@/lib/onboarding-client";
 
 const STORAGE_KEY = "xflux_welcome_api_key";
 
@@ -23,6 +24,7 @@ export function WelcomeApiKeyBanner() {
 
   function dismiss() {
     sessionStorage.removeItem(STORAGE_KEY);
+    markOnboardingKeySaved();
     setDismissed(true);
     setApiKey(null);
   }
@@ -30,6 +32,7 @@ export function WelcomeApiKeyBanner() {
   async function copyKey() {
     if (!apiKey) return;
     await navigator.clipboard.writeText(apiKey);
+    markOnboardingKeySaved();
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }

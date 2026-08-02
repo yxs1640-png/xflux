@@ -2,6 +2,7 @@ import { cache } from "react";
 import { PLAN_LIMITS } from "@/lib/quota";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { UsageChart } from "@/components/dashboard/usage-chart";
+import { OnboardingUsageTracker } from "@/components/dashboard/onboarding-usage-tracker";
 import { formatNumber } from "@/lib/utils";
 import { buildDailyChartData } from "@/lib/chart-data";
 import { requireDashboardSession } from "@/lib/dashboard-session";
@@ -53,6 +54,7 @@ export default async function UsagePage() {
 
   return (
     <div>
+      <OnboardingUsageTracker />
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white">Usage</h1>
         <p className="text-zinc-400">Monitor your API consumption</p>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { DashboardSidebar } from "@/components/dashboard/sidebar";
 import { PlanChangeBannerSlot } from "@/components/billing/plan-change-banner-slot";
+import { OnboardingChecklistSlot } from "@/components/dashboard/onboarding-checklist-slot";
 import { requireDashboardSession } from "@/lib/dashboard-session";
 
 export const metadata: Metadata = {
@@ -25,6 +26,9 @@ export default async function DashboardLayout({
         <div className="p-8">
           <Suspense fallback={null}>
             <PlanChangeBannerSlot />
+          </Suspense>
+          <Suspense fallback={null}>
+            <OnboardingChecklistSlot />
           </Suspense>
           {children}
         </div>

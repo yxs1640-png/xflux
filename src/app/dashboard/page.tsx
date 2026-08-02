@@ -1,5 +1,6 @@
 import { cache } from "react";
 import { Suspense } from "react";
+import Link from "next/link";
 import { PLAN_LIMITS } from "@/lib/quota";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -136,9 +137,17 @@ export default async function DashboardPage() {
           </CardHeader>
           <CardContent>
             {apiLogs.length === 0 ? (
-              <p className="text-sm text-zinc-500 py-8 text-center">
-                No API calls yet. Try the example in Docs.
-              </p>
+              <div className="py-6 text-center space-y-3">
+                <p className="text-sm text-zinc-500">No API calls yet.</p>
+                <p className="text-xs text-zinc-600">
+                  Use the <strong className="text-zinc-400">Run test call</strong> button in the
+                  Getting started checklist above, or follow the{" "}
+                  <Link href="/docs/quickstart" className="text-sky-400 hover:text-sky-300">
+                    quickstart guide
+                  </Link>
+                  .
+                </p>
+              </div>
             ) : (
               <div className="space-y-3 max-h-64 overflow-y-auto">
                 {apiLogs.slice(0, 10).map((log) => (
@@ -174,9 +183,14 @@ export default async function DashboardPage() {
           </CardHeader>
           <CardContent>
             {recentHits.length === 0 ? (
-              <p className="text-sm text-zinc-500 py-8 text-center">
-                No monitor hits yet. Add a monitor and run a check.
-              </p>
+              <div className="py-6 text-center space-y-3">
+                <p className="text-sm text-zinc-500">No monitor hits yet.</p>
+                <Link href="/dashboard/monitors">
+                  <span className="text-sm text-sky-400 hover:text-sky-300">
+                    Add a monitor →
+                  </span>
+                </Link>
+              </div>
             ) : (
               <div className="space-y-3 max-h-64 overflow-y-auto">
                 {recentHits.map((hit) => (
