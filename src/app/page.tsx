@@ -3,6 +3,8 @@ import { authOptions } from "@/lib/auth";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Hero } from "@/components/landing/hero";
+import { ApiCapabilities } from "@/components/landing/api-capabilities";
+import { ProductOverview } from "@/components/landing/product-overview";
 import { StatsBar } from "@/components/landing/stats-bar";
 import { Features } from "@/components/landing/features";
 import { PriceComparison } from "@/components/landing/price-comparison";
@@ -39,6 +41,8 @@ export default async function HomePage() {
       <Header />
       <main>
         <Hero isLoggedIn={isLoggedIn} />
+        <ApiCapabilities />
+        <ProductOverview />
         <StatsBar />
         <UseCases registerHref={isLoggedIn ? "/dashboard" : "/register?src=homepage_usecases"} />
         <PriceComparison registerHref={isLoggedIn ? "/dashboard" : "/register?src=homepage_compare"} />

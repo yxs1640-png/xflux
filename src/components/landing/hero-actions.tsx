@@ -32,6 +32,14 @@ export function HeroActions({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
         </Button>
       </Link>
       <Link
+        href="/docs/quickstart"
+        onClick={() => trackCta("see_api", "/docs/quickstart")}
+      >
+        <Button variant="outline" size="lg" className="min-w-[180px]">
+          See the API
+        </Button>
+      </Link>
+      <Link
         href={isLoggedIn ? "/dashboard/billing" : "/pricing"}
         onClick={() =>
           trackCta(
@@ -40,8 +48,8 @@ export function HeroActions({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
           )
         }
       >
-        <Button variant="outline" size="lg" className="min-w-[180px]">
-          {isLoggedIn ? "Manage billing" : "See pricing"}
+        <Button variant="ghost" size="lg" className="min-w-[140px] text-zinc-400">
+          {isLoggedIn ? "Billing" : "Pricing"}
         </Button>
       </Link>
     </div>
