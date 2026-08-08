@@ -16,11 +16,17 @@ export async function OnboardingChecklistSlot() {
     }),
   ]);
 
+  const hasApiCalls = apiCallCount > 0 || user.quotaUsed > 0;
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  const isRecentSignup = user.createdAt >= sevenDaysAgo;
+
   return (
     <OnboardingChecklist
-      hasApiCalls={apiCallCount > 0 || user.quotaUsed > 0}
+      hasApiCalls={hasApiCalls}
       hasMonitors={user.monitorTasks.length > 0}
       apiKeyPrefix={defaultKey?.keyPrefix ?? null}
+      isRecentSignup={isRecentSignup}
     />
   );
 }

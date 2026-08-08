@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   ArrowRight,
   Check,
@@ -10,6 +10,7 @@ import {
   ChevronUp,
   Circle,
   Loader2,
+  Sparkles,
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -22,7 +23,7 @@ import {
   readOnboardingClientState,
 } from "@/lib/onboarding-client";
 
-type StepId = "key" | "api_call" | "monitor" | "usage";
+type StepId = "api_call" | "key" | "monitor" | "usage";
 
 type StepDef = {
   id: StepId;
@@ -32,22 +33,23 @@ type StepDef = {
   hrefLabel?: string;
 };
 
+/** Test call first — users should try the API before worrying about copying keys. */
 const STEPS: StepDef[] = [
-  {
-    id: "key",
-    title: "Save your API key",
-    description:
-      "Copy the key from the welcome banner above, or create a new one on the API Keys page. You need it for every request.",
-    href: "/dashboard/api-keys",
-    hrefLabel: "Open API Keys",
-  },
   {
     id: "api_call",
     title: "Make your first API call",
     description:
-      "Look up a public profile — this uses 1 call from your free monthly quota.",
+      "Look up @elonmusk — uses 1 call from your free monthly quota. No curl or API key needed for this test.",
     href: "/docs/quickstart",
     hrefLabel: "Quickstart guide",
+  },
+  {
+    id: "key",
+    title: "Save your API key",
+    description:
+      "Copy the key from the welcome banner below (shown once at signup), or create a new one on the API Keys page.",
+    href: "/dashboard/api-keys",
+    hrefLabel: "Open API Keys",
   },
   {
     id: "monitor",
@@ -67,21 +69,84 @@ const STEPS: StepDef[] = [
   },
 ];
 
+function TestCallPanel({
+  testLoading,
+  testError,
+  testResponse,
+  testSucceeded,
+  onRun,
+  variant = "default",
+}: {
+  testLoading: boolean;
+  testError: string | null;
+  testResponse: string | null;
+  testSucceeded: boolean;
+  onRun: () => void;
+  variant?: "hero" | "default";
+}) {
+  const isHero = variant === "hero";
+
+  return (
+    <div className={cn("space-y-3", isHero ? "" : "mt-3")}>
+      {isHero && (
+        <div className="flex items-start gap-3">
+          <Sparkles className="h-5 w-5 text-sky-400 shrink-0 mt-0.5" />
+          <div>
+            <p className="font-medium text-white">Try it now — look up @elonmusk</p>
+            <p className="text-sm text-zinc-400 mt-1">
+              One click, one free API call. No setup required.
+            </p>
+          </div>
+        </div>
+      )}
+      <Button
+        size={isHero ? "lg" : "sm"}
+        onClick={onRun}
+        disabled={testLoading}
+        className={isHero ? "w-full sm:w-auto" : undefined}
+      >
+        {testLoading ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          <ArrowRight className="h-4 w-4" />
+        )}
+        Run test call
+      </Button>
+      {testError && <p className="text-xs text-amber-400">{testError}</p>}
+      {testSucceeded && (
+        <p className="text-sm text-emerald-400">
+          You&apos;re live! Scroll down to copy your API key for use in your own app.
+        </p>
+      )}
+      {testResponse && (
+        <pre className="rounded-lg bg-zinc-950 border border-zinc-800 p-3 text-xs text-zinc-300 overflow-x-auto max-h-40 overflow-y-auto">
+          {testResponse}
+        </pre>
+      )}
+    </div>
+  );
+}
+
 export function OnboardingChecklist({
   hasApiCalls,
   hasMonitors,
   apiKeyPrefix,
+  isRecentSignup,
 }: {
   hasApiCalls: boolean;
   hasMonitors: boolean;
   apiKeyPrefix: string | null;
+  isRecentSignup: boolean;
 }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const rootRef = useRef<HTMLDivElement>(null);
   const [clientState, setClientState] = useState(readOnboardingClientState);
   const [expanded, setExpanded] = useState(true);
   const [testLoading, setTestLoading] = useState(false);
   const [testError, setTestError] = useState<string | null>(null);
   const [testResponse, setTestResponse] = useState<string | null>(null);
+  const [testSucceeded, setTestSucceeded] = useState(false);
 
   const refreshClientState = useCallback(() => {
     setClientState(readOnboardingClientState());
@@ -92,20 +157,91 @@ export function OnboardingChecklist({
     return () => window.removeEventListener(ONBOARDING_UPDATE_EVENT, refreshClientState);
   }, [refreshClientState]);
 
+  useEffect(() => {
+    if (searchParams.get("welcome") !== "1" || hasApiCalls) return;
+    const timer = window.setTimeout(() => {
+      rootRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 300);
+    return () => window.clearTimeout(timer);
+  }, [searchParams, hasApiCalls]);
+
   const stepComplete = useMemo(
     () => ({
+      api_call: hasApiCalls || testSucceeded,
       key: clientState.keySaved || hasApiCalls,
-      api_call: hasApiCalls,
       monitor: hasMonitors,
       usage: clientState.usageVisited,
     }),
-    [clientState, hasApiCalls, hasMonitors]
+    [clientState, hasApiCalls, hasMonitors, testSucceeded]
   );
 
   const completedCount = STEPS.filter((s) => stepComplete[s.id]).length;
   const allComplete = completedCount === STEPS.length;
 
-  if (clientState.dismissed) return null;
+  const curlExample = `curl ${LEGAL.website}/api/v1/users/elonmusk \\
+  -H "Authorization: Bearer ${apiKeyPrefix ?? "xflux_YOUR_KEY"}..."`;
+
+  async function runTestCall() {
+    setTestLoading(true);
+    setTestError(null);
+    setTestResponse(null);
+    markOnboardingKeySaved();
+
+    try {
+      const res = await fetch("/api/dashboard/onboarding/test-call", { method: "POST" });
+      const json = await res.json();
+      if (!res.ok) {
+        setTestError(typeof json.error === "string" ? json.error : "Request failed");
+        setTestSucceeded(false);
+        return;
+      }
+      setTestResponse(JSON.stringify(json, null, 2));
+      setTestSucceeded(true);
+      router.refresh();
+    } catch {
+      setTestError("Network error — try again");
+      setTestSucceeded(false);
+    } finally {
+      setTestLoading(false);
+    }
+  }
+
+  if (clientState.dismissed) {
+    if (!hasApiCalls && isRecentSignup) {
+      return (
+        <div
+          id="onboarding-checklist"
+          ref={rootRef}
+          className="mb-6 rounded-xl border border-amber-500/20 bg-amber-500/5 px-5 py-4"
+        >
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <p className="font-medium text-white">Haven&apos;t tried the API yet?</p>
+              <p className="text-sm text-zinc-400 mt-1">
+                Run a free test call — look up @elonmusk in one click.
+              </p>
+            </div>
+            <Button onClick={runTestCall} disabled={testLoading} className="shrink-0">
+              {testLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <ArrowRight className="h-4 w-4" />
+              )}
+              Run test call
+            </Button>
+          </div>
+          {testError && <p className="text-xs text-amber-400 mt-2">{testError}</p>}
+          {testSucceeded && (
+            <p className="text-sm text-emerald-400 mt-2">
+              You&apos;re live! Copy your API key from the banner below.
+            </p>
+          )}
+        </div>
+      );
+    }
+    return null;
+  }
+
   if (allComplete) {
     return (
       <div className="mb-6 rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-5 py-4">
@@ -129,42 +265,17 @@ export function OnboardingChecklist({
     );
   }
 
-  const curlExample = `curl ${LEGAL.website}/api/v1/users/elonmusk \\
-  -H "Authorization: Bearer ${apiKeyPrefix ?? "xflux_YOUR_KEY"}..."`;
-
-  async function runTestCall() {
-    setTestLoading(true);
-    setTestError(null);
-    setTestResponse(null);
-    markOnboardingKeySaved();
-
-    try {
-      const res = await fetch("/api/dashboard/onboarding/test-call", { method: "POST" });
-      const json = await res.json();
-      if (!res.ok) {
-        setTestError(typeof json.error === "string" ? json.error : "Request failed");
-        return;
-      }
-      setTestResponse(JSON.stringify(json, null, 2));
-      router.refresh();
-    } catch {
-      setTestError("Network error — try again");
-    } finally {
-      setTestLoading(false);
-    }
-  }
-
-  function handleMarkKeySaved() {
-    markOnboardingKeySaved();
-  }
-
   return (
-    <div className="mb-6 rounded-xl border border-sky-500/20 bg-sky-500/5">
+    <div
+      id="onboarding-checklist"
+      ref={rootRef}
+      className="mb-6 rounded-xl border border-sky-500/20 bg-sky-500/5"
+    >
       <div className="flex items-center justify-between gap-4 px-5 py-4 border-b border-sky-500/10">
         <div>
           <p className="font-medium text-white">Getting started</p>
           <p className="text-sm text-zinc-400 mt-0.5">
-            {completedCount} of {STEPS.length} complete — finish these to get the most from XFlux
+            {completedCount} of {STEPS.length} complete — start with a test call
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -176,90 +287,81 @@ export function OnboardingChecklist({
           >
             {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           </button>
-          <button
-            type="button"
-            onClick={() => markOnboardingDismissed()}
-            className="text-zinc-500 hover:text-zinc-300 p-1"
-            aria-label="Hide checklist"
-          >
-            <X className="h-4 w-4" />
-          </button>
+          {hasApiCalls && (
+            <button
+              type="button"
+              onClick={() => markOnboardingDismissed()}
+              className="text-zinc-500 hover:text-zinc-300 p-1"
+              aria-label="Hide checklist"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
         </div>
       </div>
 
       {expanded && (
-        <ol className="px-5 py-4 space-y-4">
-          {STEPS.map((step, index) => {
-            const done = stepComplete[step.id];
-            const isCurrent = !done && STEPS.slice(0, index).every((s) => stepComplete[s.id]);
+        <>
+          {!hasApiCalls && (
+            <div className="mx-5 mt-4 rounded-lg border border-sky-500/40 bg-sky-500/10 p-4">
+              <TestCallPanel
+                variant="hero"
+                testLoading={testLoading}
+                testError={testError}
+                testResponse={testResponse}
+                testSucceeded={testSucceeded}
+                onRun={runTestCall}
+              />
+            </div>
+          )}
 
-            return (
-              <li
-                key={step.id}
-                className={cn(
-                  "rounded-lg border p-4 transition-colors",
-                  done
-                    ? "border-zinc-800/80 bg-zinc-900/30"
-                    : isCurrent
-                      ? "border-sky-500/30 bg-zinc-900/50"
-                      : "border-zinc-800/60 bg-zinc-950/40"
-                )}
-              >
-                <div className="flex gap-3">
-                  <div className="mt-0.5 shrink-0">
-                    {done ? (
-                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/20">
-                        <Check className="h-3.5 w-3.5 text-emerald-400" />
-                      </span>
-                    ) : (
-                      <span className="flex h-6 w-6 items-center justify-center rounded-full border border-zinc-700">
-                        <Circle className="h-2 w-2 fill-zinc-600 text-zinc-600" />
-                      </span>
-                    )}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p
-                      className={cn(
-                        "font-medium",
-                        done ? "text-zinc-500 line-through" : "text-white"
+          <ol className="px-5 py-4 space-y-4">
+            {STEPS.map((step, index) => {
+              const done = stepComplete[step.id];
+              const isCurrent = !done && STEPS.slice(0, index).every((s) => stepComplete[s.id]);
+
+              return (
+                <li
+                  key={step.id}
+                  className={cn(
+                    "rounded-lg border p-4 transition-colors",
+                    done
+                      ? "border-zinc-800/80 bg-zinc-900/30"
+                      : isCurrent
+                        ? "border-sky-500/30 bg-zinc-900/50"
+                        : "border-zinc-800/60 bg-zinc-950/40"
+                  )}
+                >
+                  <div className="flex gap-3">
+                    <div className="mt-0.5 shrink-0">
+                      {done ? (
+                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/20">
+                          <Check className="h-3.5 w-3.5 text-emerald-400" />
+                        </span>
+                      ) : (
+                        <span className="flex h-6 w-6 items-center justify-center rounded-full border border-zinc-700">
+                          <Circle className="h-2 w-2 fill-zinc-600 text-zinc-600" />
+                        </span>
                       )}
-                    >
-                      {step.title}
-                    </p>
-                    {!done && (
-                      <>
-                        <p className="mt-1 text-sm text-zinc-400">{step.description}</p>
-
-                        {step.id === "key" && (
-                          <div className="mt-3 flex flex-wrap gap-2">
-                            <Button size="sm" variant="outline" onClick={handleMarkKeySaved}>
-                              I&apos;ve saved my key
-                            </Button>
-                            {step.href && (
-                              <Link href={step.href}>
-                                <Button size="sm" variant="ghost">
-                                  {step.hrefLabel}
-                                  <ArrowRight className="h-4 w-4" />
-                                </Button>
-                              </Link>
-                            )}
-                          </div>
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p
+                        className={cn(
+                          "font-medium",
+                          done ? "text-zinc-500 line-through" : "text-white"
                         )}
+                      >
+                        {step.title}
+                      </p>
+                      {!done && (
+                        <>
+                          <p className="mt-1 text-sm text-zinc-400">{step.description}</p>
 
-                        {step.id === "api_call" && (
-                          <div className="mt-3 space-y-3">
-                            <pre className="rounded-lg bg-zinc-950 border border-zinc-800 p-3 text-xs text-sky-400 overflow-x-auto whitespace-pre-wrap">
-                              {curlExample}
-                            </pre>
-                            <div className="flex flex-wrap gap-2">
-                              <Button size="sm" onClick={runTestCall} disabled={testLoading}>
-                                {testLoading ? (
-                                  <Loader2 className="h-4 w-4 animate-spin" />
-                                ) : (
-                                  <ArrowRight className="h-4 w-4" />
-                                )}
-                                Run test call
-                              </Button>
+                          {step.id === "api_call" && hasApiCalls && (
+                            <div className="mt-3 space-y-3">
+                              <pre className="rounded-lg bg-zinc-950 border border-zinc-800 p-3 text-xs text-sky-400 overflow-x-auto whitespace-pre-wrap">
+                                {curlExample}
+                              </pre>
                               {step.href && (
                                 <Link href={step.href}>
                                   <Button size="sm" variant="outline">
@@ -268,35 +370,47 @@ export function OnboardingChecklist({
                                 </Link>
                               )}
                             </div>
-                            {testError && (
-                              <p className="text-xs text-amber-400">{testError}</p>
-                            )}
-                            {testResponse && (
-                              <pre className="rounded-lg bg-zinc-950 border border-zinc-800 p-3 text-xs text-zinc-300 overflow-x-auto max-h-40 overflow-y-auto">
-                                {testResponse}
-                              </pre>
-                            )}
-                          </div>
-                        )}
+                          )}
 
-                        {(step.id === "monitor" || step.id === "usage") && step.href && (
-                          <div className="mt-3">
-                            <Link href={step.href}>
-                              <Button size="sm" variant={isCurrent ? "primary" : "outline"}>
-                                {step.hrefLabel}
-                                <ArrowRight className="h-4 w-4" />
+                          {step.id === "key" && (
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => markOnboardingKeySaved()}
+                              >
+                                I&apos;ve saved my key
                               </Button>
-                            </Link>
-                          </div>
-                        )}
-                      </>
-                    )}
+                              {step.href && (
+                                <Link href={step.href}>
+                                  <Button size="sm" variant={isCurrent ? "primary" : "ghost"}>
+                                    {step.hrefLabel}
+                                    <ArrowRight className="h-4 w-4" />
+                                  </Button>
+                                </Link>
+                              )}
+                            </div>
+                          )}
+
+                          {(step.id === "monitor" || step.id === "usage") && step.href && (
+                            <div className="mt-3">
+                              <Link href={step.href}>
+                                <Button size="sm" variant={isCurrent ? "primary" : "outline"}>
+                                  {step.hrefLabel}
+                                  <ArrowRight className="h-4 w-4" />
+                                </Button>
+                              </Link>
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </li>
-            );
-          })}
-        </ol>
+                </li>
+              );
+            })}
+          </ol>
+        </>
       )}
     </div>
   );

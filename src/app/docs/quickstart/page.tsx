@@ -23,18 +23,29 @@ export default function QuickstartPage() {
         <Link href="/register" className="text-sky-400 hover:underline">
           Register
         </Link>{" "}
-        for a free account. No credit card required on the Free plan.
+        for a free account. No credit card required on the Free plan. A default API key is created
+        automatically — you&apos;ll see it once on the Dashboard after signup.
       </p>
 
-      <DocHeading id="api-key">2. Generate an API key</DocHeading>
+      <DocHeading id="first-call">2. Make your first API call</DocHeading>
       <p className="text-zinc-400 text-sm leading-relaxed mb-4">
-        Open Dashboard → API Keys → Create key. Keys are prefixed with{" "}
-        <code className="text-zinc-300">xflux_</code>.
+        On the Dashboard, open <strong className="text-white">Getting started</strong> and click{" "}
+        <strong className="text-white">Run test call</strong> — no curl or API key needed for the
+        demo. Or use curl with your key:
       </p>
-
-      <DocHeading id="first-call">3. Make your first request</DocHeading>
       <CodeBlock>{`curl -X GET "${DOC_BASE_URL}/users/elonmusk" \\
   -H "Authorization: Bearer xflux_YOUR_KEY"`}</CodeBlock>
+
+      <DocHeading id="api-key">3. Save your API key</DocHeading>
+      <p className="text-zinc-400 text-sm leading-relaxed mb-4">
+        Copy the key from the welcome banner right after signup — it won&apos;t be shown again. Keys
+        are prefixed with <code className="text-zinc-300">xflux_</code>. Need a new one? Dashboard →
+        API Keys → Create key.
+      </p>
+      <Callout variant="info">
+        Registration creates a <strong>Default</strong> API key automatically. You do not need to
+        create one manually before your first call.
+      </Callout>
 
       <DocHeading id="monitor">4. (Optional) Add a monitor</DocHeading>
       <p className="text-zinc-400 text-sm leading-relaxed mb-4">

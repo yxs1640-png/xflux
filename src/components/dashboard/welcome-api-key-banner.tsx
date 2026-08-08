@@ -50,7 +50,8 @@ export function WelcomeApiKeyBanner() {
         <div className="min-w-0 flex-1">
           <p className="font-medium text-emerald-400">Welcome! Your account is ready.</p>
           <p className="mt-1 text-sm text-zinc-400">
-            Copy your API key now — it won&apos;t be shown again.
+            Try <strong className="text-zinc-300">Run test call</strong> in Getting started above
+            first — then copy your API key below (shown once only).
           </p>
           <div className="mt-3 rounded-lg bg-zinc-900/80 p-3 font-mono text-sm text-sky-400 break-all">
             {apiKey}
