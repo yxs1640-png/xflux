@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { PLAN_LIMITS } from "@/lib/quota";
 import { isActiveSubscriptionStatus } from "@/lib/billing";
 import { BillingComingSoonBanner } from "@/components/billing/billing-coming-soon-banner";
+import { BillingActivationHint } from "@/components/billing/billing-activation-hint";
 import { isBillingCheckoutEnabled, isPaidBillingAvailable } from "@/lib/billing-config";
 import { isStripeConfigured } from "@/lib/stripe";
 import { formatNumber, formatDateOnly } from "@/lib/utils";
@@ -35,6 +36,8 @@ export default async function BillingPage() {
       </Suspense>
 
       {!checkoutEnabled && <BillingComingSoonBanner />}
+
+      <BillingActivationHint quotaUsed={user.quotaUsed} />
 
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white">Billing & Plans</h1>

@@ -10,6 +10,8 @@ Screenshots captured at **1200×628** (landscape, ~1.91:1) for Performance Max /
 | `04-monitors-doc.png` | Monitor differentiator |
 | `06-square-padded.png` | Square image slot (upload as secondary) |
 | `07-portrait-960x1200.png` | **Portrait** slot (4:5, required for Good ad strength) |
+| `08-aigc-landscape-1200x628.png` | AIGC ad creative — landscape (from `宣传aigc1.png`) |
+| `09-aigc-portrait-960x1200.png` | AIGC ad creative — portrait (from `宣传aigc1.png`) |
 
 See **`OPTIMIZATION.md`** for the full Google Ads optimization checklist.
 
