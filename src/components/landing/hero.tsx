@@ -47,7 +47,7 @@ export function Hero({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
             </ul>
           </div>
 
-          <div className="lg:pl-4">
+          <div className="lg:pl-4" id="demo">
             <ApiPlayground />
           </div>
         </div>

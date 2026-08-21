@@ -29,16 +29,16 @@ export default function QuickstartPage() {
 
       <DocHeading id="first-call">2. Make your first API call</DocHeading>
       <p className="text-zinc-400 text-sm leading-relaxed mb-4">
-        On the Dashboard, open <strong className="text-white">Getting started</strong> and click{" "}
-        <strong className="text-white">Run test call</strong> — no curl or API key needed for the
-        demo. Or use curl with your key:
+        After signup you&apos;ll land on a welcome screen — click{" "}
+        <strong className="text-white">Run test call</strong> to look up @elonmusk (no curl needed).
+        Or use curl with your key:
       </p>
       <CodeBlock>{`curl -X GET "${DOC_BASE_URL}/users/elonmusk" \\
   -H "Authorization: Bearer xflux_YOUR_KEY"`}</CodeBlock>
 
       <DocHeading id="api-key">3. Save your API key</DocHeading>
       <p className="text-zinc-400 text-sm leading-relaxed mb-4">
-        Copy the key from the welcome banner right after signup — it won&apos;t be shown again. Keys
+        Copy the key from the welcome screen right after signup — it won&apos;t be shown again. Keys
         are prefixed with <code className="text-zinc-300">xflux_</code>. Need a new one? Dashboard →
         API Keys → Create key.
       </p>

@@ -5,7 +5,7 @@ import { PLAN_LIMITS } from "@/lib/quota";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { UsageChart } from "@/components/dashboard/usage-chart";
-import { WelcomeApiKeyBanner } from "@/components/dashboard/welcome-api-key-banner";
+import { WelcomeDashboardShell } from "@/components/dashboard/welcome-dashboard-shell";
 import { Activity, Key, Radar, Zap } from "lucide-react";
 import { formatNumber } from "@/lib/utils";
 import { buildDailyChartData } from "@/lib/chart-data";
@@ -90,19 +90,19 @@ export default async function DashboardPage() {
     },
   ];
 
-  return (
-    <div>
-      <Suspense fallback={null}>
-        <WelcomeApiKeyBanner />
-      </Suspense>
+  const hasApiCalls = user.quotaUsed > 0 || apiLogs.length > 0;
 
-      <div className="mb-8 flex items-center justify-between">
+  return (
+    <Suspense fallback={null}>
+      <WelcomeDashboardShell hasApiCalls={hasApiCalls} userName={user.name}>
         <div>
-          <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-          <p className="text-zinc-400">Welcome back, {user.name || user.email}</p>
-        </div>
-        <Badge variant="sky">{user.planTier}</Badge>
-      </div>
+          <div className="mb-8 flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-white">Dashboard</h1>
+              <p className="text-zinc-400">Welcome back, {user.name || user.email}</p>
+            </div>
+            <Badge variant="sky">{user.planTier}</Badge>
+          </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
         {stats.map((stat) => (
@@ -140,12 +140,11 @@ export default async function DashboardPage() {
               <div className="py-6 text-center space-y-3">
                 <p className="text-sm text-zinc-500">No API calls yet.</p>
                 <p className="text-xs text-zinc-600">
-                  Use the <strong className="text-zinc-400">Run test call</strong> button in the
-                  Getting started checklist above, or follow the{" "}
+                  Follow the{" "}
                   <Link href="/docs/quickstart" className="text-sky-400 hover:text-sky-300">
                     quickstart guide
-                  </Link>
-                  .
+                  </Link>{" "}
+                  to make your first request.
                 </p>
               </div>
             ) : (
@@ -212,6 +211,8 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
       </div>
-    </div>
+        </div>
+      </WelcomeDashboardShell>
+    </Suspense>
   );
 }

@@ -13,6 +13,7 @@ import { UserSourceSelect } from "@/components/user-source-select";
 import { isValidUserSource } from "@/lib/user-source-config";
 import { identifyClient } from "@/lib/analytics/client";
 import { fireGoogleAdsSignupConversion } from "@/components/analytics/google-ads-conversion";
+import { RegisterProductPanel } from "@/components/auth/register-product-panel";
 import { getGoogleAdsId } from "@/lib/google-ads-config";
 
 const WELCOME_API_KEY_STORAGE = "xflux_welcome_api_key";
@@ -109,9 +110,13 @@ export function RegisterForm() {
   return (
     <>
       <Header />
-      <main className="flex min-h-screen items-center justify-center pt-16 px-4 pb-12">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
+      <main className="min-h-screen pt-20 pb-16 px-4 sm:px-6">
+        <div className="mx-auto max-w-7xl grid gap-12 lg:grid-cols-2 lg:gap-16 lg:items-start">
+          <RegisterProductPanel />
+
+          <div className="lg:sticky lg:top-24">
+            <Card className="w-full max-w-md mx-auto lg:mx-0 lg:ml-auto">
+          <CardHeader className="text-center lg:text-left">
             <CardTitle>Create your account</CardTitle>
             <CardDescription>
               Start with 1,000 free API calls per month — upgrade anytime.
@@ -182,7 +187,9 @@ export function RegisterForm() {
               </Link>
             </p>
           </CardContent>
-        </Card>
+            </Card>
+          </div>
+        </div>
       </main>
     </>
   );

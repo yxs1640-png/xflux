@@ -47,7 +47,7 @@ const STEPS: StepDef[] = [
     id: "key",
     title: "Save your API key",
     description:
-      "Copy the key from the welcome banner below (shown once at signup), or create a new one on the API Keys page.",
+      "Copy the key from the welcome screen (shown once at signup), or create a new one on the API Keys page.",
     href: "/dashboard/api-keys",
     hrefLabel: "Open API Keys",
   },
@@ -157,6 +157,8 @@ export function OnboardingChecklist({
     return () => window.removeEventListener(ONBOARDING_UPDATE_EVENT, refreshClientState);
   }, [refreshClientState]);
 
+  const isWelcomeRedirect = searchParams.get("welcome") === "1";
+
   useEffect(() => {
     if (searchParams.get("welcome") !== "1" || hasApiCalls) return;
     const timer = window.setTimeout(() => {
@@ -206,6 +208,9 @@ export function OnboardingChecklist({
     }
   }
 
+  // Unified welcome flow handles first-time onboarding; skip duplicate checklist.
+  if (isWelcomeRedirect && !hasApiCalls) return null;
+
   if (clientState.dismissed) {
     if (!hasApiCalls && isRecentSignup) {
       return (
@@ -233,7 +238,7 @@ export function OnboardingChecklist({
           {testError && <p className="text-xs text-amber-400 mt-2">{testError}</p>}
           {testSucceeded && (
             <p className="text-sm text-emerald-400 mt-2">
-              You&apos;re live! Copy your API key from the banner below.
+              You&apos;re live! Copy your API key from the welcome screen or API Keys page.
             </p>
           )}
         </div>
