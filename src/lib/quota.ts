@@ -21,12 +21,12 @@ export const PLAN_MONITOR_LIMITS: Record<PlanTier, number> = {
 
 /** Minimum check interval in seconds per plan tier */
 export const PLAN_MONITOR_MIN_INTERVAL: Record<PlanTier, number> = {
-  FREE: 300,
-  BASIC: 60,
-  GROWTH: 30,
-  PRO: 15,
-  SCALE: 10,
-  ENTERPRISE: 10,
+  FREE: 30,
+  BASIC: 6,
+  GROWTH: 3,
+  PRO: 2,
+  SCALE: 1,
+  ENTERPRISE: 1,
 };
 
 export function formatMonitorInterval(seconds: number): string {

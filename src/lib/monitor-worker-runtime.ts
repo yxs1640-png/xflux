@@ -3,7 +3,7 @@ import "server-only";
 import { pollDueMonitors } from "./monitor-poll";
 
 export function startMonitorWorker() {
-  const tickMs = Number(process.env.MONITOR_WORKER_TICK_MS || 30_000);
+  const tickMs = Number(process.env.MONITOR_WORKER_TICK_MS || 3_000);
   const batchSize = Number(process.env.MONITOR_WORKER_BATCH_SIZE || 5);
 
   async function tick() {

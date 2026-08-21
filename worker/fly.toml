@@ -13,7 +13,7 @@ primary_region = 'sin'
   CONSUMER_API_BASE_URL = 'http://89.167.53.180'
   CONSUMER_API_PREFIX = '/consumer'
   MONITOR_WORKER_BATCH_SIZE = '5'
-  MONITOR_WORKER_TICK_MS = '30000'
+  MONITOR_WORKER_TICK_MS = '3000'
 
 [http_service]
   internal_port = 8080

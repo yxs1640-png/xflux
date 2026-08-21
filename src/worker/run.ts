@@ -5,7 +5,7 @@
 import http from "http";
 import { pollDueMonitors } from "../lib/monitor-poll";
 
-const tickMs = Number(process.env.MONITOR_WORKER_TICK_MS || 30_000);
+const tickMs = Number(process.env.MONITOR_WORKER_TICK_MS || 3_000);
 const batchSize = Number(process.env.MONITOR_WORKER_BATCH_SIZE || 5);
 const port = Number(process.env.PORT || 8080);
 
