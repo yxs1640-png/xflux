@@ -85,7 +85,7 @@ const USE_CASES = [
     problem:
       "You need a reliable trigger when a specific account posts — not a manual refresh or fragile scraper.",
     solution: [
-      "Poll intervals from 1s (Scale) to 30s (Free)",
+      "Poll intervals from 1s (Scale) to 5 min (Free)",
       "HMAC-signed webhook payloads for verification",
       "One monitor on Free — scale to 50 on Scale",
     ],
