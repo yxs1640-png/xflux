@@ -141,6 +141,88 @@ async function syncSubscription(
   });
 }
 
+export { syncSubscription };
+
+export async function syncUserBillingFromStripe(
+  userId: string,
+  checkoutSessionId?: string | null
+): Promise<{
+  synced: boolean;
+  planTier?: PlanTier;
+  subscriptionStatus?: string | null;
+  reason?: string;
+}> {
+  const stripe = (await import("./stripe")).getStripe();
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { stripeCustomerId: true, planTier: true },
+  });
+  if (!user) return { synced: false, reason: "user_not_found" };
+
+  async function applySubscription(subscription: Stripe.Subscription) {
+    const meta = { ...subscription.metadata, userId };
+    subscription.metadata = meta;
+    await syncSubscription(subscription, userId);
+    const updated = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { planTier: true, subscriptionStatus: true },
+    });
+    return {
+      synced: true,
+      planTier: updated?.planTier,
+      subscriptionStatus: updated?.subscriptionStatus,
+    };
+  }
+
+  if (checkoutSessionId) {
+    const session = await stripe.checkout.sessions.retrieve(checkoutSessionId);
+    const sessionCustomer =
+      typeof session.customer === "string" ? session.customer : session.customer?.id;
+
+    if (sessionCustomer && sessionCustomer !== user.stripeCustomerId) {
+      await prisma.user.update({
+        where: { id: userId },
+        data: { stripeCustomerId: sessionCustomer },
+      });
+    }
+
+    if (session.mode === "subscription" && session.payment_status === "paid") {
+      const subscriptionId =
+        typeof session.subscription === "string"
+          ? session.subscription
+          : session.subscription?.id;
+
+      if (subscriptionId) {
+        const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+        if (session.metadata?.planTier) {
+          subscription.metadata = {
+            ...subscription.metadata,
+            userId,
+            planTier: session.metadata.planTier,
+          };
+        }
+        return applySubscription(subscription);
+      }
+    }
+  }
+
+  const customerId = user.stripeCustomerId;
+  if (!customerId) return { synced: false, reason: "no_stripe_customer" };
+
+  const subs = await stripe.subscriptions.list({
+    customer: customerId,
+    status: "all",
+    limit: 10,
+  });
+
+  const active = subs.data.find((s) => s.status === "active" || s.status === "trialing");
+  if (active) {
+    return applySubscription(active);
+  }
+
+  return { synced: false, reason: "no_active_subscription" };
+}
+
 export async function handleStripeWebhookEvent(event: Stripe.Event) {
   switch (event.type) {
     case "checkout.session.completed": {

@@ -1,15 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { AnalyticsEvents } from "@/lib/analytics/events";
 import { trackClientEvent } from "@/lib/analytics/client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
+
+type SyncState = "idle" | "syncing" | "synced" | "pending" | "failed";
 
 export function BillingStatusBanner() {
   const params = useSearchParams();
+  const router = useRouter();
   const checkout = params.get("checkout");
+  const sessionId = params.get("session_id");
+  const [syncState, setSyncState] = useState<SyncState>("idle");
 
   useEffect(() => {
     if (checkout === "success") {
@@ -19,15 +25,61 @@ export function BillingStatusBanner() {
     }
   }, [checkout]);
 
+  useEffect(() => {
+    if (checkout !== "success") return;
+
+    let cancelled = false;
+
+    async function syncPlan() {
+      setSyncState("syncing");
+      try {
+        const res = await fetch("/api/billing/sync", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(sessionId ? { sessionId } : {}),
+        });
+        const data = await res.json();
+        if (cancelled) return;
+
+        if (res.ok && data.synced) {
+          setSyncState("synced");
+          router.refresh();
+          return;
+        }
+
+        setSyncState("pending");
+      } catch {
+        if (!cancelled) setSyncState("failed");
+      }
+    }
+
+    syncPlan();
+    return () => {
+      cancelled = true;
+    };
+  }, [checkout, sessionId, router]);
+
   if (checkout === "success") {
+    const message =
+      syncState === "syncing"
+        ? "Payment received — activating your plan…"
+        : syncState === "synced"
+          ? "Plan activated. Your quota and features are updated."
+          : syncState === "failed"
+            ? "Payment received, but we couldn't confirm your plan yet. Refresh in a moment or contact support."
+            : "Payment successful. Your plan will update shortly once Stripe confirms the subscription.";
+
     return (
       <div
         className={cn(
-          "mb-6 rounded-lg border px-4 py-3 text-sm",
-          "border-emerald-500/20 bg-emerald-500/10 text-emerald-400"
+          "mb-6 rounded-lg border px-4 py-3 text-sm flex items-start gap-2",
+          syncState === "failed"
+            ? "border-amber-500/20 bg-amber-500/10 text-amber-300"
+            : "border-emerald-500/20 bg-emerald-500/10 text-emerald-400"
         )}
       >
-        Payment successful. Your plan will update shortly once Stripe confirms the subscription.
+        {syncState === "syncing" && <Loader2 className="h-4 w-4 animate-spin shrink-0 mt-0.5" />}
+        <span>{message}</span>
       </div>
     );
   }
