@@ -5,6 +5,8 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { AnalyticsEvents } from "@/lib/analytics/events";
 import { trackClientEvent } from "@/lib/analytics/client";
+import { fireGoogleAdsPurchaseConversion } from "@/components/analytics/google-ads-conversion";
+import { getPlanPurchaseValueUsd, isPaidPlanTierForAds } from "@/lib/google-ads-config";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 
@@ -43,6 +45,17 @@ export function BillingStatusBanner() {
 
         if (res.ok && data.synced) {
           setSyncState("synced");
+          if (
+            data.planTier &&
+            isPaidPlanTierForAds(data.planTier) &&
+            typeof data.transactionId === "string"
+          ) {
+            fireGoogleAdsPurchaseConversion({
+              planTier: data.planTier,
+              transactionId: data.transactionId,
+              valueUsd: getPlanPurchaseValueUsd(data.planTier),
+            });
+          }
           router.refresh();
           return;
         }

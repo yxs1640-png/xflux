@@ -150,6 +150,7 @@ export async function syncUserBillingFromStripe(
   synced: boolean;
   planTier?: PlanTier;
   subscriptionStatus?: string | null;
+  transactionId?: string;
   reason?: string;
 }> {
   const stripe = (await import("./stripe")).getStripe();
@@ -171,6 +172,7 @@ export async function syncUserBillingFromStripe(
       synced: true,
       planTier: updated?.planTier,
       subscriptionStatus: updated?.subscriptionStatus,
+      transactionId: subscription.id,
     };
   }
 
@@ -201,7 +203,11 @@ export async function syncUserBillingFromStripe(
             planTier: session.metadata.planTier,
           };
         }
-        return applySubscription(subscription);
+        const result = await applySubscription(subscription);
+        return {
+          ...result,
+          transactionId: checkoutSessionId ?? result.transactionId,
+        };
       }
     }
   }

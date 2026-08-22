@@ -8,6 +8,8 @@ import { Check, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AnalyticsEvents } from "@/lib/analytics/events";
 import { trackClientEvent } from "@/lib/analytics/client";
+import { fireGoogleAdsPurchaseConversion } from "@/components/analytics/google-ads-conversion";
+import { getPlanPurchaseValueUsd } from "@/lib/google-ads-config";
 import { PAID_PLAN_COMING_SOON_LABEL } from "@/lib/constants";
 
 interface Plan {
@@ -105,6 +107,11 @@ export function PlanSelector({
     }
 
     if (data.updated) {
+      fireGoogleAdsPurchaseConversion({
+        planTier: data.planTier ?? planId,
+        transactionId: data.stripeSubscriptionId ?? `upgrade_${planId}_${Date.now()}`,
+        valueUsd: getPlanPurchaseValueUsd(data.planTier ?? planId),
+      });
       setMessage({ type: "success", text: "Plan updated successfully." });
       router.refresh();
       return;

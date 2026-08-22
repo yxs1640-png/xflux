@@ -95,9 +95,17 @@ Check DB: `User` where `signupSource = 'google_search'` and `createdAt` recent.
 
 | Layer | What |
 |-------|------|
-| Google Ads | Page view conversion on `/register` |
-| PostHog | `$pageview`, `signup_completed` with UTM |
+| Google Ads | Sign-up conversion on register; **purchase conversion** on paid checkout success |
+| PostHog | `$pageview`, `signup_completed`, `checkout_completed` with UTM |
 | Database | `User.signupSource = google_search` when `utm_source=google` |
+
+### Purchase conversion setup (Google Ads)
+
+1. **Goals → Conversions → New → Purchase** (website, manual code)
+2. Copy the new **conversion label** → Vercel `NEXT_PUBLIC_GOOGLE_ADS_PURCHASE_CONVERSION_LABEL`
+3. Redeploy Production
+4. Test: complete Stripe Checkout → Network tab should show `googleadservices.com/pagead/conversion` with purchase label
+5. Optional: import purchase as **secondary conversion** in PMax (lower bid weight than sign-up until volume grows)
 
 Register URL for all ad links:
 

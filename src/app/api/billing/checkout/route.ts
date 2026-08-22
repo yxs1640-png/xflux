@@ -162,6 +162,7 @@ export async function POST(request: NextRequest) {
         updated: true,
         planTier: planId,
         quotaLimit: PLAN_LIMITS[planId],
+        stripeSubscriptionId: updated.id,
       });
     }
 
