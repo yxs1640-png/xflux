@@ -156,7 +156,7 @@ X-XFlux-Signature: sha256=...
                 <CardTitle>Signed webhooks on Starter and above</CardTitle>
                 <CardDescription>
                   Free tier includes 1 monitor with Dashboard hit history. HTTP webhooks start on
-                  Starter ($19/mo) with 3 monitors and 6s minimum poll interval.
+                  Starter ($19/mo) with 3 monitors and 1s minimum poll interval.
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex flex-wrap gap-4">
