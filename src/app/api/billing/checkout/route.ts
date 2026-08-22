@@ -38,6 +38,167 @@ function subscriptionPeriodEnd(subscription: Stripe.Subscription): Date | null {
   return end ? new Date(end * 1000) : null;
 }
 
+function isStripeResourceMissing(err: unknown): boolean {
+  return (
+    err instanceof Error &&
+    "code" in err &&
+    (err as { code?: string }).code === "resource_missing"
+  );
+}
+
+type CheckoutUser = {
+  id: string;
+  email: string;
+  name: string | null;
+  planTier: PlanTier;
+  stripeCustomerId: string | null;
+  stripeSubscriptionId: string | null;
+  subscriptionStatus: string | null;
+};
+
+async function ensureStripeCustomer(stripe: Stripe, user: CheckoutUser): Promise<string> {
+  if (user.stripeCustomerId) {
+    try {
+      const existing = await stripe.customers.retrieve(user.stripeCustomerId);
+      if (!("deleted" in existing && existing.deleted)) {
+        return user.stripeCustomerId;
+      }
+    } catch (err) {
+      if (!isStripeResourceMissing(err)) throw err;
+    }
+  }
+
+  const customer = await stripe.customers.create({
+    email: user.email,
+    name: user.name ?? undefined,
+    metadata: { userId: user.id },
+  });
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { stripeCustomerId: customer.id },
+  });
+  return customer.id;
+}
+
+/** Reconcile DB with Stripe — stale or missing subscription rows block new Checkout. */
+async function findActiveStripeSubscription(
+  stripe: Stripe,
+  user: CheckoutUser
+): Promise<Stripe.Subscription | null> {
+  async function clearStaleSubscription(status: string | null = null) {
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        stripeSubscriptionId: null,
+        stripePriceId: null,
+        subscriptionStatus: status,
+      },
+    });
+  }
+
+  if (user.stripeSubscriptionId) {
+    try {
+      const sub = await stripe.subscriptions.retrieve(user.stripeSubscriptionId);
+      if (isActiveSubscriptionStatus(sub.status)) return sub;
+      await clearStaleSubscription(sub.status);
+    } catch (err) {
+      if (isStripeResourceMissing(err)) {
+        await clearStaleSubscription("canceled");
+      } else {
+        throw err;
+      }
+    }
+  }
+
+  if (!user.stripeCustomerId) return null;
+
+  const { data } = await stripe.subscriptions.list({
+    customer: user.stripeCustomerId,
+    status: "all",
+    limit: 10,
+  });
+  const active = data.find((s) => isActiveSubscriptionStatus(s.status));
+  if (!active) return null;
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      stripeSubscriptionId: active.id,
+      subscriptionStatus: active.status,
+      stripePriceId: active.items.data[0]?.price?.id ?? null,
+    },
+  });
+  return active;
+}
+
+async function applyExistingSubscriptionChange(
+  stripe: Stripe,
+  user: CheckoutUser,
+  customerId: string,
+  subscription: Stripe.Subscription,
+  planId: PaidPlanTier,
+  priceId: string
+) {
+  const itemId = subscription.items.data[0]?.id;
+  if (!itemId) {
+    return NextResponse.json({ error: "Subscription item not found" }, { status: 500 });
+  }
+
+  const currentPlan = user.planTier as PlanTier;
+  const targetPlan = planId as PlanTier;
+  const isDowngrade = isPlanDowngrade(currentPlan, targetPlan);
+
+  const updated = await stripe.subscriptions.update(subscription.id, {
+    items: [{ id: itemId, price: priceId }],
+    proration_behavior: isDowngrade ? "none" : "create_prorations",
+    metadata: { userId: user.id, planTier: planId },
+  });
+
+  const periodEnd = subscriptionPeriodEnd(updated);
+  const stripeFields = {
+    stripeCustomerId: customerId,
+    stripeSubscriptionId: updated.id,
+    stripePriceId: priceId,
+    subscriptionStatus: updated.status,
+    subscriptionPeriodEnd: periodEnd,
+  };
+
+  if (isDowngrade) {
+    await schedulePlanDowngrade(user.id, targetPlan, periodEnd, stripeFields);
+
+    await trackServerEvent(user.id, AnalyticsEvents.SUBSCRIPTION_UPDATED, {
+      plan_id: currentPlan,
+      pending_plan_id: targetPlan,
+      subscription_status: updated.status,
+      via: "checkout_downgrade_scheduled",
+    });
+
+    return NextResponse.json({
+      success: true,
+      scheduled: true,
+      currentPlanTier: currentPlan,
+      pendingPlanTier: targetPlan,
+      planChangeEffectiveAt: periodEnd?.toISOString() ?? null,
+    });
+  }
+
+  await applyPlanImmediately(user.id, targetPlan, stripeFields);
+
+  await trackServerEvent(user.id, AnalyticsEvents.SUBSCRIPTION_UPDATED, {
+    plan_id: planId,
+    subscription_status: updated.status,
+    via: "checkout_existing_subscription",
+  });
+
+  return NextResponse.json({
+    success: true,
+    updated: true,
+    planTier: planId,
+    quotaLimit: PLAN_LIMITS[planId],
+    stripeSubscriptionId: updated.id,
+  });
+}
+
 const schema = z.object({
   planId: z.enum(["BASIC", "GROWTH", "PRO", "SCALE"]),
 });
@@ -87,83 +248,32 @@ export async function POST(request: NextRequest) {
     const stripe = getStripe();
     const baseUrl = getAppBaseUrl();
 
-    let customerId = user.stripeCustomerId;
-    if (!customerId) {
-      const customer = await stripe.customers.create({
-        email: user.email,
-        name: user.name ?? undefined,
-        metadata: { userId: user.id },
-      });
-      customerId = customer.id;
-      await prisma.user.update({
-        where: { id: user.id },
-        data: { stripeCustomerId: customerId },
-      });
-    }
+    const checkoutUser: CheckoutUser = {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      planTier: user.planTier,
+      stripeCustomerId: user.stripeCustomerId,
+      stripeSubscriptionId: user.stripeSubscriptionId,
+      subscriptionStatus: user.subscriptionStatus,
+    };
 
-    if (
-      user.stripeSubscriptionId &&
-      isActiveSubscriptionStatus(user.subscriptionStatus)
-    ) {
-      const subscription = await stripe.subscriptions.retrieve(user.stripeSubscriptionId);
-      const itemId = subscription.items.data[0]?.id;
-      if (!itemId) {
-        return NextResponse.json({ error: "Subscription item not found" }, { status: 500 });
-      }
+    const customerId = await ensureStripeCustomer(stripe, checkoutUser);
 
-      const currentPlan = user.planTier as PlanTier;
-      const targetPlan = planId as PlanTier;
-      const isDowngrade = isPlanDowngrade(currentPlan, targetPlan);
+    const activeSubscription = await findActiveStripeSubscription(stripe, {
+      ...checkoutUser,
+      stripeCustomerId: customerId,
+    });
 
-      const updated = await stripe.subscriptions.update(user.stripeSubscriptionId, {
-        items: [{ id: itemId, price: priceId }],
-        proration_behavior: isDowngrade ? "none" : "create_prorations",
-        metadata: { userId: user.id, planTier: planId },
-      });
-
-      const periodEnd = subscriptionPeriodEnd(updated);
-      const stripeFields = {
-        stripeCustomerId: customerId,
-        stripeSubscriptionId: updated.id,
-        stripePriceId: priceId,
-        subscriptionStatus: updated.status,
-        subscriptionPeriodEnd: periodEnd,
-      };
-
-      if (isDowngrade) {
-        await schedulePlanDowngrade(user.id, targetPlan, periodEnd, stripeFields);
-
-        await trackServerEvent(user.id, AnalyticsEvents.SUBSCRIPTION_UPDATED, {
-          plan_id: currentPlan,
-          pending_plan_id: targetPlan,
-          subscription_status: updated.status,
-          via: "checkout_downgrade_scheduled",
-        });
-
-        return NextResponse.json({
-          success: true,
-          scheduled: true,
-          currentPlanTier: currentPlan,
-          pendingPlanTier: targetPlan,
-          planChangeEffectiveAt: periodEnd?.toISOString() ?? null,
-        });
-      }
-
-      await applyPlanImmediately(user.id, targetPlan, stripeFields);
-
-      await trackServerEvent(user.id, AnalyticsEvents.SUBSCRIPTION_UPDATED, {
-        plan_id: planId,
-        subscription_status: updated.status,
-        via: "checkout_existing_subscription",
-      });
-
-      return NextResponse.json({
-        success: true,
-        updated: true,
-        planTier: planId,
-        quotaLimit: PLAN_LIMITS[planId],
-        stripeSubscriptionId: updated.id,
-      });
+    if (activeSubscription) {
+      return applyExistingSubscriptionChange(
+        stripe,
+        checkoutUser,
+        customerId,
+        activeSubscription,
+        planId as PaidPlanTier,
+        priceId
+      );
     }
 
     const checkout = await stripe.checkout.sessions.create({
