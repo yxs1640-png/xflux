@@ -18,7 +18,7 @@ export function GoogleAdsTag() {
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', '${googleAdsId}');
+          gtag('config', '${googleAdsId}', { allow_enhanced_conversions: true });
         `}
       </Script>
     </>

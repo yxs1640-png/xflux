@@ -66,12 +66,13 @@ Free tier: 1,000 API calls/month and 1 monitor. Paid plans from $19/mo with webh
 |---------|--------|--------|
 | [public-apis](https://github.com/public-apis/public-apis) | PR #6809 open | Wait for merge |
 | [AlternativeTo](https://alternativeto.net) | Submitted | Wait for review; add alternatives on competitor pages |
-| [free-for.dev](https://github.com/ripienaar/free-for-dev) | Not started | PR — see `free-for-dev-entry.md` |
-| [SaaSHub](https://www.saashub.com/submit) | Not started | Submit with kit copy above |
-| [Dev.to](https://dev.to) | Draft ready | Publish `../devto/01-get-started-with-xflux-api.md` |
-| [Product Hunt](https://www.producthunt.com) | Not started | See `../product-hunt/LAUNCH.md` |
-| [Hacker News Show HN](https://news.ycombinator.com/submit) | Not started | Post after PH or with Dev.to article |
-| Google Ads PMax | Running | Execute P0 in `google-ads/OPTIMIZATION.md` |
+| [free-for.dev](https://github.com/ripienaar/free-for-dev) | PR #4733 open | Wait for merge |
+| [SaaSHub](https://www.saashub.com/submit) | Ready | See `saashub-submit.md` |
+| [Dev.to](https://dev.to) | Published | https://dev.to/xfluxapi/get-started-with-xflux-xtwitter-api-in-60-seconds-e40 |
+| [Product Hunt](https://www.producthunt.com) | Scheduled | See `../product-hunt/SCHEDULE.md` (not same week as HN) |
+| [Hacker News Show HN](https://news.ycombinator.com/item?id=49295237) | Posted | Monitor comments |
+| [Reddit r/SideProject](https://reddit.com/r/SideProject) | Ready | See `../reddit/01-sideproject-showcase.md` |
+| Google Ads PMax | Running | Final URL + 极佳素材 ✓ |
 
 ## AlternativeTo — post-approval
 

@@ -10,6 +10,7 @@ import { Activity, Key, Radar, Zap } from "lucide-react";
 import { formatNumber } from "@/lib/utils";
 import { buildDailyChartData } from "@/lib/chart-data";
 import { requireDashboardSession } from "@/lib/dashboard-session";
+import { isMonitorHitUnread } from "@/lib/monitor-alerts";
 import { prisma } from "@/lib/db";
 
 const getDashboardHomeData = cache(async () => {
@@ -19,7 +20,13 @@ const getDashboardHomeData = cache(async () => {
   const [user, recentHits, apiLogs] = await Promise.all([
     prisma.user.findUnique({
       where: { id: userId },
-      include: {
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        planTier: true,
+        quotaUsed: true,
+        monitorHitsReadAt: true,
         apiKeys: { where: { isActive: true } },
         monitorTasks: { where: { isActive: true } },
       },
@@ -91,10 +98,15 @@ export default async function DashboardPage() {
   ];
 
   const hasApiCalls = user.quotaUsed > 0 || apiLogs.length > 0;
+  const hasMonitors = user.monitorTasks.length > 0;
 
   return (
     <Suspense fallback={null}>
-      <WelcomeDashboardShell hasApiCalls={hasApiCalls} userName={user.name}>
+      <WelcomeDashboardShell
+        hasApiCalls={hasApiCalls}
+        hasMonitors={hasMonitors}
+        userName={user.name}
+      >
         <div>
           <div className="mb-8 flex items-center justify-between">
             <div>
@@ -192,20 +204,30 @@ export default async function DashboardPage() {
               </div>
             ) : (
               <div className="space-y-3 max-h-64 overflow-y-auto">
-                {recentHits.map((hit) => (
+                {recentHits.map((hit) => {
+                  const isNew = isMonitorHitUnread(hit.detectedAt, user.monitorHitsReadAt);
+                  return (
                   <div
                     key={hit.id}
                     className="text-sm border-b border-zinc-800 pb-2"
                   >
                     <div className="flex items-center justify-between gap-2 mb-1">
-                      <span className="text-sky-400">@{hit.task.targetUsername}</span>
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="text-sky-400">@{hit.task.targetUsername}</span>
+                        {isNew && (
+                          <Badge variant="sky" className="text-[10px] px-1.5 py-0">
+                            New
+                          </Badge>
+                        )}
+                      </div>
                       <span className="text-xs text-zinc-600 shrink-0">
                         {new Date(hit.detectedAt).toLocaleString()}
                       </span>
                     </div>
                     <p className="text-zinc-400 line-clamp-2">{hit.text}</p>
                   </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </CardContent>

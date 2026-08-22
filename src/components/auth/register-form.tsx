@@ -15,6 +15,11 @@ import { identifyClient } from "@/lib/analytics/client";
 import { fireGoogleAdsSignupConversion } from "@/components/analytics/google-ads-conversion";
 import { RegisterProductPanel } from "@/components/auth/register-product-panel";
 import { getGoogleAdsId } from "@/lib/google-ads-config";
+import {
+  captureGoogleAdsClickIds,
+  formatGoogleAdsClickIds,
+  getStoredGoogleAdsClickIds,
+} from "@/lib/google-ads-attribution";
 
 const WELCOME_API_KEY_STORAGE = "xflux_welcome_api_key";
 
@@ -41,6 +46,8 @@ export function RegisterForm() {
       window.gtag("config", adsId, { debug_mode: true });
     }
 
+    captureGoogleAdsClickIds(searchParams);
+
     const src = searchParams.get("src");
     if (src && isValidUserSource(src)) {
       setUserSource(src);
@@ -57,6 +64,11 @@ export function RegisterForm() {
     setLoading(true);
     setError("");
 
+    const googleAdsClickId =
+      userSource === "google_search"
+        ? formatGoogleAdsClickIds(getStoredGoogleAdsClickIds()) ?? undefined
+        : undefined;
+
     const res = await fetch("/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -68,6 +80,7 @@ export function RegisterForm() {
           ? {
               userSource,
               userSourceDetail: userSource === "other" ? userSourceDetail : undefined,
+              googleAdsClickId,
             }
           : {}),
       }),
@@ -103,7 +116,7 @@ export function RegisterForm() {
       return;
     }
 
-    fireGoogleAdsSignupConversion();
+    fireGoogleAdsSignupConversion({ email: data.email });
     window.location.href = "/dashboard?welcome=1";
   }
 

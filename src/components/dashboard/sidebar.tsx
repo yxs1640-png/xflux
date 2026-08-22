@@ -14,6 +14,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
+import { MonitorAlertsNavItem } from "@/components/dashboard/monitor-alerts-nav-item";
 
 const NAV = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -41,6 +42,19 @@ export function DashboardSidebar() {
           const active =
             pathname === item.href ||
             (item.href !== "/dashboard" && pathname.startsWith(item.href));
+
+          if (item.href === "/dashboard/monitors") {
+            return (
+              <MonitorAlertsNavItem
+                key={item.href}
+                href={item.href}
+                label={item.label}
+                icon={item.icon}
+                active={active}
+              />
+            );
+          }
+
           return (
             <Link
               key={item.href}

@@ -1,11 +1,3 @@
----
-title: "Get Started with XFlux — X/Twitter API in 60 Seconds"
-published: true
-description: "A practical quickstart for XFlux: free signup, your first API call, and optional account monitors."
-tags: twitter, api, webdev, javascript, tutorial
-canonical_url: https://www.xfluxapi.com/docs/quickstart
----
-
 If you've tried the official X (Twitter) API, you know the drill: application forms, tier pricing that starts at $100+/month, and approval delays. **XFlux** is built for developers who need read access and account monitoring without that overhead.
 
 ## What XFlux gives you

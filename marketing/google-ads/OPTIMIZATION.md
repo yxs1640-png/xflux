@@ -2,6 +2,8 @@
 
 Current campaign: **Campaign #1** · Performance Max · ¥20/day · US · Maximize conversions.
 
+**Conversion goals playbook:** see [`CONVERSION-GOALS.md`](./CONVERSION-GOALS.md) (primary sign-up, secondary purchase, enhanced conversions, bidding stages).
+
 ## P0 — Do today (biggest impact)
 
 ### 1. Change final URL to register page
@@ -28,9 +30,13 @@ Target: ad strength **Average → Good** (良好).
 
 ### 3. Verify conversion in Google Ads
 
-Goals → Conversions → **网页浏览** → Status should become **Active** within 24–48h after SSR conversion deploy.
+Goals → Conversions → **Sign-up** + **Purchase** → Status should become **Active** within 24–48h after deploy.
 
-Test: VPN → open `/register` → check Network for `googleadservices.com/pagead/conversion`.
+Test sign-up: VPN → `/register?gtm_debug=1` → register → Network for `googleadservices.com/pagead/conversion`.
+
+Test purchase: complete Stripe Checkout → return URL → Network for purchase label with `value` + `transaction_id`.
+
+Enable **Enhanced conversions for web** (Google tag) in Goals → Conversions → Settings — code sends normalized email on both events.
 
 ---
 
@@ -95,9 +101,11 @@ Check DB: `User` where `signupSource = 'google_search'` and `createdAt` recent.
 
 | Layer | What |
 |-------|------|
-| Google Ads | Sign-up conversion on register; **purchase conversion** on paid checkout success |
+| Google Ads | Sign-up + purchase conversions; enhanced conversions (email); gclid persisted 90d |
 | PostHog | `$pageview`, `signup_completed`, `checkout_completed` with UTM |
-| Database | `User.signupSource = google_search` when `utm_source=google` |
+| Database | `User.signupSource = google_search`; `signupSourceDetail = gclid=...` when from ads |
+
+Full goal hierarchy and bidding stages: [`CONVERSION-GOALS.md`](./CONVERSION-GOALS.md).
 
 ### Purchase conversion setup (Google Ads)
 

@@ -65,6 +65,7 @@ model User {
   planChangeEffectiveAt    DateTime?
   lastPlanChangeSummary    Json?
   planChangeBannerDismissedAt DateTime?
+  monitorHitsReadAt        DateTime?
   signupSource           String?
   signupSourceDetail     String?
   createdAt              DateTime  @default(now())

@@ -4,6 +4,7 @@ import { DashboardSidebar } from "@/components/dashboard/sidebar";
 import { PlanChangeBannerSlot } from "@/components/billing/plan-change-banner-slot";
 import { QuotaUpsellBannerSlot } from "@/components/billing/quota-upsell-banner-slot";
 import { OnboardingChecklistSlot } from "@/components/dashboard/onboarding-checklist-slot";
+import { MonitorAlertsBannerSlot } from "@/components/dashboard/monitor-alerts-banner-slot";
 import { requireDashboardSession } from "@/lib/dashboard-session";
 
 export const metadata: Metadata = {
@@ -33,6 +34,9 @@ export default async function DashboardLayout({
           </Suspense>
           <Suspense fallback={null}>
             <OnboardingChecklistSlot />
+          </Suspense>
+          <Suspense fallback={null}>
+            <MonitorAlertsBannerSlot />
           </Suspense>
           {children}
         </div>

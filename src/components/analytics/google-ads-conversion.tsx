@@ -1,5 +1,6 @@
 "use client";
 
+import { normalizeEmailForEnhancedConversion } from "@/lib/google-ads-attribution";
 import {
   getGoogleAdsPurchaseConversionSendTo,
   getGoogleAdsSignupConversionSendTo,
@@ -20,6 +21,14 @@ function hasGtmDebugParam(): boolean {
   return new URLSearchParams(window.location.search).has("gtm_debug");
 }
 
+function setEnhancedConversionUserData(email: string | null | undefined): void {
+  if (!email?.trim() || typeof window.gtag !== "function") return;
+
+  window.gtag("set", "user_data", {
+    email: normalizeEmailForEnhancedConversion(email),
+  });
+}
+
 function fireConversion(
   sendTo: string | null,
   extra?: Record<string, string | number | boolean>
@@ -34,8 +43,13 @@ function fireConversion(
   });
 }
 
+type SignupConversionInput = {
+  email?: string | null;
+};
+
 /** Fire Google Ads sign-up conversion (beacon survives page navigation). */
-export function fireGoogleAdsSignupConversion(): void {
+export function fireGoogleAdsSignupConversion(input?: SignupConversionInput): void {
+  setEnhancedConversionUserData(input?.email);
   fireConversion(getGoogleAdsSignupConversionSendTo());
 }
 
@@ -43,6 +57,7 @@ type PurchaseConversionInput = {
   planTier: string;
   transactionId?: string | null;
   valueUsd?: number | null;
+  email?: string | null;
 };
 
 /** Fire Google Ads purchase conversion once per Stripe checkout / subscription id. */
@@ -50,6 +65,7 @@ export function fireGoogleAdsPurchaseConversion({
   planTier,
   transactionId,
   valueUsd,
+  email,
 }: PurchaseConversionInput): boolean {
   if (!isPaidPlanTierForAds(planTier)) return false;
 
@@ -62,6 +78,8 @@ export function fireGoogleAdsPurchaseConversion({
     if (sessionStorage.getItem(dedupeKey) === "1") return false;
     sessionStorage.setItem(dedupeKey, "1");
   }
+
+  setEnhancedConversionUserData(email);
 
   const value = valueUsd ?? getPlanPurchaseValueUsd(planTier);
   fireConversion(sendTo, {

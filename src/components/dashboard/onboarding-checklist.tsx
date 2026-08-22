@@ -33,13 +33,21 @@ type StepDef = {
   hrefLabel?: string;
 };
 
-/** Test call first — users should try the API before worrying about copying keys. */
+/** Monitor first — matches core job-to-be-done (watch accounts, then optional API). */
 const STEPS: StepDef[] = [
   {
-    id: "api_call",
-    title: "Make your first API call",
+    id: "monitor",
+    title: "Create your first monitor",
     description:
-      "Look up @elonmusk — uses 1 call from your free monthly quota. No curl or API key needed for this test.",
+      "Watch a public @account for new tweets. Free plan includes 1 monitor — no API coding required.",
+    href: "/dashboard/monitors",
+    hrefLabel: "Add a monitor",
+  },
+  {
+    id: "api_call",
+    title: "Try the REST API (optional)",
+    description:
+      "Look up @elonmusk — uses 1 call from your free monthly quota. Skip if you only need monitors.",
     href: "/docs/quickstart",
     hrefLabel: "Quickstart guide",
   },
@@ -50,14 +58,6 @@ const STEPS: StepDef[] = [
       "Copy the key from the welcome screen (shown once at signup), or create a new one on the API Keys page.",
     href: "/dashboard/api-keys",
     hrefLabel: "Open API Keys",
-  },
-  {
-    id: "monitor",
-    title: "Create an account monitor (optional)",
-    description:
-      "Track @accounts for new tweets without building your own polling. Free plan includes 1 monitor.",
-    href: "/dashboard/monitors",
-    hrefLabel: "Add a monitor",
   },
   {
     id: "usage",
@@ -160,12 +160,12 @@ export function OnboardingChecklist({
   const isWelcomeRedirect = searchParams.get("welcome") === "1";
 
   useEffect(() => {
-    if (searchParams.get("welcome") !== "1" || hasApiCalls) return;
+    if (searchParams.get("welcome") !== "1" || hasMonitors) return;
     const timer = window.setTimeout(() => {
       rootRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 300);
     return () => window.clearTimeout(timer);
-  }, [searchParams, hasApiCalls]);
+  }, [searchParams, hasMonitors]);
 
   const stepComplete = useMemo(
     () => ({
@@ -209,10 +209,34 @@ export function OnboardingChecklist({
   }
 
   // Unified welcome flow handles first-time onboarding; skip duplicate checklist.
-  if (isWelcomeRedirect && !hasApiCalls) return null;
+  if (isWelcomeRedirect && !hasMonitors) return null;
 
   if (clientState.dismissed) {
-    if (!hasApiCalls && isRecentSignup) {
+    if (!hasMonitors && isRecentSignup) {
+      return (
+        <div
+          id="onboarding-checklist"
+          ref={rootRef}
+          className="mb-6 rounded-xl border border-amber-500/20 bg-amber-500/5 px-5 py-4"
+        >
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <p className="font-medium text-white">Haven&apos;t set up a monitor yet?</p>
+              <p className="text-sm text-zinc-400 mt-1">
+                Watch an @account — we&apos;ll check for new tweets on your schedule.
+              </p>
+            </div>
+            <Link href="/dashboard/monitors">
+              <Button className="shrink-0">
+                <ArrowRight className="h-4 w-4" />
+                Add a monitor
+              </Button>
+            </Link>
+          </div>
+        </div>
+      );
+    }
+    if (!hasApiCalls && isRecentSignup && hasMonitors) {
       return (
         <div
           id="onboarding-checklist"
@@ -280,7 +304,7 @@ export function OnboardingChecklist({
         <div>
           <p className="font-medium text-white">Getting started</p>
           <p className="text-sm text-zinc-400 mt-0.5">
-            {completedCount} of {STEPS.length} complete — start with a test call
+            {completedCount} of {STEPS.length} complete — start with a monitor
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -292,7 +316,7 @@ export function OnboardingChecklist({
           >
             {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           </button>
-          {hasApiCalls && (
+          {hasMonitors && (
             <button
               type="button"
               onClick={() => markOnboardingDismissed()}
@@ -307,7 +331,22 @@ export function OnboardingChecklist({
 
       {expanded && (
         <>
-          {!hasApiCalls && (
+          {!hasMonitors && (
+            <div className="mx-5 mt-4 rounded-lg border border-sky-500/40 bg-sky-500/10 p-4">
+              <p className="font-medium text-white">Watch your first account</p>
+              <p className="text-sm text-zinc-400 mt-1">
+                Monitors poll @handles for new tweets — the fastest way to get value from XFlux.
+              </p>
+              <Link href="/dashboard/monitors" className="inline-block mt-3">
+                <Button size="lg">
+                  <ArrowRight className="h-4 w-4" />
+                  Add a monitor
+                </Button>
+              </Link>
+            </div>
+          )}
+
+          {!hasApiCalls && hasMonitors && (
             <div className="mx-5 mt-4 rounded-lg border border-sky-500/40 bg-sky-500/10 p-4">
               <TestCallPanel
                 variant="hero"

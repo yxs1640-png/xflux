@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Check, Loader2 } from "lucide-react";
@@ -41,6 +42,7 @@ export function PlanSelector({
   hasActiveSubscription,
 }: PlanSelectorProps) {
   const router = useRouter();
+  const { data: session } = useSession();
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(
     null
@@ -111,6 +113,7 @@ export function PlanSelector({
         planTier: data.planTier ?? planId,
         transactionId: data.stripeSubscriptionId ?? `upgrade_${planId}_${Date.now()}`,
         valueUsd: getPlanPurchaseValueUsd(data.planTier ?? planId),
+        email: session?.user?.email,
       });
       setMessage({ type: "success", text: "Plan updated successfully." });
       router.refresh();

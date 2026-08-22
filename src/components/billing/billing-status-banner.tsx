@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { AnalyticsEvents } from "@/lib/analytics/events";
 import { trackClientEvent } from "@/lib/analytics/client";
@@ -15,6 +16,7 @@ type SyncState = "idle" | "syncing" | "synced" | "pending" | "failed";
 export function BillingStatusBanner() {
   const params = useSearchParams();
   const router = useRouter();
+  const { data: session } = useSession();
   const checkout = params.get("checkout");
   const sessionId = params.get("session_id");
   const [syncState, setSyncState] = useState<SyncState>("idle");
@@ -54,6 +56,7 @@ export function BillingStatusBanner() {
               planTier: data.planTier,
               transactionId: data.transactionId,
               valueUsd: getPlanPurchaseValueUsd(data.planTier),
+              email: session?.user?.email,
             });
           }
           router.refresh();
@@ -70,7 +73,7 @@ export function BillingStatusBanner() {
     return () => {
       cancelled = true;
     };
-  }, [checkout, sessionId, router]);
+  }, [checkout, sessionId, router, session?.user?.email]);
 
   if (checkout === "success") {
     const message =
