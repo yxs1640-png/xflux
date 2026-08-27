@@ -1,5 +1,6 @@
-import { MonitorStatus, type MonitorHit, type MonitorTask } from "@prisma/client";
+import { MonitorStatus, PlanTier, type MonitorHit, type MonitorTask } from "@prisma/client";
 import { prisma } from "./db";
+import { PLAN_WEBHOOK_ACCESS } from "./quota";
 import { getUserTweets, isTwitterDataSourceConfigured } from "./twitter-proxy";
 
 export interface PollMonitorResult {
@@ -51,7 +52,10 @@ function userFacingPollError(err: unknown): string {
 }
 
 export async function pollMonitorTask(taskId: string): Promise<PollMonitorResult> {
-  const task = await prisma.monitorTask.findUnique({ where: { id: taskId } });
+  const task = await prisma.monitorTask.findUnique({
+    where: { id: taskId },
+    include: { user: { select: { planTier: true } } },
+  });
   if (!task) {
     return { taskId, checked: false, newHits: 0, baselined: false, error: "Monitor not found" };
   }
@@ -126,6 +130,7 @@ export async function pollMonitorTask(taskId: string): Promise<PollMonitorResult
     }
 
     for (const hit of newHitRecords) {
+      if (!PLAN_WEBHOOK_ACCESS[task.user.planTier as PlanTier]) continue;
       void import("./monitor-webhook")
         .then(({ deliverHitWebhook }) => deliverHitWebhook(task, hit))
         .catch((err) => {

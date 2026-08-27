@@ -80,11 +80,11 @@ function statusBadge(status: Monitor["status"], isActive: boolean) {
 
 function MonitorWebhookPanel({
   monitor,
-  canWebhook,
+  canDeliverWebhooks,
   onUpdate,
 }: {
   monitor: Monitor;
-  canWebhook: boolean;
+  canDeliverWebhooks: boolean;
   onUpdate: (m: Monitor, secret?: string) => void;
 }) {
   const [open, setOpen] = useState(false);
@@ -174,16 +174,25 @@ function MonitorWebhookPanel({
 
       {open && (
         <div className="mt-3 space-y-3">
-          {!canWebhook ? (
+          {!canDeliverWebhooks && (
             <p className="text-sm text-zinc-500">
-              Webhooks require Starter plan or higher.{" "}
+              Free plan: save a URL and send test pings (try{" "}
+              <a
+                href="https://webhook.site"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sky-400 hover:underline"
+              >
+                webhook.site
+              </a>
+              ). Live hit delivery requires{" "}
               <Link href="/dashboard/billing" className="text-sky-400 hover:underline">
-                Upgrade
+                Starter
               </Link>
+              .
             </p>
-          ) : (
-            <>
-              <div className="flex flex-wrap gap-2">
+          )}
+          <div className="flex flex-wrap gap-2">
                 <Input
                   placeholder="https://your-server.com/webhooks/xflux"
                   value={url}
@@ -256,8 +265,6 @@ function MonitorWebhookPanel({
                   ))}
                 </div>
               )}
-            </>
-          )}
         </div>
       )}
     </div>
@@ -266,7 +273,7 @@ function MonitorWebhookPanel({
 
 export default function MonitorsPage() {
   const [planTier, setPlanTier] = useState<PlanTier>("FREE");
-  const canWebhook = planTier !== "FREE";
+  const canDeliverWebhooks = planTier !== "FREE";
   const [monitors, setMonitors] = useState<Monitor[]>([]);
   const [username, setUsername] = useState("");
   const [keywords, setKeywords] = useState("");
@@ -502,7 +509,7 @@ export default function MonitorsPage() {
 
                   <MonitorWebhookPanel
                     monitor={m}
-                    canWebhook={canWebhook}
+                    canDeliverWebhooks={canDeliverWebhooks}
                     onUpdate={(updated) => updateMonitor(updated)}
                   />
                 </div>

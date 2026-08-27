@@ -5,7 +5,7 @@ import { prisma } from "./db";
 import {
   PLAN_MONITOR_LIMITS,
   PLAN_MONITOR_MIN_INTERVAL,
-  PLAN_WEBHOOK_ACCESS,
+  PLAN_WEBHOOK_CONFIGURE,
   type PlanChangeSummary,
 } from "./plan-limits-shared";
 
@@ -36,7 +36,7 @@ export async function enforcePlanLimits(
 
   const limit = PLAN_MONITOR_LIMITS[planTier];
   const minInterval = PLAN_MONITOR_MIN_INTERVAL[planTier];
-  const webhooksAllowed = PLAN_WEBHOOK_ACCESS[planTier];
+  const webhooksAllowed = PLAN_WEBHOOK_CONFIGURE[planTier];
 
   const keptTasks = tasks.slice(0, limit);
   const excessTasks = tasks.slice(limit);

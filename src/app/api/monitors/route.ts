@@ -8,7 +8,7 @@ import {
   getDefaultMonitorInterval,
   PLAN_MONITOR_LIMITS,
   PLAN_MONITOR_MIN_INTERVAL,
-  PLAN_WEBHOOK_ACCESS,
+  PLAN_WEBHOOK_CONFIGURE,
 } from "@/lib/quota";
 
 function serializeMonitor<T extends {
@@ -104,11 +104,8 @@ export async function POST(request: NextRequest) {
   let webhookSecret: string | null = null;
 
   if (body.webhookUrl?.trim()) {
-    if (!PLAN_WEBHOOK_ACCESS[user.planTier as PlanTier]) {
-      return NextResponse.json(
-        { error: "Webhooks require Starter plan or higher." },
-        { status: 403 }
-      );
+    if (!PLAN_WEBHOOK_CONFIGURE[user.planTier as PlanTier]) {
+      return NextResponse.json({ error: "Webhooks are not available on your plan." }, { status: 403 });
     }
     try {
       const parsed = new URL(body.webhookUrl.trim());
@@ -219,11 +216,8 @@ export async function PATCH(request: NextRequest) {
   }
 
   if (body.webhookUrl !== undefined) {
-    if (!PLAN_WEBHOOK_ACCESS[task.user.planTier]) {
-      return NextResponse.json(
-        { error: "Webhooks require Starter plan or higher." },
-        { status: 403 }
-      );
+    if (!PLAN_WEBHOOK_CONFIGURE[task.user.planTier]) {
+      return NextResponse.json({ error: "Webhooks are not available on your plan." }, { status: 403 });
     }
 
     const url = body.webhookUrl?.trim();
@@ -248,11 +242,8 @@ export async function PATCH(request: NextRequest) {
   }
 
   if (body.regenerateSecret && !body.webhookUrl && task.webhookUrl) {
-    if (!PLAN_WEBHOOK_ACCESS[task.user.planTier]) {
-      return NextResponse.json(
-        { error: "Webhooks require Starter plan or higher." },
-        { status: 403 }
-      );
+    if (!PLAN_WEBHOOK_CONFIGURE[task.user.planTier]) {
+      return NextResponse.json({ error: "Webhooks are not available on your plan." }, { status: 403 });
     }
     webhookSecretPlain = generateWebhookSecret();
     data.webhookSecret = webhookSecretPlain;

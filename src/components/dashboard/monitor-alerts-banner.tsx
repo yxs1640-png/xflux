@@ -120,11 +120,11 @@ export function MonitorAlertsBanner({
               <p className="mt-3 text-xs text-zinc-400 flex items-start gap-1.5">
                 <Zap className="h-3.5 w-3.5 text-amber-400 shrink-0 mt-0.5" />
                 <span>
-                  Free plan checks every ~5 min.{" "}
+                  Free plan: test webhooks in Monitors.{" "}
                   <Link href="/dashboard/billing" className="text-sky-400 hover:text-sky-300">
                     Starter ($19/mo)
                   </Link>{" "}
-                  adds signed webhooks and faster polling.
+                  adds live hit delivery and faster polling.
                 </span>
               </p>
             )}

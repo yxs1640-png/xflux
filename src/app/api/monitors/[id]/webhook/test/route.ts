@@ -4,7 +4,7 @@ import { PlanTier } from "@prisma/client";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { sendTestWebhook } from "@/lib/monitor-webhook";
-import { PLAN_WEBHOOK_ACCESS } from "@/lib/quota";
+import { PLAN_WEBHOOK_CONFIGURE } from "@/lib/quota";
 
 export async function POST(
   _request: NextRequest,
@@ -26,11 +26,8 @@ export async function POST(
     return NextResponse.json({ error: "Monitor not found" }, { status: 404 });
   }
 
-  if (!PLAN_WEBHOOK_ACCESS[task.user.planTier as PlanTier]) {
-    return NextResponse.json(
-      { error: "Webhooks require Starter plan or higher." },
-      { status: 403 }
-    );
+  if (!PLAN_WEBHOOK_CONFIGURE[task.user.planTier as PlanTier]) {
+    return NextResponse.json({ error: "Webhooks are not available on your plan." }, { status: 403 });
   }
 
   if (!task.webhookUrl) {

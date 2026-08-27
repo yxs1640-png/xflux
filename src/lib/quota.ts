@@ -41,6 +41,17 @@ export function getDefaultMonitorInterval(planTier: PlanTier): number {
   return PLAN_MONITOR_MIN_INTERVAL[planTier];
 }
 
+/** Save webhook URL, test ping, rotate signing secret */
+export const PLAN_WEBHOOK_CONFIGURE: Record<PlanTier, boolean> = {
+  FREE: true,
+  BASIC: true,
+  GROWTH: true,
+  PRO: true,
+  SCALE: true,
+  ENTERPRISE: true,
+};
+
+/** Deliver monitor.hit webhooks on real tweet matches */
 export const PLAN_WEBHOOK_ACCESS: Record<PlanTier, boolean> = {
   FREE: false,
   BASIC: true,
