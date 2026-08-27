@@ -17,6 +17,7 @@ const PUBLIC_ROUTES: Array<{
     priority: 0.86,
   })),
   { path: "/register", changeFrequency: "monthly", priority: 0.85 },
+  { path: "/use-cases", changeFrequency: "monthly", priority: 0.84 },
   { path: "/docs", changeFrequency: "weekly", priority: 0.85 },
   { path: "/docs/quickstart", changeFrequency: "monthly", priority: 0.8 },
   { path: "/docs/api", changeFrequency: "monthly", priority: 0.8 },
