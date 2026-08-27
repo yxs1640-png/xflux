@@ -25,6 +25,9 @@ export function Header() {
           <Link href="/docs" className="text-sm text-zinc-400 hover:text-white transition-colors">
             Docs
           </Link>
+          <Link href="/use-cases" className="text-sm text-zinc-400 hover:text-white transition-colors">
+            Use Cases
+          </Link>
           <Link href="/pricing" className="text-sm text-zinc-400 hover:text-white transition-colors">
             Pricing
           </Link>
