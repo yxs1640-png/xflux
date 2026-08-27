@@ -13,7 +13,29 @@ NEXT_PUBLIC_POSTHOG_KEY="phc_..."
 NEXT_PUBLIC_POSTHOG_HOST="https://us.i.posthog.com"   # or https://eu.i.posthog.com
 ```
 
-4. Restart `npm run dev`. Without the key, all tracking calls no-op silently.
+4. Restart `npm run dev`. Without the key, client PostHog calls no-op; **pageviews still write to Postgres** (see below).
+
+## Self-hosted analytics (Postgres)
+
+PostHog free tier has short retention. XFlux also rolls up analytics into Postgres:
+
+| Table | Purpose | Retention |
+|-------|---------|-----------|
+| `AnalyticsDaily` | Page PV/UV + daily event counts | ~180 days |
+| `AnalyticsSessionDay` | UV dedupe (path × day × session) | ~30 days |
+| `ProductEvent` | Individual conversion events | ~90 days |
+
+- Pageviews: `POST /api/analytics/event` via `PageViewTracker` (works without PostHog).
+- Server events: `trackServerEvent()` dual-writes to `ProductEvent` + daily rollup.
+- Client events: `trackClientEvent()` beacons to the same API.
+
+Query from your machine:
+
+```bash
+node scripts/query-analytics.mjs --days=30 --limit=50
+```
+
+Old rows are pruned automatically (~2% of writes). Tables stay small (daily rollups, not raw pageview logs).
 
 ## Identity model
 

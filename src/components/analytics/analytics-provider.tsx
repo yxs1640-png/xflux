@@ -22,22 +22,30 @@ function AnalyticsIdentity() {
   return null;
 }
 
+function AnalyticsCore({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      <Suspense fallback={null}>
+        <PageViewTracker />
+      </Suspense>
+      <AnalyticsIdentity />
+      {children}
+    </>
+  );
+}
+
 export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     initPostHogClient();
   }, []);
 
   if (!isAnalyticsEnabled()) {
-    return <>{children}</>;
+    return <AnalyticsCore>{children}</AnalyticsCore>;
   }
 
   return (
     <PostHogProvider client={posthog}>
-      <Suspense fallback={null}>
-        <PageViewTracker />
-      </Suspense>
-      <AnalyticsIdentity />
-      {children}
+      <AnalyticsCore>{children}</AnalyticsCore>
     </PostHogProvider>
   );
 }

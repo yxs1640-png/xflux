@@ -218,3 +218,39 @@ model UserFeedback {
   @@index([userId, createdAt])
   @@index([userSource])
 }
+
+/** Daily rollups for pageviews (pv/uv) and event counts — kept small via retention. */
+model AnalyticsDaily {
+  day    DateTime @db.Date
+  metric String
+  pv     Int      @default(0)
+  uv     Int      @default(0)
+
+  @@id([day, metric])
+  @@index([metric])
+}
+
+/** Dedupes sessions per path per day for UV; pruned after ~30 days. */
+model AnalyticsSessionDay {
+  day       DateTime @db.Date
+  metric    String
+  sessionId String
+
+  @@id([day, metric, sessionId])
+  @@index([day])
+}
+
+/** Low-volume product events (signups, checkout, webhooks) — pruned after ~90 days. */
+model ProductEvent {
+  id        String   @id @default(cuid())
+  event     String
+  userId    String?
+  sessionId String?
+  path      String?
+  props     Json?
+  createdAt DateTime @default(now())
+
+  @@index([event, createdAt])
+  @@index([userId, createdAt])
+  @@index([createdAt])
+}

@@ -2,6 +2,7 @@ import "server-only";
 
 import { PostHog } from "posthog-node";
 import type { AnalyticsEventName, AnalyticsPersonProperties } from "./events";
+import { recordProductEventAsync } from "./db-store";
 import { getPostHogHost, getPostHogKey } from "./posthog-config";
 
 let posthogServer: PostHog | null = null;
@@ -30,6 +31,12 @@ export async function trackServerEvent(
   event: AnalyticsEventName,
   properties?: Record<string, unknown>
 ): Promise<void> {
+  recordProductEventAsync({
+    event,
+    userId: distinctId,
+    props: properties,
+  });
+
   try {
     const ph = getServerPostHog();
     if (!ph) return;
@@ -39,7 +46,6 @@ export async function trackServerEvent(
       event,
       properties,
     });
-    // Never block API responses on analytics delivery.
     void ph.flush().catch((err) => {
       console.error("[analytics] trackServerEvent flush failed:", err);
     });
