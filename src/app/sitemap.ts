@@ -9,6 +9,7 @@ const PUBLIC_ROUTES: Array<{
   { path: "", changeFrequency: "weekly", priority: 1 },
   { path: "/pricing", changeFrequency: "weekly", priority: 0.9 },
   { path: "/twitter-webhook", changeFrequency: "weekly", priority: 0.88 },
+  { path: "/signals/ai", changeFrequency: "hourly", priority: 0.86 },
   { path: "/register", changeFrequency: "monthly", priority: 0.85 },
   { path: "/docs", changeFrequency: "weekly", priority: 0.85 },
   { path: "/docs/quickstart", changeFrequency: "monthly", priority: 0.8 },
