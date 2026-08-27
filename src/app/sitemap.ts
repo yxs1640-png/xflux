@@ -1,19 +1,21 @@
 import type { MetadataRoute } from "next";
+import { SIGNAL_TOPICS } from "@/lib/signals/topics";
 import { SITE_URL } from "@/lib/seo";
 
 const PUBLIC_ROUTES: Array<{
   path: string;
-  changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"];
+  changeFrequency: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly";
   priority: number;
 }> = [
   { path: "", changeFrequency: "weekly", priority: 1 },
   { path: "/pricing", changeFrequency: "weekly", priority: 0.9 },
   { path: "/twitter-webhook", changeFrequency: "weekly", priority: 0.88 },
-  { path: "/signals", changeFrequency: "daily", priority: 0.87 },
-  { path: "/signals/ai", changeFrequency: "hourly", priority: 0.86 },
-  { path: "/signals/crypto", changeFrequency: "hourly", priority: 0.86 },
-  { path: "/signals/trading", changeFrequency: "hourly", priority: 0.86 },
-  { path: "/signals/startups", changeFrequency: "hourly", priority: 0.86 },
+  { path: "/signals", changeFrequency: "hourly", priority: 0.87 },
+  ...SIGNAL_TOPICS.map((t) => ({
+    path: `/signals/${t.slug}`,
+    changeFrequency: "hourly" as const,
+    priority: 0.86,
+  })),
   { path: "/register", changeFrequency: "monthly", priority: 0.85 },
   { path: "/docs", changeFrequency: "weekly", priority: 0.85 },
   { path: "/docs/quickstart", changeFrequency: "monthly", priority: 0.8 },

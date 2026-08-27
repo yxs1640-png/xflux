@@ -9,6 +9,8 @@ import { cn } from "@/lib/utils";
 import type { SignalTopicConfig } from "@/lib/signals/topics";
 import { SIGNAL_TOPICS } from "@/lib/signals/topics";
 import type { SignalFeed } from "@/lib/signals/types";
+import { Breadcrumbs, SignalFaqSection } from "@/components/signals/signal-seo-blocks";
+import { SignalTopicJsonLd } from "@/components/seo/signals-json-ld";
 
 function formatRelativeTime(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -40,9 +42,17 @@ export function SignalFeedPage({ feed, topic }: SignalPageProps) {
 
   return (
     <>
+      <SignalTopicJsonLd topic={topic} feed={feed} />
       <Header />
       <main className="pt-24 pb-16">
         <div className="mx-auto max-w-4xl px-4 sm:px-6">
+          <Breadcrumbs
+            items={[
+              { label: "Home", href: "/" },
+              { label: "Signals", href: "/signals" },
+              { label: topic.title },
+            ]}
+          />
           <div className="mb-10">
             <div
               className={cn(
@@ -84,6 +94,7 @@ export function SignalFeedPage({ feed, topic }: SignalPageProps) {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
+              <article aria-label="Signal summary">
               {feed.brief.themes.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {feed.brief.themes.map((theme) => (
@@ -132,11 +143,13 @@ export function SignalFeedPage({ feed, topic }: SignalPageProps) {
                   ))}
                 </ul>
               </div>
+              </article>
             </CardContent>
           </Card>
 
+          <section aria-labelledby="live-feed-heading">
           <div className="mb-6 flex items-center justify-between gap-4">
-            <h2 className="text-xl font-bold text-white">Live feed</h2>
+            <h2 id="live-feed-heading" className="text-xl font-bold text-white">Live feed</h2>
             <span className="text-xs text-zinc-500">{feed.items.length} posts</span>
           </div>
 
@@ -183,6 +196,7 @@ export function SignalFeedPage({ feed, topic }: SignalPageProps) {
               ))
             )}
           </div>
+          </section>
 
           {otherTopics.length > 0 && (
             <div className="mb-8 flex flex-wrap gap-2">
@@ -222,6 +236,8 @@ export function SignalFeedPage({ feed, topic }: SignalPageProps) {
               </Link>
             </CardContent>
           </Card>
+
+          <SignalFaqSection items={topic.faq} />
 
           <p className="mt-8 text-xs text-zinc-600 leading-relaxed">
             Analysis is rule-based for now; a future version will use an AI pipeline on the same

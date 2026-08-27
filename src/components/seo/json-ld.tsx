@@ -13,6 +13,7 @@ export function HomeJsonLd() {
       },
       {
         "@type": "WebSite",
+        "@id": `${SITE_URL}/#website`,
         name: SITE_NAME,
         url: SITE_URL,
         description: DEFAULT_DESCRIPTION,

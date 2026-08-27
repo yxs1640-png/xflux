@@ -12,11 +12,13 @@ export function pageMetadata({
   description = DEFAULT_DESCRIPTION,
   path,
   noIndex = false,
+  keywords,
 }: {
   title: string;
   description?: string;
   path: string;
   noIndex?: boolean;
+  keywords?: string[];
 }): Metadata {
   const url = `${SITE_URL}${path}`;
   const fullTitle = title === SITE_NAME ? title : `${title} | ${SITE_NAME}`;
@@ -24,6 +26,7 @@ export function pageMetadata({
   return {
     title,
     description,
+    keywords,
     alternates: { canonical: url },
     openGraph: {
       title: fullTitle,

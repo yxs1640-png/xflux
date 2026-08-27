@@ -27,6 +27,7 @@ export async function generateMetadata({ params }: PageProps) {
     title: topic.pageTitle,
     description: topic.description,
     path: `/signals/${topic.slug}`,
+    keywords: topic.keywords,
   });
 }
 
