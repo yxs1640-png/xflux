@@ -1,5 +1,6 @@
 import "server-only";
 
+import { unstable_cache } from "next/cache";
 import { getUserTweets, searchTweets } from "@/lib/twitter-proxy";
 import type { TwitterTweet } from "@/lib/twitter-types";
 import { buildSignalBrief } from "./build-signal-brief";
@@ -9,6 +10,16 @@ import type { SignalFeed, SignalItem } from "./types";
 const TWEETS_PER_ACCOUNT = 4;
 const SEARCH_LIMIT = 10;
 const MAX_ITEMS = 24;
+/** Cap per upstream call so one slow account does not block the whole page. */
+const ACCOUNT_FETCH_MS = 8_000;
+const SEARCH_FETCH_MS = 10_000;
+
+function withTimeout<T>(promise: Promise<T>, ms: number, fallback: T): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((resolve) => setTimeout(() => resolve(fallback), ms)),
+  ]);
+}
 
 function tweetToSignal(
   tweet: TwitterTweet,
@@ -49,14 +60,25 @@ export async function fetchSignalFeed(topic: SignalTopicConfig): Promise<SignalF
 
   const [accountSettled, searchResults] = await Promise.all([
     Promise.allSettled(
-      topic.watchAccounts.map(async (username) => {
-        const tweets = await getUserTweets(username, TWEETS_PER_ACCOUNT);
-        return tweets
-          .map((t) => tweetToSignal(t, "timeline", username))
-          .filter((x): x is SignalItem => x !== null);
-      })
+      topic.watchAccounts.map(async (username) =>
+        withTimeout(
+          getUserTweets(username, TWEETS_PER_ACCOUNT)
+            .then((tweets) =>
+              tweets
+                .map((t) => tweetToSignal(t, "timeline", username))
+                .filter((x): x is SignalItem => x !== null)
+            )
+            .catch(() => [] as SignalItem[]),
+          ACCOUNT_FETCH_MS,
+          [] as SignalItem[]
+        )
+      )
     ),
-    searchTweets(topic.searchQuery, SEARCH_LIMIT).catch(() => [] as TwitterTweet[]),
+    withTimeout(
+      searchTweets(topic.searchQuery, SEARCH_LIMIT).catch(() => [] as TwitterTweet[]),
+      SEARCH_FETCH_MS,
+      [] as TwitterTweet[]
+    ),
   ]);
 
   const fromAccounts: SignalItem[] = [];
@@ -78,4 +100,12 @@ export async function fetchSignalFeed(topic: SignalTopicConfig): Promise<SignalF
     accountCount: topic.watchAccounts.length,
     searchQuery: topic.searchQuery,
   };
+}
+
+export function getCachedSignalFeed(topic: SignalTopicConfig): Promise<SignalFeed> {
+  return unstable_cache(
+    () => fetchSignalFeed(topic),
+    ["signal-feed", topic.slug],
+    { revalidate: 120, tags: [`signal-feed-${topic.slug}`] }
+  )();
 }

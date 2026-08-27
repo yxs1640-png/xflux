@@ -120,18 +120,62 @@ export async function getUserByUsernameFromConsumer(
   return null;
 }
 
+function fallbackAuthor(username: string): TwitterUser {
+  return {
+    id: "",
+    username,
+    name: username,
+    followers_count: 0,
+    following_count: 0,
+    tweet_count: 0,
+    verified: false,
+    created_at: "",
+  };
+}
+
+async function searchTimelineFromConsumer(
+  clean: string,
+  count: number
+): Promise<TwitterTweet[]> {
+  for (const params of [
+    { q: `from:${clean}`, count },
+    { query: `from:${clean}`, count },
+  ]) {
+    try {
+      const raw = await consumerFetch<unknown>("Search", params);
+      const tweets = extractTweetsFromResponse(raw).slice(0, count);
+      if (tweets.length) return tweets;
+    } catch (err) {
+      if (err instanceof ConsumerApiError && !isRetryableConsumerStatus(err.status)) {
+        throw err;
+      }
+    }
+  }
+  return [];
+}
+
 export async function getUserTweetsFromConsumer(
   username: string,
   limit = 20
 ): Promise<TwitterTweet[]> {
-  const user = await getUserByUsernameFromConsumer(username);
   const clean = username.replace("@", "").trim();
   const count = Math.min(Math.max(limit, 1), 100);
+
+  // Fast path: one Search call — skip profile lookup (saves 1–3 round trips per account).
+  const fromSearch = await searchTimelineFromConsumer(clean, count);
+  if (fromSearch.length) {
+    const author = fromSearch[0]?.author ?? fallbackAuthor(clean);
+    return fromSearch.map((t) => ({
+      ...t,
+      author_id: t.author_id || author.id,
+      author: t.author ?? author,
+    }));
+  }
+
+  const user = await getUserByUsernameFromConsumer(username);
   const validUserId = user?.id && /^\d+$/.test(user.id) ? user.id : undefined;
 
   const attempts: Array<Record<string, string | number | undefined>> = [
-    { q: `from:${clean}`, count },
-    { query: `from:${clean}`, count },
     ...(validUserId
       ? [
           { user_id: validUserId, username: clean, screenname: clean, count },
@@ -142,7 +186,7 @@ export async function getUserTweetsFromConsumer(
 
   let lastError: ConsumerApiError | null = null;
 
-  for (const endpoint of ["Search", "UserTweets", "UserMedia"]) {
+  for (const endpoint of ["UserTweets", "UserMedia"]) {
     for (const params of attempts) {
       try {
         const raw = await consumerFetch<unknown>(endpoint, params);

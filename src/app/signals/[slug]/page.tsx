@@ -1,7 +1,8 @@
-import Link from "next/link";
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
+import { SignalFeedContent } from "@/components/signals/signal-feed-content";
 import { SignalFeedPage } from "@/components/signals/signal-feed-page";
-import { fetchSignalFeed } from "@/lib/signals/fetch-signal-feed";
+import { SignalFeedSkeleton } from "@/components/signals/signal-feed-skeleton";
 import {
   getAllSignalSlugs,
   getSignalTopic,
@@ -36,7 +37,11 @@ export default async function SignalTopicPage({ params }: PageProps) {
   const topic = getSignalTopic(slug);
   if (!topic) notFound();
 
-  const feed = await fetchSignalFeed(topic);
-
-  return <SignalFeedPage feed={feed} topic={topic} />;
+  return (
+    <SignalFeedPage topic={topic}>
+      <Suspense fallback={<SignalFeedSkeleton topic={topic} />}>
+        <SignalFeedContent topic={topic} />
+      </Suspense>
+    </SignalFeedPage>
+  );
 }
