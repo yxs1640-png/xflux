@@ -2,23 +2,13 @@ import "server-only";
 
 import { getUserTweets, searchTweets } from "@/lib/twitter-proxy";
 import type { TwitterTweet } from "@/lib/twitter-types";
-import { buildAiBrief } from "./build-ai-brief";
+import { buildSignalBrief } from "./build-signal-brief";
+import type { SignalTopicConfig } from "./topics";
 import type { SignalFeed, SignalItem } from "./types";
-
-/** AI / LLM leaders & labs — polled on each page refresh. */
-export const AI_WATCH_ACCOUNTS = [
-  "sama",
-  "karpathy",
-  "DeepSeekAI",
-  "AnthropicAI",
-  "ylecun",
-] as const;
-
-export const AI_SEARCH_QUERY =
-  '(AI OR "artificial intelligence" OR LLM OR "ai agents") lang:en -filter:replies';
 
 const TWEETS_PER_ACCOUNT = 4;
 const SEARCH_LIMIT = 10;
+const MAX_ITEMS = 24;
 
 function tweetToSignal(
   tweet: TwitterTweet,
@@ -54,19 +44,19 @@ function dedupeAndSort(items: SignalItem[]): SignalItem[] {
     );
 }
 
-export async function fetchAiSignalFeed(): Promise<SignalFeed> {
+export async function fetchSignalFeed(topic: SignalTopicConfig): Promise<SignalFeed> {
   const fetchedAt = new Date().toISOString();
 
   const [accountSettled, searchResults] = await Promise.all([
     Promise.allSettled(
-      AI_WATCH_ACCOUNTS.map(async (username) => {
+      topic.watchAccounts.map(async (username) => {
         const tweets = await getUserTweets(username, TWEETS_PER_ACCOUNT);
         return tweets
           .map((t) => tweetToSignal(t, "timeline", username))
           .filter((x): x is SignalItem => x !== null);
       })
     ),
-    searchTweets(AI_SEARCH_QUERY, SEARCH_LIMIT).catch(() => [] as TwitterTweet[]),
+    searchTweets(topic.searchQuery, SEARCH_LIMIT).catch(() => [] as TwitterTweet[]),
   ]);
 
   const fromAccounts: SignalItem[] = [];
@@ -78,14 +68,14 @@ export async function fetchAiSignalFeed(): Promise<SignalFeed> {
     .map((t) => tweetToSignal(t, "search"))
     .filter((x): x is SignalItem => x !== null);
 
-  const items = dedupeAndSort([...fromAccounts, ...fromSearch]).slice(0, 24);
-  const brief = buildAiBrief(items);
+  const items = dedupeAndSort([...fromAccounts, ...fromSearch]).slice(0, MAX_ITEMS);
+  const brief = buildSignalBrief(items, topic);
 
   return {
     items,
     brief,
     fetchedAt,
-    accountCount: AI_WATCH_ACCOUNTS.length,
-    searchQuery: AI_SEARCH_QUERY,
+    accountCount: topic.watchAccounts.length,
+    searchQuery: topic.searchQuery,
   };
 }

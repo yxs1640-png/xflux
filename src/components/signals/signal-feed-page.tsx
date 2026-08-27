@@ -5,6 +5,9 @@ import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import type { SignalTopicConfig } from "@/lib/signals/topics";
+import { SIGNAL_TOPICS } from "@/lib/signals/topics";
 import type { SignalFeed } from "@/lib/signals/types";
 
 function formatRelativeTime(iso: string): string {
@@ -29,27 +32,32 @@ function formatFetchedAt(iso: string): string {
 
 type SignalPageProps = {
   feed: SignalFeed;
-  registerSrc: string;
-  watchedAccounts: readonly string[];
+  topic: SignalTopicConfig;
 };
 
-export function SignalFeedPage({ feed, registerSrc, watchedAccounts }: SignalPageProps) {
+export function SignalFeedPage({ feed, topic }: SignalPageProps) {
+  const otherTopics = SIGNAL_TOPICS.filter((t) => t.slug !== topic.slug);
+
   return (
     <>
       <Header />
       <main className="pt-24 pb-16">
         <div className="mx-auto max-w-4xl px-4 sm:px-6">
           <div className="mb-10">
-            <div className="inline-flex items-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/10 px-3 py-1 text-sm text-violet-300 mb-6">
+            <div
+              className={cn(
+                "inline-flex items-center gap-2 rounded-full border px-3 py-1 text-sm mb-6",
+                topic.badgeClass
+              )}
+            >
               <Sparkles className="h-4 w-4" />
               Live signal digest · refreshed every 2 min
             </div>
             <h1 className="text-4xl font-bold text-white sm:text-5xl leading-tight">
-              AI Signals from X/Twitter
+              {topic.title} Signals from X/Twitter
             </h1>
             <p className="mt-4 text-lg text-zinc-400 max-w-2xl leading-relaxed">
-              Who posted what, what it means, and what to watch next — built from real-time
-              timelines and search. Powered by the same API and monitors you can use in XFlux.
+              {topic.intro} Powered by the same API and monitors you can use in XFlux.
             </p>
             <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-zinc-500">
               <span className="inline-flex items-center gap-1.5">
@@ -58,10 +66,14 @@ export function SignalFeedPage({ feed, registerSrc, watchedAccounts }: SignalPag
               </span>
               <span>·</span>
               <span>{feed.accountCount} accounts + live search</span>
+              <span>·</span>
+              <Link href="/signals" className="text-sky-400 hover:text-sky-300">
+                All topics
+              </Link>
             </div>
           </div>
 
-          <Card className="mb-8 border-violet-500/20 bg-gradient-to-br from-violet-500/5 to-zinc-950/40">
+          <Card className="mb-8 border-zinc-800 bg-gradient-to-br from-zinc-900/80 to-zinc-950/40">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-xl">
                 <Lightbulb className="h-5 w-5 text-amber-400" />
@@ -91,7 +103,7 @@ export function SignalFeedPage({ feed, registerSrc, watchedAccounts }: SignalPag
                     {feed.brief.highlights.map((line) => (
                       <li
                         key={line}
-                        className="text-sm text-zinc-300 border-l-2 border-violet-500/40 pl-4 leading-relaxed"
+                        className="text-sm text-zinc-300 border-l-2 border-sky-500/40 pl-4 leading-relaxed"
                       >
                         {line}
                       </li>
@@ -172,6 +184,23 @@ export function SignalFeedPage({ feed, registerSrc, watchedAccounts }: SignalPag
             )}
           </div>
 
+          {otherTopics.length > 0 && (
+            <div className="mb-8 flex flex-wrap gap-2">
+              {otherTopics.map((t) => (
+                <Link
+                  key={t.slug}
+                  href={`/signals/${t.slug}`}
+                  className={cn(
+                    "rounded-full border px-3 py-1 text-xs transition-colors hover:border-zinc-600",
+                    t.badgeClass
+                  )}
+                >
+                  {t.title}
+                </Link>
+              ))}
+            </div>
+          )}
+
           <Card className="border-sky-500/30 bg-sky-500/5">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
@@ -180,12 +209,12 @@ export function SignalFeedPage({ feed, registerSrc, watchedAccounts }: SignalPag
               </CardTitle>
               <CardDescription>
                 We poll{" "}
-                {watchedAccounts.map((a) => `@${a}`).join(", ")} and similar accounts on a
-                schedule. Get Dashboard alerts or signed webhooks when they post.
+                {topic.watchAccounts.map((a) => `@${a}`).join(", ")} on a schedule. Get Dashboard
+                alerts or signed webhooks when they post.
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-wrap gap-3">
-              <Link href={`/register?src=${registerSrc}`}>
+              <Link href={`/register?src=${topic.registerSrc}`}>
                 <Button>Start free — add a monitor</Button>
               </Link>
               <Link href="/docs/monitors">
@@ -195,9 +224,8 @@ export function SignalFeedPage({ feed, registerSrc, watchedAccounts }: SignalPag
           </Card>
 
           <p className="mt-8 text-xs text-zinc-600 leading-relaxed">
-            Analysis on this page is rule-based for demo purposes; a future version will use an AI
-            pipeline on the same XFlux data. Posts link to original authors on X. Not financial
-            advice.
+            Analysis is rule-based for now; a future version will use an AI pipeline on the same
+            XFlux data. Posts link to original authors on X. Not financial advice.
           </p>
         </div>
       </main>
