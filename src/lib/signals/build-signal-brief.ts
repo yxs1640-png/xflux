@@ -53,15 +53,22 @@ function buildSynthesis(
   const themeSummary = themes.map((t) => t.label.toLowerCase()).join(", ");
   const top = themes[0]?.label ?? "";
 
-  const bySlug: Record<string, string> = {
-    ai: `Today's AI conversation clusters around ${themeSummary}. ${top.includes("safety") ? "Safety and shipping are both in the timeline — assume tighter review cycles on agent features." : top.includes("Model") ? "Model releases are driving attention; validate benchmark claims against your own evals before switching providers." : "Lab leaders are setting the narrative — generic hashtag noise is secondary."}`,
-    crypto: `Crypto discourse today centers on ${themeSummary}. ${top.includes("Bitcoin") ? "BTC narrative dominates — macro and ETF flows often lead alt moves by hours." : top.includes("On-chain") ? "On-chain alerts are elevated; pair whale trackers with exchange accounts for context." : "Cross-check influencer takes with on-chain data before sizing positions."}`,
-    trading: `Market chatter highlights ${themeSummary}. ${top.includes("Macro") ? "Macro headlines may override single-name setups today — watch rates and FX first." : top.includes("Unusual") ? "Unusual flow posts are spiking; confirm with price action before chasing." : "Fin-twitter is mixed — prioritize accounts with a track record on your timeframe."}`,
-    startups: `Founder Twitter today focuses on ${themeSummary}. ${top.includes("Product") ? "Launch season energy is up — good window to study GTM patterns from accounts you admire." : top.includes("Fundraising") ? "Fundraising talk is visible; treat public ARR claims as marketing until verified." : "Builder discourse is active — monitor founders in your stack for partnership and API shifts."}`,
+  const byCategory: Record<string, string> = {
+    "ai-tech": `Today's ${topic.pulseLabel} conversation clusters around ${themeSummary}. Lab and builder accounts are setting the narrative — validate claims against your own stack before switching tools.`,
+    crypto: `Crypto discourse today centers on ${themeSummary}. ${top.includes("Bitcoin") ? "BTC narrative dominates — macro and ETF flows often lead alt moves." : "Cross-check influencer takes with on-chain data before sizing positions."}`,
+    markets: `Market chatter highlights ${themeSummary}. ${top.includes("Macro") ? "Macro headlines may override single-name setups today." : "Fin-twitter is mixed — prioritize accounts with a track record on your timeframe."}`,
+    business: `Founder and operator Twitter focuses on ${themeSummary}. ${top.includes("Product") || top.includes("launch") ? "Launch energy is up — study GTM patterns from accounts you admire." : "Builder discourse is active — monitor founders in your niche for partnership signals."}`,
+    developers: `Dev community chatter centers on ${themeSummary}. Framework maintainers often post breaking changes on X before docs update — monitors beat manual refresh.`,
+    security: `Security discourse highlights ${themeSummary}. ${top.includes("Breaches") || top.includes("CVE") ? "Active incident window — widen monitors to vendors and threat intel accounts you trust." : "Defensive patterns and tooling shifts are visible in the timeline."}`,
+    policy: `Policy and news chatter focuses on ${themeSummary}. Headline risk can move markets and product roadmaps — track primary sources, not only commentators.`,
+    science: `Research and science discourse clusters around ${themeSummary}. Primary sources and preprints often surface on X before mainstream coverage.`,
+    culture: `${topic.pulseLabel} conversation today highlights ${themeSummary}. Creator and media accounts drive discovery cycles faster than aggregators.`,
+    product: `Integration and API discourse centers on ${themeSummary}. Developer-facing announcements on X often precede official docs — monitors help you ship faster.`,
+    niche: `${topic.pulseLabel} niche chatter clusters around ${themeSummary}. Smaller communities move fast on X — a focused monitor beats scrolling broad hashtags.`,
   };
 
   return (
-    bySlug[topic.slug] ??
+    byCategory[topic.category] ??
     `Signal clusters around ${themeSummary} across ${authorCount} watched accounts and search.`
   );
 }
@@ -70,8 +77,8 @@ function buildGuidance(topic: SignalTopicConfig, themes: Array<{ label: string; 
   const tips: string[] = [];
   const handles = topic.watchAccounts.slice(0, 3).map((a) => `@${a}`).join(", ");
 
-  const bySlug: Record<string, string[]> = {
-    ai: [
+  const byCategory: Record<string, string[]> = {
+    "ai-tech": [
       "Monitor lab leaders before model/API docs update — announcements often hit X first.",
       "Use webhooks on paid plans to pipe high-signal posts into Slack or your agent stack.",
     ],
@@ -79,18 +86,46 @@ function buildGuidance(topic: SignalTopicConfig, themes: Array<{ label: string; 
       "Set monitors on exchange founders + on-chain accounts you trust — narratives move fast.",
       "Search API works for $TICKER spikes; monitors work for account-level breaking posts.",
     ],
-    trading: [
+    markets: [
       "Monitor flow accounts and macro voices separately — they lead different time horizons.",
       "Don't poll manually during market hours; 1 monitor per key account scales better.",
     ],
-    startups: [
-      "Track founders you compete with or sell to — launch posts precede Product Hunt by days.",
+    business: [
+      "Track founders you compete with or sell to — launch posts precede public launches by days.",
       "Free tier includes 1 monitor; start with the account that most affects your roadmap.",
+    ],
+    developers: [
+      "Follow maintainers of frameworks you ship on — breaking changes surface on X first.",
+      "Pair digest browsing with monitors on 1–2 accounts you cannot afford to miss.",
+    ],
+    security: [
+      "Monitor CERT accounts, vendors you run, and researchers you trust for early CVE signal.",
+      "Webhook alerts help during active incident windows when you are not watching X.",
+    ],
+    policy: [
+      "Track primary wire accounts and policymakers — commentary lags official statements.",
+      "Regulatory headlines can affect compliance roadmaps; widen monitors beyond influencers.",
+    ],
+    science: [
+      "Researchers and journals post preprints and trial readouts on X before press coverage.",
+      "Monitor a small set of primary sources rather than broad hashtag noise.",
+    ],
+    culture: [
+      "Beat reporters and official league accounts break news before aggregators repost.",
+      "Monitors help during live events when timelines move too fast to scroll.",
+    ],
+    product: [
+      "API and webhook changes are often announced on X before docs catch up.",
+      "XFlux monitors any public @username — start with the dev account that ships your integration.",
+    ],
+    niche: [
+      "Niche communities reward specific @handle monitors over generic keyword search.",
+      "Start with 1–2 accounts that define your sub-niche — free tier includes 1 monitor.",
     ],
   };
 
-  tips.push(...(bySlug[topic.slug] ?? []));
-  tips.push(`Add monitors for ${handles} — refreshed every 2 min on this page, faster on paid plans.`);
+  tips.push(...(byCategory[topic.category] ?? []));
+  tips.push(`Add monitors for ${handles} — use Refresh now for latest posts; paid plans poll faster with alerts.`);
   tips.push("Register free — 1,000 API calls/mo plus Dashboard hit history.");
 
   if (themes.some((t) => t.label.toLowerCase().includes("regulation"))) {

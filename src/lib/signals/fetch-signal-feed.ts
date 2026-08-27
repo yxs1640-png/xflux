@@ -109,3 +109,15 @@ export function getCachedSignalFeed(topic: SignalTopicConfig): Promise<SignalFee
     { revalidate: 120, tags: [`signal-feed-${topic.slug}`] }
   )();
 }
+
+/** Bypass cache — used after manual refresh or `?refresh=1`. */
+export function getFreshSignalFeed(topic: SignalTopicConfig): Promise<SignalFeed> {
+  return fetchSignalFeed(topic);
+}
+
+export function getSignalFeed(
+  topic: SignalTopicConfig,
+  options?: { fresh?: boolean }
+): Promise<SignalFeed> {
+  return options?.fresh ? getFreshSignalFeed(topic) : getCachedSignalFeed(topic);
+}

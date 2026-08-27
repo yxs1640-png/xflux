@@ -37,7 +37,7 @@ export function SignalFeedPage({ topic, children }: SignalFeedPageProps) {
               )}
             >
               <Sparkles className="h-4 w-4" />
-              Live signal digest · refreshed every 2 min
+              Live signal digest · cached up to 2 min
             </div>
             <h1 className="text-4xl font-bold text-white sm:text-5xl leading-tight">
               {topic.title} Signals from X/Twitter
@@ -48,7 +48,7 @@ export function SignalFeedPage({ topic, children }: SignalFeedPageProps) {
             <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-zinc-500">
               <span className="inline-flex items-center gap-1.5">
                 <RefreshCw className="h-3.5 w-3.5" />
-                Live data loads below
+                Use Refresh now below for latest data
               </span>
               <span>·</span>
               <span>{topic.watchAccounts.length} accounts + live search</span>

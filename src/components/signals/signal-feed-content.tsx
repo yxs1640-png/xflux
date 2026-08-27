@@ -1,9 +1,10 @@
 import { ArrowRight, Clock, Lightbulb } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { getCachedSignalFeed } from "@/lib/signals/fetch-signal-feed";
+import { getSignalFeed } from "@/lib/signals/fetch-signal-feed";
 import type { SignalTopicConfig } from "@/lib/signals/topics";
 import { SignalTopicJsonLd } from "@/components/seo/signals-json-ld";
+import { SignalRefreshButton } from "@/components/signals/signal-refresh-button";
 
 function formatRelativeTime(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -15,12 +16,23 @@ function formatRelativeTime(iso: string): string {
   return `${Math.floor(hrs / 24)}d ago`;
 }
 
+function formatFetchedAt(iso: string): string {
+  return new Date(iso).toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZoneName: "short",
+  });
+}
+
 type SignalFeedContentProps = {
   topic: SignalTopicConfig;
+  fresh?: boolean;
 };
 
-export async function SignalFeedContent({ topic }: SignalFeedContentProps) {
-  const feed = await getCachedSignalFeed(topic);
+export async function SignalFeedContent({ topic, fresh }: SignalFeedContentProps) {
+  const feed = await getSignalFeed(topic, { fresh });
 
   return (
     <>
@@ -91,18 +103,26 @@ export async function SignalFeedContent({ topic }: SignalFeedContentProps) {
       </Card>
 
       <section aria-labelledby="live-feed-heading">
-        <div className="mb-6 flex items-center justify-between gap-4">
-          <h2 id="live-feed-heading" className="text-xl font-bold text-white">
-            Live feed
-          </h2>
-          <span className="text-xs text-zinc-500">{feed.items.length} posts</span>
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 id="live-feed-heading" className="text-xl font-bold text-white">
+              Live feed
+            </h2>
+            <p className="mt-1 text-xs text-zinc-500">
+              Fetched {formatFetchedAt(feed.fetchedAt)} · auto-caches 2 min · post times are from X
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-zinc-500">{feed.items.length} posts</span>
+            <SignalRefreshButton slug={topic.slug} />
+          </div>
         </div>
 
         <div className="space-y-4 mb-12">
           {feed.items.length === 0 ? (
             <Card>
               <CardContent className="py-10 text-center text-zinc-500 text-sm">
-                No posts returned this cycle — upstream may be rate-limited. Page auto-refreshes.
+                No posts returned this cycle — upstream may be rate-limited. Try Refresh now.
               </CardContent>
             </Card>
           ) : (
@@ -119,7 +139,10 @@ export async function SignalFeedContent({ topic }: SignalFeedContentProps) {
                       <Badge variant="default" className="text-[10px]">
                         {item.source}
                       </Badge>
-                      <span className="text-xs text-zinc-600 inline-flex items-center gap-1">
+                      <span
+                        className="text-xs text-zinc-600 inline-flex items-center gap-1"
+                        title={`Posted on X ${formatFetchedAt(item.createdAt)}`}
+                      >
                         <Clock className="h-3 w-3" />
                         {formatRelativeTime(item.createdAt)}
                       </span>

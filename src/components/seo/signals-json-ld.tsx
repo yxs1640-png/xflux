@@ -1,6 +1,7 @@
 import { SITE_NAME, SITE_URL } from "@/lib/seo";
 import type { SignalFeed } from "@/lib/signals/types";
 import type { SignalTopicConfig } from "@/lib/signals/topics";
+import { getSignalTopicCount } from "@/lib/signals/topics";
 
 function jsonLdScript(data: object) {
   return (
@@ -21,7 +22,7 @@ export function SignalsHubJsonLd() {
         url: `${SITE_URL}/signals`,
         name: "Live X/Twitter Signal Digests by Topic",
         description:
-          "Real-time X/Twitter signal digests for AI, crypto, trading, and startups — who posted what, key themes, and account monitors.",
+          "Real-time X/Twitter signal digests across AI, crypto, trading, startups, developers, security, and more — who posted what, key themes, and account monitors.",
         isPartOf: { "@id": `${SITE_URL}/#website` },
       },
       {
@@ -55,7 +56,7 @@ export function SignalsHubJsonLd() {
             name: "Which topics are covered?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "We publish digests for AI & LLM, crypto & Bitcoin, trading & markets, and startups & founders — each tracking leading voices plus live search.",
+              text: `We publish ${getSignalTopicCount()}+ digests across AI, crypto, markets, startups, developers, security, policy, science, culture, and Twitter API monitoring — each tracking leading voices plus live search.`,
             },
           },
         ],

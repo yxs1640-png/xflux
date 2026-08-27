@@ -13,6 +13,7 @@ export const revalidate = 120;
 
 type PageProps = {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ refresh?: string }>;
 };
 
 export function generateStaticParams() {
@@ -32,15 +33,15 @@ export async function generateMetadata({ params }: PageProps) {
   });
 }
 
-export default async function SignalTopicPage({ params }: PageProps) {
-  const { slug } = await params;
+export default async function SignalTopicPage({ params, searchParams }: PageProps) {
+  const [{ slug }, { refresh }] = await Promise.all([params, searchParams]);
   const topic = getSignalTopic(slug);
   if (!topic) notFound();
 
   return (
     <SignalFeedPage topic={topic}>
       <Suspense fallback={<SignalFeedSkeleton topic={topic} />}>
-        <SignalFeedContent topic={topic} />
+        <SignalFeedContent topic={topic} fresh={refresh === "1"} />
       </Suspense>
     </SignalFeedPage>
   );
