@@ -29,14 +29,21 @@ function formatFetchedAt(iso: string): string {
 type SignalFeedContentProps = {
   topic: SignalTopicConfig;
   fresh?: boolean;
+  cacheKey?: string;
+  includeJsonLd?: boolean;
 };
 
-export async function SignalFeedContent({ topic, fresh }: SignalFeedContentProps) {
-  const feed = await getSignalFeed(topic, { fresh });
+export async function SignalFeedContent({
+  topic,
+  fresh,
+  cacheKey,
+  includeJsonLd = true,
+}: SignalFeedContentProps) {
+  const feed = await getSignalFeed(topic, { fresh, cacheKey });
 
   return (
     <>
-      <SignalTopicJsonLd topic={topic} feed={feed} />
+      {includeJsonLd && <SignalTopicJsonLd topic={topic} feed={feed} />}
 
       <Card className="mb-8 border-zinc-800 bg-gradient-to-br from-zinc-900/80 to-zinc-950/40">
         <CardHeader>
@@ -114,7 +121,7 @@ export async function SignalFeedContent({ topic, fresh }: SignalFeedContentProps
           </div>
           <div className="flex items-center gap-3">
             <span className="text-xs text-zinc-500">{feed.items.length} posts</span>
-            <SignalRefreshButton slug={topic.slug} />
+            <SignalRefreshButton slug={topic.slug} cacheKey={cacheKey} />
           </div>
         </div>
 

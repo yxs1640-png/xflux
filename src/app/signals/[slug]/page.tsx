@@ -3,9 +3,9 @@ import { notFound } from "next/navigation";
 import { SignalFeedContent } from "@/components/signals/signal-feed-content";
 import { SignalFeedPage } from "@/components/signals/signal-feed-page";
 import { SignalFeedSkeleton } from "@/components/signals/signal-feed-skeleton";
+import { resolvePublicSignalTopic } from "@/lib/custom-signals/community-topics";
 import {
   getAllSignalSlugs,
-  getSignalTopic,
 } from "@/lib/signals/topics";
 import { pageMetadata } from "@/lib/seo";
 
@@ -22,7 +22,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps) {
   const { slug } = await params;
-  const topic = getSignalTopic(slug);
+  const topic = await resolvePublicSignalTopic(slug);
   if (!topic) return {};
 
   return pageMetadata({
@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: PageProps) {
 
 export default async function SignalTopicPage({ params, searchParams }: PageProps) {
   const [{ slug }, { refresh }] = await Promise.all([params, searchParams]);
-  const topic = getSignalTopic(slug);
+  const topic = await resolvePublicSignalTopic(slug);
   if (!topic) notFound();
 
   return (

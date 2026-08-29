@@ -72,6 +72,15 @@ export default function SignalsHubPage() {
               dev, security, and more. Each digest shows who posted what, what it means, and how to
               monitor accounts with XFlux.
             </p>
+            <p className="mt-4">
+              <Link
+                href="/dashboard/signals"
+                className="text-sm text-sky-400 hover:text-sky-300 inline-flex items-center gap-1"
+              >
+                Build your own board or submit a public topic
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </p>
           </div>
 
           <nav

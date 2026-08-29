@@ -4,13 +4,14 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { refreshSignalFeed } from "@/lib/signals/actions";
+import { refreshCustomSignalFeed, refreshSignalFeed } from "@/lib/signals/actions";
 
 type SignalRefreshButtonProps = {
   slug: string;
+  cacheKey?: string;
 };
 
-export function SignalRefreshButton({ slug }: SignalRefreshButtonProps) {
+export function SignalRefreshButton({ slug, cacheKey }: SignalRefreshButtonProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [spinning, setSpinning] = useState(false);
@@ -18,7 +19,12 @@ export function SignalRefreshButton({ slug }: SignalRefreshButtonProps) {
   function handleRefresh() {
     setSpinning(true);
     startTransition(async () => {
-      await refreshSignalFeed(slug);
+      if (cacheKey?.startsWith("custom-")) {
+        const boardId = cacheKey.replace(/^custom-/, "");
+        await refreshCustomSignalFeed(boardId);
+      } else {
+        await refreshSignalFeed(slug);
+      }
       router.refresh();
       setSpinning(false);
     });

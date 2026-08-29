@@ -61,6 +61,36 @@ export const PLAN_WEBHOOK_ACCESS: Record<PlanTier, boolean> = {
   ENTERPRISE: true,
 };
 
+/** Private custom signal boards per plan */
+export const PLAN_CUSTOM_SIGNAL_LIMITS: Record<PlanTier, number> = {
+  FREE: 1,
+  BASIC: 3,
+  GROWTH: 8,
+  PRO: 15,
+  SCALE: 30,
+  ENTERPRISE: 30,
+};
+
+/** Max @accounts per custom signal board */
+export const PLAN_CUSTOM_SIGNAL_ACCOUNT_LIMITS: Record<PlanTier, number> = {
+  FREE: 5,
+  BASIC: 10,
+  GROWTH: 15,
+  PRO: 20,
+  SCALE: 25,
+  ENTERPRISE: 25,
+};
+
+/** Pending public topic submissions per user (rolling) */
+export const PLAN_SIGNAL_SUBMISSION_LIMITS: Record<PlanTier, number> = {
+  FREE: 1,
+  BASIC: 3,
+  GROWTH: 5,
+  PRO: 10,
+  SCALE: 20,
+  ENTERPRISE: 20,
+};
+
 export async function checkAndConsumeQuota(
   userId: string,
   cost = 1

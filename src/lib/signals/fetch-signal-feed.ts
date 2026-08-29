@@ -102,22 +102,32 @@ export async function fetchSignalFeed(topic: SignalTopicConfig): Promise<SignalF
   };
 }
 
-export function getCachedSignalFeed(topic: SignalTopicConfig): Promise<SignalFeed> {
+export function getCachedSignalFeed(
+  topic: SignalTopicConfig,
+  cacheKey?: string
+): Promise<SignalFeed> {
+  const key = cacheKey ?? topic.slug;
   return unstable_cache(
     () => fetchSignalFeed(topic),
-    ["signal-feed", topic.slug],
-    { revalidate: 120, tags: [`signal-feed-${topic.slug}`] }
+    ["signal-feed", key],
+    { revalidate: 120, tags: [`signal-feed-${key}`] }
   )();
 }
 
 /** Bypass cache — used after manual refresh or `?refresh=1`. */
-export function getFreshSignalFeed(topic: SignalTopicConfig): Promise<SignalFeed> {
+export function getFreshSignalFeed(
+  topic: SignalTopicConfig,
+  _cacheKey?: string
+): Promise<SignalFeed> {
   return fetchSignalFeed(topic);
 }
 
 export function getSignalFeed(
   topic: SignalTopicConfig,
-  options?: { fresh?: boolean }
+  options?: { fresh?: boolean; cacheKey?: string }
 ): Promise<SignalFeed> {
-  return options?.fresh ? getFreshSignalFeed(topic) : getCachedSignalFeed(topic);
+  const cacheKey = options?.cacheKey;
+  return options?.fresh
+    ? getFreshSignalFeed(topic, cacheKey)
+    : getCachedSignalFeed(topic, cacheKey);
 }
