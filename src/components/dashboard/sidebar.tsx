@@ -14,6 +14,7 @@ import {
   LogOut,
   BookOpen,
   Lightbulb,
+  Radio,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { MonitorAlertsNavItem } from "@/components/dashboard/monitor-alerts-nav-item";
@@ -28,9 +29,16 @@ const NAV = [
 ];
 
 const RESOURCE_NAV = [
+  { href: "/signals", label: "Signals", icon: Radio },
   { href: "/docs", label: "API Docs", icon: BookOpen },
   { href: "/use-cases", label: "Use Cases", icon: Lightbulb },
 ];
+
+function isResourceNavActive(pathname: string, href: string): boolean {
+  if (href === "/docs") return pathname === "/docs" || pathname.startsWith("/docs/");
+  if (href === "/signals") return pathname === "/signals" || pathname.startsWith("/signals/");
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 export function DashboardSidebar() {
   const pathname = usePathname();
@@ -87,10 +95,7 @@ export function DashboardSidebar() {
           </p>
           <div className="space-y-1">
             {RESOURCE_NAV.map((item) => {
-              const active =
-                item.href === "/docs"
-                  ? pathname === "/docs" || pathname.startsWith("/docs/")
-                  : pathname === item.href || pathname.startsWith(`${item.href}/`);
+              const active = isResourceNavActive(pathname, item.href);
 
               return (
                 <Link
