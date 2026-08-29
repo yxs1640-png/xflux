@@ -22,7 +22,7 @@ export function SignalsHubJsonLd() {
         url: `${SITE_URL}/signals`,
         name: "Live X/Twitter Signal Digests by Topic",
         description:
-          "Real-time X/Twitter signal digests across AI, crypto, trading, startups, developers, security, and more — who posted what, key themes, and account monitors.",
+          "Real-time X/Twitter signal digests across AI, crypto, trading, startups, developers, security, and more — refreshed every 2 minutes. See who posted what and set up account monitors.",
         isPartOf: { "@id": `${SITE_URL}/#website` },
       },
       {

@@ -12,6 +12,30 @@ const DEFAULT_THEME_RULES: SignalThemeRule[] = [
   { label: "Community debate", patterns: [/hot take|debate|unpopular|everyone|wrong about/i] },
 ];
 
+/** SERP title — insert refresh cadence before the subtitle when missing. */
+export function enrichSignalPageTitle(pageTitle: string): string {
+  if (/updated every|refreshed every|\d+-min update/i.test(pageTitle)) return pageTitle;
+  if (pageTitle.includes(" — ")) {
+    return pageTitle.replace(" — ", " · Updated every 2 min — ");
+  }
+  return `${pageTitle} · Updated every 2 min`;
+}
+
+/** Meta description — ensure live + refresh cadence for Google snippets. */
+export function enrichSignalDescription(description: string): string {
+  const trimmed = description.trim().replace(/\s+/g, " ");
+  if (/refreshed every|updated every|updates every/i.test(trimmed)) {
+    return trimmed.endsWith(".") ? trimmed : `${trimmed}.`;
+  }
+
+  let body = trimmed.replace(/\.\s*$/, "");
+  if (!/\blive\b/i.test(body)) {
+    body = `Live X/Twitter digest — ${body.charAt(0).toLowerCase()}${body.slice(1)}`;
+  }
+
+  return `${body}. Refreshed every 2 min — see who posted what now.`;
+}
+
 export function makeTopic(seed: TopicSeed): SignalTopicConfig {
   const handles = seed.watchAccounts.slice(0, 3).map((a) => `@${a}`).join(", ");
   const pulse = seed.pulseLabel.toLowerCase();
@@ -20,8 +44,8 @@ export function makeTopic(seed: TopicSeed): SignalTopicConfig {
     slug: seed.slug,
     category: seed.category,
     title: seed.title,
-    pageTitle: seed.pageTitle,
-    description: seed.description,
+    pageTitle: enrichSignalPageTitle(seed.pageTitle),
+    description: enrichSignalDescription(seed.description),
     keywords: seed.keywords,
     intro: seed.intro,
     registerSrc: `signals_${seed.slug.replace(/-/g, "_")}`,

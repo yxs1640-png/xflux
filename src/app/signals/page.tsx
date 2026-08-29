@@ -21,9 +21,9 @@ import { SignalsHubJsonLd } from "@/components/seo/signals-json-ld";
 const TOPIC_COUNT = getSignalTopicCount();
 
 export const metadata = pageMetadata({
-  title: `X/Twitter Signal Digests — ${TOPIC_COUNT}+ Live Topics`,
+  title: `X/Twitter Signal Digests — ${TOPIC_COUNT}+ Live Topics · Updated Every 2 Min`,
   description:
-    "Free live X/Twitter signal digests across AI, crypto, trading, startups, dev, security, and more. See who posted what, dominant themes, and set up account monitors with webhooks.",
+    "Free live X/Twitter signal digests across AI, crypto, trading, startups, dev, security, and more. Refreshed every 2 min — see who posted what and set up account monitors with webhooks.",
   path: "/signals",
   keywords: SIGNAL_HUB_KEYWORDS,
 });
