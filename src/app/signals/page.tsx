@@ -10,6 +10,10 @@ import {
   SIGNAL_CATEGORIES,
   SIGNAL_HUB_KEYWORDS,
 } from "@/lib/signals/topics";
+import {
+  HUB_CATEGORY_FEATURED_SLUGS,
+  resolveSignalTopics,
+} from "@/lib/signals/internal-links";
 import { pageMetadata } from "@/lib/seo";
 import { Breadcrumbs, SignalFaqSection } from "@/components/signals/signal-seo-blocks";
 import { SignalsHubJsonLd } from "@/components/seo/signals-json-ld";
@@ -90,6 +94,10 @@ export default function SignalsHubPage() {
               const topics = getTopicsByCategory(category.id);
               if (topics.length === 0) return null;
 
+              const [featuredA, featuredB] = resolveSignalTopics(
+                HUB_CATEGORY_FEATURED_SLUGS[category.id]
+              );
+
               return (
                 <section key={category.id} id={category.id} aria-labelledby={`${category.id}-heading`}>
                   <div className="mb-6">
@@ -97,6 +105,19 @@ export default function SignalsHubPage() {
                       {category.label}
                     </h2>
                     <p className="mt-1 text-sm text-zinc-500">{category.description}</p>
+                    {featuredA && featuredB && (
+                      <p className="mt-2 text-sm text-zinc-400">
+                        Start with{" "}
+                        <Link href={`/signals/${featuredA.slug}`} className="text-sky-400 hover:text-sky-300">
+                          {featuredA.title}
+                        </Link>{" "}
+                        or{" "}
+                        <Link href={`/signals/${featuredB.slug}`} className="text-sky-400 hover:text-sky-300">
+                          {featuredB.title}
+                        </Link>
+                        .
+                      </p>
+                    )}
                   </div>
                   <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     {topics.map((topic) => (

@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Hero } from "@/components/landing/hero";
+import { PopularSignals } from "@/components/landing/popular-signals";
 import { ApiCapabilities } from "@/components/landing/api-capabilities";
 import { ProductOverview } from "@/components/landing/product-overview";
 import { UseCaseStrip } from "@/components/landing/use-case-strip";
@@ -42,6 +43,7 @@ export default async function HomePage() {
       <Header />
       <main>
         <Hero isLoggedIn={isLoggedIn} />
+        <PopularSignals />
         <ApiCapabilities />
         <UseCaseStrip />
         <ProductOverview />

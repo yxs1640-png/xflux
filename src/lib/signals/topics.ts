@@ -51,3 +51,16 @@ export function getTopicsByCategory(categoryId: SignalCategoryId): SignalTopicCo
 export function getSignalTopicCount(): number {
   return SIGNAL_TOPICS.length;
 }
+
+export function getSignalCategoryLabel(categoryId: SignalCategoryId): string {
+  return SIGNAL_CATEGORIES.find((c) => c.id === categoryId)?.label ?? categoryId;
+}
+
+export function getRelatedSignalTopics(
+  topic: SignalTopicConfig,
+  limit = 5
+): SignalTopicConfig[] {
+  return SIGNAL_TOPICS.filter(
+    (t) => t.category === topic.category && t.slug !== topic.slug
+  ).slice(0, limit);
+}

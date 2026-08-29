@@ -1,6 +1,7 @@
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { DocsSidebar } from "@/components/docs/docs-sidebar";
+import { RelatedSignals } from "@/components/docs/related-signals";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
@@ -22,7 +23,10 @@ export default function DocsLayout({
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="flex flex-col lg:flex-row gap-10 lg:gap-16">
             <DocsSidebar />
-            <article className="flex-1 min-w-0 max-w-3xl">{children}</article>
+            <article className="flex-1 min-w-0 max-w-3xl">
+              {children}
+              <RelatedSignals />
+            </article>
           </div>
         </div>
       </main>

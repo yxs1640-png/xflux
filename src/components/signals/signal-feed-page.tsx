@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { SignalTopicConfig } from "@/lib/signals/topics";
-import { SIGNAL_TOPICS } from "@/lib/signals/topics";
+import { getRelatedSignalTopics, getSignalCategoryLabel } from "@/lib/signals/topics";
 import { Breadcrumbs, SignalFaqSection } from "@/components/signals/signal-seo-blocks";
 
 type SignalFeedPageProps = {
@@ -15,7 +15,8 @@ type SignalFeedPageProps = {
 };
 
 export function SignalFeedPage({ topic, children }: SignalFeedPageProps) {
-  const otherTopics = SIGNAL_TOPICS.filter((t) => t.slug !== topic.slug);
+  const relatedTopics = getRelatedSignalTopics(topic, 5);
+  const categoryLabel = getSignalCategoryLabel(topic.category);
 
   return (
     <>
@@ -61,21 +62,32 @@ export function SignalFeedPage({ topic, children }: SignalFeedPageProps) {
 
           {children}
 
-          {otherTopics.length > 0 && (
-            <div className="mb-8 flex flex-wrap gap-2">
-              {otherTopics.map((t) => (
+          {relatedTopics.length > 0 && (
+            <section className="mb-8" aria-label="Related signal digests">
+              <h2 className="text-sm font-medium text-zinc-500 mb-3">
+                Related {categoryLabel} signals
+              </h2>
+              <div className="flex flex-wrap gap-2">
+                {relatedTopics.map((t) => (
+                  <Link
+                    key={t.slug}
+                    href={`/signals/${t.slug}`}
+                    className={cn(
+                      "rounded-full border px-3 py-1 text-xs transition-colors hover:border-zinc-600",
+                      t.badgeClass
+                    )}
+                  >
+                    {t.title}
+                  </Link>
+                ))}
                 <Link
-                  key={t.slug}
-                  href={`/signals/${t.slug}`}
-                  className={cn(
-                    "rounded-full border px-3 py-1 text-xs transition-colors hover:border-zinc-600",
-                    t.badgeClass
-                  )}
+                  href={`/signals#${topic.category}`}
+                  className="rounded-full border border-zinc-700 px-3 py-1 text-xs text-zinc-400 hover:border-sky-500/40 hover:text-sky-300 transition-colors"
                 >
-                  {t.title}
+                  All {categoryLabel} topics →
                 </Link>
-              ))}
-            </div>
+              </div>
+            </section>
           )}
 
           <Card className="border-sky-500/30 bg-sky-500/5">
