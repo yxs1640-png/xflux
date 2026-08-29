@@ -8,6 +8,10 @@ import { cn } from "@/lib/utils";
 import type { SignalTopicConfig } from "@/lib/signals/topics";
 import { getRelatedSignalTopics, getSignalCategoryLabel } from "@/lib/signals/topics";
 import { Breadcrumbs, SignalFaqSection } from "@/components/signals/signal-seo-blocks";
+import {
+  SIGNAL_FRESHNESS_BADGE,
+  SIGNAL_FRESHNESS_PAGE_HINT,
+} from "@/lib/signals/freshness-copy";
 
 type SignalFeedPageProps = {
   topic: SignalTopicConfig;
@@ -38,7 +42,7 @@ export function SignalFeedPage({ topic, children }: SignalFeedPageProps) {
               )}
             >
               <Sparkles className="h-4 w-4" />
-              Live signal digest · cached up to 2 min
+              {SIGNAL_FRESHNESS_BADGE}
             </div>
             <h1 className="text-4xl font-bold text-white sm:text-5xl leading-tight">
               {topic.title} Signals from X/Twitter
@@ -49,7 +53,7 @@ export function SignalFeedPage({ topic, children }: SignalFeedPageProps) {
             <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-zinc-500">
               <span className="inline-flex items-center gap-1.5">
                 <RefreshCw className="h-3.5 w-3.5" />
-                Use Refresh now below for latest data
+                {SIGNAL_FRESHNESS_PAGE_HINT}
               </span>
               <span>·</span>
               <span>{topic.watchAccounts.length} accounts + live search</span>

@@ -4,6 +4,11 @@ import {
   type SignalTopicConfig,
   type TopicSeed,
 } from "./topic-types";
+import {
+  HAS_FRESHNESS_MESSAGING,
+  SIGNAL_FRESHNESS_DESC_SUFFIX,
+  SIGNAL_FRESHNESS_TITLE,
+} from "./freshness-copy";
 
 const DEFAULT_THEME_RULES: SignalThemeRule[] = [
   { label: "Breaking & launches", patterns: [/breaking|just|announced|launch|live now|shipped/i] },
@@ -12,19 +17,22 @@ const DEFAULT_THEME_RULES: SignalThemeRule[] = [
   { label: "Community debate", patterns: [/hot take|debate|unpopular|everyone|wrong about/i] },
 ];
 
-/** SERP title — insert refresh cadence before the subtitle when missing. */
+const SIGNAL_FRESHNESS_FAQ_REFRESH =
+  "Click Refresh now anytime to fetch the latest posts instantly.";
+
+/** SERP title — insert on-demand refresh before the subtitle when missing. */
 export function enrichSignalPageTitle(pageTitle: string): string {
-  if (/updated every|refreshed every|\d+-min update/i.test(pageTitle)) return pageTitle;
+  if (HAS_FRESHNESS_MESSAGING.test(pageTitle)) return pageTitle;
   if (pageTitle.includes(" — ")) {
-    return pageTitle.replace(" — ", " · Updated every 2 min — ");
+    return pageTitle.replace(" — ", ` · ${SIGNAL_FRESHNESS_TITLE} — `);
   }
-  return `${pageTitle} · Updated every 2 min`;
+  return `${pageTitle} · ${SIGNAL_FRESHNESS_TITLE}`;
 }
 
-/** Meta description — ensure live + refresh cadence for Google snippets. */
+/** Meta description — ensure live + on-demand refresh for Google snippets. */
 export function enrichSignalDescription(description: string): string {
   const trimmed = description.trim().replace(/\s+/g, " ");
-  if (/refreshed every|updated every|updates every/i.test(trimmed)) {
+  if (HAS_FRESHNESS_MESSAGING.test(trimmed)) {
     return trimmed.endsWith(".") ? trimmed : `${trimmed}.`;
   }
 
@@ -33,7 +41,7 @@ export function enrichSignalDescription(description: string): string {
     body = `Live X/Twitter digest — ${body.charAt(0).toLowerCase()}${body.slice(1)}`;
   }
 
-  return `${body}. Refreshed every 2 min — see who posted what now.`;
+  return `${body}. ${SIGNAL_FRESHNESS_DESC_SUFFIX}`;
 }
 
 export function makeTopic(seed: TopicSeed): SignalTopicConfig {
@@ -59,7 +67,7 @@ export function makeTopic(seed: TopicSeed): SignalTopicConfig {
     faq: seed.faq ?? [
       {
         question: `Which accounts does the ${seed.title} digest track?`,
-        answer: `We poll ${seed.watchAccounts.map((a) => `@${a}`).join(", ")} plus live search — cached up to 2 minutes; use Refresh now for the latest posts.`,
+        answer: `We poll ${seed.watchAccounts.map((a) => `@${a}`).join(", ")} plus live search. ${SIGNAL_FRESHNESS_FAQ_REFRESH}`,
       },
       {
         question: "How do I get alerts when these accounts post?",

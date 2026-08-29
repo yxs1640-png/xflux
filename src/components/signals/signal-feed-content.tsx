@@ -5,6 +5,7 @@ import { getSignalFeed } from "@/lib/signals/fetch-signal-feed";
 import type { SignalTopicConfig } from "@/lib/signals/topics";
 import { SignalTopicJsonLd } from "@/components/seo/signals-json-ld";
 import { SignalRefreshButton } from "@/components/signals/signal-refresh-button";
+import { SIGNAL_FRESHNESS_FEED_NOTE } from "@/lib/signals/freshness-copy";
 
 function formatRelativeTime(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -116,7 +117,7 @@ export async function SignalFeedContent({
               Live feed
             </h2>
             <p className="mt-1 text-xs text-zinc-500">
-              Fetched {formatFetchedAt(feed.fetchedAt)} · auto-caches 2 min · post times are from X
+              Fetched {formatFetchedAt(feed.fetchedAt)} · {SIGNAL_FRESHNESS_FEED_NOTE}
             </p>
           </div>
           <div className="flex items-center gap-3">

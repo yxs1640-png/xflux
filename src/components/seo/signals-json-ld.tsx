@@ -22,7 +22,7 @@ export function SignalsHubJsonLd() {
         url: `${SITE_URL}/signals`,
         name: "Live X/Twitter Signal Digests by Topic",
         description:
-          "Real-time X/Twitter signal digests across AI, crypto, trading, startups, developers, security, and more — refreshed every 2 minutes. See who posted what and set up account monitors.",
+          "Real-time X/Twitter signal digests across AI, crypto, trading, startups, developers, security, and more. Refresh anytime for the latest posts and set up account monitors.",
         isPartOf: { "@id": `${SITE_URL}/#website` },
       },
       {
@@ -40,7 +40,7 @@ export function SignalsHubJsonLd() {
             name: "What are XFlux signal digests?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "Signal digests are live pages that poll public X/Twitter accounts and search, then summarize who posted what, dominant themes, and which accounts to monitor — refreshed every two minutes.",
+              text: "Signal digests are live pages that poll public X/Twitter accounts and search, then summarize who posted what, dominant themes, and which accounts to monitor. Click Refresh now anytime for instant latest posts.",
             },
           },
           {

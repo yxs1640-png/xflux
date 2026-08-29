@@ -125,7 +125,7 @@ function buildGuidance(topic: SignalTopicConfig, themes: Array<{ label: string; 
   };
 
   tips.push(...(byCategory[topic.category] ?? []));
-  tips.push(`Add monitors for ${handles} — use Refresh now for latest posts; paid plans poll faster with alerts.`);
+  tips.push(`Add monitors for ${handles} — click Refresh now anytime for instant latest; paid plans poll faster with alerts.`);
   tips.push("Register free — 1,000 API calls/mo plus Dashboard hit history.");
 
   if (themes.some((t) => t.label.toLowerCase().includes("regulation"))) {
