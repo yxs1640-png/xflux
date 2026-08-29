@@ -3,9 +3,9 @@ import { pageMetadata } from "@/lib/seo";
 import { CodeBlock, Callout, DocHeading } from "@/components/docs/doc-blocks";
 
 export const metadata = pageMetadata({
-  title: "Twitter Webhook Integration — Signed HTTP Webhooks",
+  title: "Webhook API Reference — Events, Signatures & Verification",
   description:
-    "Twitter webhook integration for XFlux account monitors. Receive signed HTTP POST webhooks when tracked X/Twitter accounts publish new tweets. HMAC-SHA256 verification guide included.",
+    "XFlux webhook API docs: monitor.hit and monitor.test events, HMAC-SHA256 signature verification, JSON payload format, and HTTPS endpoint setup.",
   path: "/docs/webhooks",
 });
 

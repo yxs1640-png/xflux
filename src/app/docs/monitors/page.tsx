@@ -6,9 +6,9 @@ import { PLAN_MONITOR_MIN_INTERVAL, formatMonitorInterval } from "@/lib/quota";
 import { PlanTier } from "@prisma/client";
 
 export const metadata = pageMetadata({
-  title: "X/Twitter Account Monitors & Webhooks",
+  title: "Account Monitors — Poll X/Twitter Handles on a Schedule",
   description:
-    "Monitor X/Twitter accounts on a schedule. View hits in the Dashboard or receive signed HTTP webhooks on paid plans — Twitter webhook integration without building your own poller.",
+    "Set up X/Twitter account monitors in XFlux: polling intervals, keyword filters, hit history, and plan limits. Optional signed HTTP callbacks on Starter+.",
   path: "/docs/monitors",
 });
 
