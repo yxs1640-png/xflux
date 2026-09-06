@@ -1,9 +1,14 @@
+import { PlanTier } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getUserByUsername } from "@/lib/twitter-proxy";
 import { ConsumerApiError } from "@/lib/consumer-api";
-import { checkAndConsumeQuota, logApiCall } from "@/lib/quota";
+import {
+  applyApiLimitHeaders,
+  enforceApiRequestLimits,
+} from "@/lib/api-limits";
+import { logApiCall } from "@/lib/quota";
 
 /** Session-authenticated onboarding test — counts as a real API call. */
 export async function POST() {
@@ -13,15 +18,13 @@ export async function POST() {
   }
 
   const userId = session.user.id;
+  const planTier = (session.user.planTier ?? "FREE") as PlanTier;
   const start = Date.now();
   const endpoint = "/api/v1/users/elonmusk";
 
-  const quota = await checkAndConsumeQuota(userId);
-  if (!quota.allowed) {
-    return NextResponse.json(
-      { error: "Monthly quota exceeded", code: "QUOTA_EXCEEDED" },
-      { status: 429 }
-    );
+  const limits = await enforceApiRequestLimits(userId, planTier);
+  if (!limits.ok) {
+    return limits.response;
   }
 
   try {
@@ -30,27 +33,33 @@ export async function POST() {
 
     if (!user) {
       await logApiCall(userId, endpoint, "GET", 404, responseTime);
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      const response = NextResponse.json({ error: "User not found" }, { status: 404 });
+      applyApiLimitHeaders(response, limits.quota, limits.rateLimit);
+      return response;
     }
 
     await logApiCall(userId, endpoint, "GET", 200, responseTime);
-    return NextResponse.json({
+    const response = NextResponse.json({
       data: user,
-      meta: { onboarding: true, remaining: quota.remaining },
+      meta: { onboarding: true, remaining: limits.quota.remaining },
     });
+    applyApiLimitHeaders(response, limits.quota, limits.rateLimit);
+    return response;
   } catch (err) {
     const responseTime = Date.now() - start;
     await logApiCall(userId, endpoint, "GET", 502, responseTime);
 
-    if (err instanceof ConsumerApiError) {
-      return NextResponse.json(
-        { error: "Data source temporarily unavailable" },
-        { status: 503 }
-      );
-    }
-    return NextResponse.json(
-      { error: "Data source temporarily unavailable" },
-      { status: 503 }
-    );
+    const response =
+      err instanceof ConsumerApiError
+        ? NextResponse.json(
+            { error: "Data source temporarily unavailable" },
+            { status: 503 }
+          )
+        : NextResponse.json(
+            { error: "Data source temporarily unavailable" },
+            { status: 503 }
+          );
+    applyApiLimitHeaders(response, limits.quota, limits.rateLimit);
+    return response;
   }
 }

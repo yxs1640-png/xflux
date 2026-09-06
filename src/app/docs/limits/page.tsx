@@ -1,7 +1,18 @@
 import Link from "next/link";
+import { PlanTier } from "@prisma/client";
 import { pageMetadata } from "@/lib/seo";
 import { DocHeading } from "@/components/docs/doc-blocks";
 import { PLANS } from "@/lib/constants";
+import { PLAN_RATE_LIMITS_PER_MINUTE } from "@/lib/rate-limit";
+
+const RATE_LIMIT_PLAN_ORDER: PlanTier[] = [
+  "FREE",
+  "BASIC",
+  "GROWTH",
+  "PRO",
+  "SCALE",
+  "ENTERPRISE",
+];
 
 export const metadata = pageMetadata({
   title: "Plans & Limits",
@@ -47,8 +58,51 @@ export default function LimitsDocsPage() {
       <DocHeading id="api-quota">API quota</DocHeading>
       <ul className="list-disc list-inside space-y-2 text-zinc-400 text-sm">
         <li>Resets monthly from your account quota reset date</li>
-        <li>Exceeded quota returns HTTP 429 with upgrade hint</li>
+        <li>Exceeded quota returns HTTP 429 with code <code className="text-zinc-300">QUOTA_EXCEEDED</code></li>
         <li>View usage in Dashboard → Usage</li>
+      </ul>
+
+      <DocHeading id="rate-limits">Rate limits</DocHeading>
+      <p className="text-zinc-400 text-sm mb-4">
+        Each plan also has a per-minute request cap (fixed 60-second window). Exceeding it
+        returns HTTP 429 with code{" "}
+        <code className="text-zinc-300">RATE_LIMIT_EXCEEDED</code> and a{" "}
+        <code className="text-zinc-300">Retry-After</code> header in seconds.
+      </p>
+      <div className="overflow-x-auto rounded-lg border border-zinc-800 mb-8">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-zinc-800 text-left text-zinc-500">
+              <th className="p-3">Plan</th>
+              <th className="p-3">Requests / minute</th>
+            </tr>
+          </thead>
+          <tbody className="text-zinc-300">
+            {RATE_LIMIT_PLAN_ORDER.map((tier) => {
+              const plan = PLANS.find((p) => p.id === tier);
+              const label =
+                plan?.name ??
+                (tier === "ENTERPRISE" ? "Enterprise" : tier);
+              return (
+                <tr key={tier} className="border-b border-zinc-800/50">
+                  <td className="p-3 font-medium">{label}</td>
+                  <td className="p-3 font-mono">{PLAN_RATE_LIMITS_PER_MINUTE[tier]}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <ul className="list-disc list-inside space-y-2 text-zinc-400 text-sm mb-8">
+        <li>
+          Response headers: <code className="text-zinc-300">X-RateLimit-Limit</code>,{" "}
+          <code className="text-zinc-300">X-RateLimit-Remaining</code>,{" "}
+          <code className="text-zinc-300">X-RateLimit-Reset</code> (minute window)
+        </li>
+        <li>
+          Monthly quota headers: <code className="text-zinc-300">X-Quota-Limit</code>,{" "}
+          <code className="text-zinc-300">X-Quota-Remaining</code>
+        </li>
       </ul>
 
       <DocHeading id="monitor-quota">Monitor quota</DocHeading>
@@ -82,7 +136,11 @@ export default function LimitsDocsPage() {
             </tr>
             <tr className="border-b border-zinc-800/50">
               <td className="p-3 font-mono">429</td>
-              <td className="p-3">Monthly API quota exceeded</td>
+              <td className="p-3">
+                Monthly quota exceeded (<code className="text-zinc-400">QUOTA_EXCEEDED</code>)
+                or per-minute rate limit (
+                <code className="text-zinc-400">RATE_LIMIT_EXCEEDED</code>)
+              </td>
             </tr>
             <tr>
               <td className="p-3 font-mono">502/503</td>

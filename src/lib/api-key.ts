@@ -1,9 +1,10 @@
+import { PlanTier } from "@prisma/client";
 import { prisma } from "./db";
 import { hashApiKey } from "./api-key-crypto";
 
 export async function validateApiKey(
   key: string | null
-): Promise<{ userId: string; apiKeyId: string } | null> {
+): Promise<{ userId: string; apiKeyId: string; planTier: PlanTier } | null> {
   if (!key || !key.startsWith("xflux_")) return null;
 
   const hash = hashApiKey(key);
@@ -19,7 +20,11 @@ export async function validateApiKey(
     data: { lastUsedAt: new Date() },
   });
 
-  return { userId: apiKey.userId, apiKeyId: apiKey.id };
+  return {
+    userId: apiKey.userId,
+    apiKeyId: apiKey.id,
+    planTier: apiKey.user.planTier,
+  };
 }
 
 export function extractApiKey(request: Request): string | null {

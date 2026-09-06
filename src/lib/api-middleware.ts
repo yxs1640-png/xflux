@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { extractApiKey, validateApiKey } from "@/lib/api-key";
-import { checkAndConsumeQuota, logApiCall } from "@/lib/quota";
+import { applyApiLimitHeaders, enforceApiRequestLimits } from "@/lib/api-limits";
+import { logApiCall } from "@/lib/quota";
 
 export async function withApiAuth(
   request: NextRequest,
@@ -17,17 +18,9 @@ export async function withApiAuth(
     );
   }
 
-  const quota = await checkAndConsumeQuota(auth.userId);
-  if (!quota.allowed) {
-    return NextResponse.json(
-      {
-        error: "Monthly quota exceeded",
-        code: "QUOTA_EXCEEDED",
-        limit: quota.limit,
-        remaining: quota.remaining,
-      },
-      { status: 429 }
-    );
+  const limits = await enforceApiRequestLimits(auth.userId, auth.planTier);
+  if (!limits.ok) {
+    return limits.response;
   }
 
   const endpoint = new URL(request.url).pathname;
@@ -41,8 +34,7 @@ export async function withApiAuth(
     Date.now() - start
   );
 
-  response.headers.set("X-RateLimit-Limit", String(quota.limit));
-  response.headers.set("X-RateLimit-Remaining", String(quota.remaining));
+  applyApiLimitHeaders(response, limits.quota, limits.rateLimit);
 
   return response;
 }
