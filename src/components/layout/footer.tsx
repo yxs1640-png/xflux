@@ -25,6 +25,7 @@ export function Footer() {
               <li><Link href="/use-cases" className="hover:text-white transition-colors">Use Cases</Link></li>
               <li><Link href="/docs" className="hover:text-white transition-colors">API Docs</Link></li>
               <li><Link href="/twitter-webhook" className="hover:text-white transition-colors">Twitter Webhooks</Link></li>
+              <li><Link href="/docs/integrations/make" className="hover:text-white transition-colors">Make.com integration</Link></li>
               <li><Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
               <li><Link href="/feedback" className="hover:text-white transition-colors">Feedback</Link></li>
               <li><Link href="/dashboard" className="hover:text-white transition-colors">Dashboard</Link></li>

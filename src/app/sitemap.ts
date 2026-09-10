@@ -24,6 +24,7 @@ const PUBLIC_ROUTES: Array<{
   { path: "/docs/api", changeFrequency: "monthly", priority: 0.8 },
   { path: "/docs/monitors", changeFrequency: "monthly", priority: 0.8 },
   { path: "/docs/webhooks", changeFrequency: "monthly", priority: 0.82 },
+  { path: "/docs/integrations/make", changeFrequency: "monthly", priority: 0.84 },
   { path: "/docs/limits", changeFrequency: "monthly", priority: 0.7 },
   { path: "/feedback", changeFrequency: "monthly", priority: 0.5 },
   { path: "/terms", changeFrequency: "yearly", priority: 0.3 },

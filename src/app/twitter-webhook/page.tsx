@@ -62,6 +62,9 @@ export default function TwitterWebhookPage() {
               <Link href="/docs/webhooks">
                 <Button variant="outline" size="lg">Webhook docs</Button>
               </Link>
+              <Link href="/docs/integrations/make">
+                <Button variant="outline" size="lg">Make.com guide</Button>
+              </Link>
               <Link href="/signals">
                 <Button variant="outline" size="lg">Live signal digests</Button>
               </Link>

@@ -10,6 +10,7 @@ export const DOC_NAV: DocNavItem[] = [
   { title: "API Reference", href: "/docs/api", description: "REST endpoints" },
   { title: "Monitors", href: "/docs/monitors", description: "Poll accounts and record new tweets" },
   { title: "Webhooks", href: "/docs/webhooks", description: "Signed POST callbacks on monitor hits" },
+  { title: "Make.com integration", href: "/docs/integrations/make", description: "Twitter webhooks → Make automation" },
   { title: "Plans & Limits", href: "/docs/limits", description: "Quotas, intervals, and errors" },
 ];
 

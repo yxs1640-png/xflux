@@ -159,6 +159,9 @@ export default function DocsIntroPage() {
             Webhook guide
           </Button>
         </Link>
+        <Link href="/docs/integrations/make">
+          <Button variant="outline">Make.com guide</Button>
+        </Link>
         <Link href="/register">
           <Button variant="ghost">Get API Key</Button>
         </Link>

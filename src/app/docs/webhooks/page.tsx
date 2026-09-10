@@ -21,6 +21,10 @@ export default function WebhooksDocsPage() {
         <Link href="/twitter-webhook" className="text-sky-400 hover:underline">
           Twitter webhook integration
         </Link>
+        . Step-by-step Make.com setup:{" "}
+        <Link href="/docs/integrations/make" className="text-sky-400 hover:underline">
+          Connect XFlux to Make
+        </Link>
         .
       </p>
 

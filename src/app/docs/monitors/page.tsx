@@ -22,7 +22,11 @@ export default function MonitorsDocsPage() {
         <Link href="/twitter-webhook" className="text-sky-400 hover:underline">
           Twitter webhook integration
         </Link>{" "}
-        to your HTTPS endpoint.
+        to your HTTPS endpoint. See{" "}
+        <Link href="/docs/integrations/make" className="text-sky-400 hover:underline">
+          Make.com setup
+        </Link>{" "}
+        for a no-code automation walkthrough.
       </p>
 
       <DocHeading id="concepts">Concepts</DocHeading>

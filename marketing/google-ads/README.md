@@ -15,6 +15,8 @@ Screenshots captured at **1200×628** (landscape, ~1.91:1) for Performance Max /
 
 See **`OPTIMIZATION.md`** for the full Google Ads optimization checklist.
 
+**Make / automation long-tail Search campaign** (separate from existing API PMax): [`MAKE-AUTOMATION-CAMPAIGN.md`](./MAKE-AUTOMATION-CAMPAIGN.md)
+
 **Optional (login required):** Screenshot `/dashboard/monitors` yourself for a real product UI — improves ad strength.
 
 ## Google Ads upload specs
