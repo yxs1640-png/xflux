@@ -22,7 +22,7 @@ export const ensurePendingPlanApplied = cache(async (userId: string) => {
   });
 
   if (!pending?.pendingPlanTier) return;
-  if (pending.planChangeEffectiveAt && new Date() < pending.planChangeEffectiveAt) {
+  if (!pending.planChangeEffectiveAt || new Date() < pending.planChangeEffectiveAt) {
     return;
   }
 
@@ -44,7 +44,8 @@ export const getDashboardUserRecord = cache(async () => {
 
   const pendingDue =
     user.pendingPlanTier &&
-    (!user.planChangeEffectiveAt || new Date() >= user.planChangeEffectiveAt);
+    user.planChangeEffectiveAt &&
+    new Date() >= user.planChangeEffectiveAt;
 
   if (pendingDue) {
     await maybeApplyPendingPlanChange(session.user.id);

@@ -31,6 +31,7 @@ interface PlanSelectorProps {
   stripeEnabled: boolean;
   stripeConfigured: boolean;
   hasActiveSubscription: boolean;
+  cancelScheduled?: boolean;
 }
 
 export function PlanSelector({
@@ -40,6 +41,7 @@ export function PlanSelector({
   stripeEnabled,
   stripeConfigured,
   hasActiveSubscription,
+  cancelScheduled = false,
 }: PlanSelectorProps) {
   const router = useRouter();
   const { data: session } = useSession();
@@ -184,11 +186,35 @@ export function PlanSelector({
   }
 
   function getButtonLabel(plan: Plan, index: number) {
-    if (plan.id === currentPlanId) return "Current Plan";
+    if (plan.id === currentPlanId) {
+      if (cancelScheduled && hasActiveSubscription && stripeEnabled) {
+        return "Reactivate via portal";
+      }
+      return "Current Plan";
+    }
     if (isPaidPlanLocked(plan)) return PAID_PLAN_COMING_SOON_LABEL;
-    if (plan.id === "FREE" && hasActiveSubscription && stripeEnabled) return "Cancel via portal";
+    if (plan.id === "FREE" && hasActiveSubscription && stripeEnabled) {
+      return cancelScheduled ? "Downgrade scheduled" : "Cancel via portal";
+    }
     if (index < currentIndex) return `Switch to ${plan.name}`;
     return stripeEnabled ? plan.cta : `Switch to ${plan.name}`;
+  }
+
+  function handlePlanButton(plan: Plan, index: number) {
+    if (plan.id === currentPlanId && cancelScheduled && hasActiveSubscription && stripeEnabled) {
+      void openPortal();
+      return;
+    }
+    void handleSelect(plan);
+  }
+
+  function isPlanButtonDisabled(plan: Plan) {
+    if (loadingPlan !== null || isPaidPlanLocked(plan)) return true;
+    if (plan.id === currentPlanId) {
+      return cancelScheduled ? false : true;
+    }
+    if (cancelScheduled && plan.id === "FREE") return true;
+    return false;
   }
 
   return (
@@ -244,12 +270,22 @@ export function PlanSelector({
               </ul>
 
               <Button
-                variant={isCurrent ? "secondary" : plan.highlighted ? "primary" : "outline"}
+                variant={
+                  isCurrent && cancelScheduled
+                    ? "outline"
+                    : isCurrent
+                      ? "secondary"
+                      : plan.highlighted
+                        ? "primary"
+                        : "outline"
+                }
                 className="w-full"
-                disabled={isCurrent || loadingPlan !== null || isPaidPlanLocked(plan)}
-                onClick={() => handleSelect(plan)}
+                disabled={isPlanButtonDisabled(plan)}
+                onClick={() => handlePlanButton(plan, index)}
               >
-                {loadingPlan === plan.id || (loadingPlan === "portal" && plan.id === "FREE") ? (
+                {loadingPlan === plan.id ||
+                (loadingPlan === "portal" &&
+                  (plan.id === "FREE" || (plan.id === currentPlanId && cancelScheduled))) ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
                     Processing...
@@ -266,9 +302,11 @@ export function PlanSelector({
       <p className="mt-6 text-sm text-zinc-500">
         {!checkoutEnabled
           ? "Paid plans are coming soon. The Free tier is fully available during early access."
-          : stripeEnabled
-            ? "Paid plans are billed monthly through Stripe. Use Manage billing to update payment method or cancel."
-            : "Stripe is not configured — plan changes apply immediately for local testing only."}
+          : cancelScheduled && stripeEnabled
+            ? "Your subscription is canceled but paid access continues until the date shown above. Use Reactivate via portal or Manage billing to keep your plan."
+            : stripeEnabled
+              ? "Paid plans are billed monthly through Stripe. Use Manage billing to update payment method or cancel."
+              : "Stripe is not configured — plan changes apply immediately for local testing only."}
       </p>
     </div>
   );

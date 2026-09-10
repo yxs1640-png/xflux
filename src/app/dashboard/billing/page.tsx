@@ -6,18 +6,18 @@ import { ManageBillingButton } from "@/components/billing/manage-billing-button"
 import { Badge } from "@/components/ui/badge";
 import { PLAN_LIMITS } from "@/lib/quota";
 import { isActiveSubscriptionStatus } from "@/lib/billing";
+import {
+  getBillingPeriodDisplay,
+  getSubscriptionBadgeDisplay,
+  isCancelAtPeriodEnd,
+} from "@/lib/billing-display";
 import { BillingComingSoonBanner } from "@/components/billing/billing-coming-soon-banner";
 import { BillingActivationHint } from "@/components/billing/billing-activation-hint";
+import { PlanChangeBannerSlot } from "@/components/billing/plan-change-banner-slot";
 import { isBillingCheckoutEnabled, isPaidBillingAvailable } from "@/lib/billing-config";
 import { isStripeConfigured } from "@/lib/stripe";
 import { formatNumber, formatDateOnly } from "@/lib/utils";
 import { getDashboardUserRecord } from "@/lib/dashboard-session";
-
-function subscriptionBadgeVariant(status: string | null | undefined) {
-  if (status === "active" || status === "trialing") return "sky" as const;
-  if (status === "past_due") return "warning" as const;
-  return "default" as const;
-}
 
 export default async function BillingPage() {
   const user = await getDashboardUserRecord();
@@ -28,12 +28,17 @@ export default async function BillingPage() {
   const checkoutEnabled = isBillingCheckoutEnabled();
   const stripeEnabled = isPaidBillingAvailable();
   const hasActiveSubscription = isActiveSubscriptionStatus(user.subscriptionStatus);
+  const cancelScheduled = isCancelAtPeriodEnd(user);
+  const subscriptionBadge = getSubscriptionBadgeDisplay(user);
+  const billingPeriod = getBillingPeriodDisplay(user);
 
   return (
     <div>
       <Suspense fallback={null}>
         <BillingStatusBanner />
       </Suspense>
+
+      <PlanChangeBannerSlot />
 
       {!checkoutEnabled && <BillingComingSoonBanner />}
 
@@ -51,10 +56,13 @@ export default async function BillingPage() {
             <span className="text-lg font-semibold text-white">
               {getPlanDisplayName(user.planTier)}
             </span>
-            <Badge variant={subscriptionBadgeVariant(user.subscriptionStatus)}>
-              {user.subscriptionStatus || (user.planTier === "FREE" ? "Free tier" : "Active")}
-            </Badge>
+            <Badge variant={subscriptionBadge.variant}>{subscriptionBadge.text}</Badge>
           </div>
+          {cancelScheduled && billingPeriod && (
+            <p className="mt-1 text-xs text-amber-400/90">
+              Canceled — paid access continues until {formatDateOnly(billingPeriod.date)}.
+            </p>
+          )}
         </div>
         <div className="h-8 w-px bg-zinc-800 hidden sm:block" />
         <div>
@@ -63,13 +71,13 @@ export default async function BillingPage() {
             {formatNumber(user.quotaUsed)} / {formatNumber(limit)} used
           </p>
         </div>
-        {user.subscriptionPeriodEnd && hasActiveSubscription && (
+        {billingPeriod && (
           <>
             <div className="h-8 w-px bg-zinc-800 hidden sm:block" />
             <div>
-              <p className="text-sm text-zinc-500">Renews on</p>
+              <p className="text-sm text-zinc-500">{billingPeriod.label}</p>
               <p className="text-lg font-semibold text-white mt-1">
-                {formatDateOnly(user.subscriptionPeriodEnd)}
+                {formatDateOnly(billingPeriod.date)}
               </p>
             </div>
           </>
@@ -88,6 +96,7 @@ export default async function BillingPage() {
         stripeEnabled={stripeEnabled}
         stripeConfigured={isStripeConfigured()}
         hasActiveSubscription={hasActiveSubscription}
+        cancelScheduled={cancelScheduled}
       />
     </div>
   );

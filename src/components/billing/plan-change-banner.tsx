@@ -105,6 +105,7 @@ function PendingPlanChangeBanner({
   const wouldPause = previewMonitorPauseCount(activeMonitorCount, pendingPlanTier);
   const newLimit = monitorLimitForPlan(pendingPlanTier);
   const clearsWebhooks = pendingPlanTier === "FREE";
+  const isCancellation = pendingPlanTier === "FREE";
 
   return (
     <div
@@ -113,11 +114,28 @@ function PendingPlanChangeBanner({
         "border-amber-500/20 bg-amber-500/10 text-amber-100"
       )}
     >
-      <p className="font-medium text-amber-400">Downgrade scheduled</p>
+      <p className="font-medium text-amber-400">
+        {isCancellation ? "Cancellation scheduled" : "Downgrade scheduled"}
+      </p>
       <p className="mt-2 text-zinc-300">
-        Your <strong className="text-white">{getPlanDisplayName(currentPlanTier)}</strong> plan
-        stays active until <strong className="text-white">{formatEffectiveDate(planChangeEffectiveAt)}</strong>.
-        Then it will change to <strong className="text-white">{getPlanDisplayName(pendingPlanTier)}</strong>.
+        {isCancellation ? (
+          <>
+            Your subscription is canceled.{" "}
+            <strong className="text-white">{getPlanDisplayName(currentPlanTier)}</strong> access
+            continues until{" "}
+            <strong className="text-white">{formatEffectiveDate(planChangeEffectiveAt)}</strong>,
+            then your account moves to{" "}
+            <strong className="text-white">{getPlanDisplayName(pendingPlanTier)}</strong>.
+          </>
+        ) : (
+          <>
+            Your <strong className="text-white">{getPlanDisplayName(currentPlanTier)}</strong> plan
+            stays active until{" "}
+            <strong className="text-white">{formatEffectiveDate(planChangeEffectiveAt)}</strong>.
+            Then it will change to{" "}
+            <strong className="text-white">{getPlanDisplayName(pendingPlanTier)}</strong>.
+          </>
+        )}
       </p>
       <ul className="mt-2 space-y-1 text-zinc-400">
         <li>

@@ -82,6 +82,31 @@ export async function schedulePlanDowngrade(
   });
 }
 
+/** User canceled at period end — keep current paid tier until effectiveAt. */
+export async function scheduleCancelAtPeriodEnd(
+  userId: string,
+  activePlanTier: PlanTier,
+  effectiveAt: Date | null,
+  stripe?: StripeSubscriptionSnapshot
+) {
+  return prisma.user.update({
+    where: { id: userId },
+    data: {
+      planTier: activePlanTier,
+      quotaLimit: PLAN_LIMITS[activePlanTier],
+      pendingPlanTier: PlanTier.FREE,
+      planChangeEffectiveAt: effectiveAt,
+      ...stripeData(stripe),
+    },
+    select: {
+      id: true,
+      planTier: true,
+      pendingPlanTier: true,
+      planChangeEffectiveAt: true,
+    },
+  });
+}
+
 export async function applyPlanImmediately(
   userId: string,
   planTier: PlanTier,
@@ -118,7 +143,8 @@ export async function applyPendingPlanChange(
   });
 
   if (!user?.pendingPlanTier) return null;
-  if (user.planChangeEffectiveAt && new Date() < user.planChangeEffectiveAt) {
+  // Scheduled downgrades require a known effective date in the past — never apply early.
+  if (!user.planChangeEffectiveAt || new Date() < user.planChangeEffectiveAt) {
     return null;
   }
 

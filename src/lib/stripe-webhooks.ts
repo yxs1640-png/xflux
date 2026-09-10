@@ -4,12 +4,12 @@ import { PlanTier } from "@prisma/client";
 import type Stripe from "stripe";
 import {
   applyPlanImmediately,
-  applyPendingPlanChange,
   clearPendingPlanChange,
   isPlanDowngrade,
   isPlanUpgrade,
   maybeApplyPendingPlanChange,
   resetUserToFree,
+  scheduleCancelAtPeriodEnd,
   schedulePlanDowngrade,
 } from "./billing";
 import { planTierFromPriceId } from "./stripe-plans";
@@ -81,10 +81,14 @@ async function syncSubscription(
   }
 
   if (subscription.cancel_at_period_end) {
-    await schedulePlanDowngrade(userId, PlanTier.FREE, periodEndDate, snapshot);
-    await maybeApplyPendingPlanChange(userId);
+    const activeTier = planFromSubscription(subscription);
+    if (activeTier && (status === "active" || status === "trialing")) {
+      await scheduleCancelAtPeriodEnd(userId, activeTier, periodEndDate, snapshot);
+    } else {
+      await schedulePlanDowngrade(userId, PlanTier.FREE, periodEndDate, snapshot);
+    }
     await trackServerEvent(userId, AnalyticsEvents.SUBSCRIPTION_UPDATED, {
-      plan_id: user.planTier,
+      plan_id: activeTier ?? user.planTier,
       pending_plan_id: PlanTier.FREE,
       subscription_status: status,
       via: "stripe_webhook_cancel_scheduled",
@@ -108,7 +112,6 @@ async function syncSubscription(
 
   if (isPlanDowngrade(user.planTier, newPlanTier)) {
     await schedulePlanDowngrade(userId, newPlanTier, periodEndDate, snapshot);
-    await maybeApplyPendingPlanChange(userId);
     await trackServerEvent(userId, AnalyticsEvents.SUBSCRIPTION_UPDATED, {
       plan_id: user.planTier,
       pending_plan_id: newPlanTier,
