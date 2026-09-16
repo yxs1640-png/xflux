@@ -5,7 +5,7 @@ import { ApiPlayground } from "@/components/landing/api-playground";
 const TRUST_POINTS = [
   "1,000 free API calls / month",
   "Profile, search & timeline REST API",
-  "Monitors + signed webhooks (paid)",
+  "Monitors + webhooks from $19/mo — not $5k stream",
 ];
 
 export function Hero({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
@@ -30,9 +30,11 @@ export function Hero({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
             </h1>
 
             <p className="mt-6 text-lg text-zinc-400 leading-relaxed">
-              Stable REST endpoints that return normalized JSON for search, analytics, and AI
-              pipelines — plus account monitors with signed HTTP webhooks.{" "}
-              <span className="text-zinc-300">No official X API approval required.</span>
+              Stable REST endpoints for search, analytics, and AI pipelines — plus account monitors
+              that push signed webhooks when KOLs post.{" "}
+              <span className="text-zinc-300">
+                Skip the $5,000/mo official stream — alerts from $19/mo.
+              </span>
             </p>
 
             <HeroActions isLoggedIn={isLoggedIn} />

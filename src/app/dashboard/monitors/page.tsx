@@ -236,7 +236,11 @@ function MonitorWebhookPanel({
                     <Link href="/docs/webhooks" className="text-sky-400 hover:underline">
                       Webhook docs
                     </Link>{" "}
-                    for signature verification.
+                    or{" "}
+                    <Link href="/docs/integrations/make" className="text-sky-400 hover:underline">
+                      Make.com guide
+                    </Link>{" "}
+                    for routing alerts.
                   </p>
                 </div>
               )}
@@ -382,10 +386,48 @@ export default function MonitorsPage() {
         </p>
       </div>
 
+      <Card className="mb-6 border-sky-500/20 bg-sky-500/5">
+        <CardContent className="pt-6">
+          <p className="text-sm text-zinc-300 mb-3">
+            <strong className="text-white">New here?</strong> Pick a workflow:
+          </p>
+          <ul className="text-sm text-zinc-400 space-y-1.5">
+            <li>
+              Trading / macro alerts —{" "}
+              <Link href="/use-cases/trading-alerts" className="text-sky-400 hover:underline">
+                setup guide
+              </Link>
+              ,{" "}
+              <Link href="/docs/guides/trading-keywords" className="text-sky-400 hover:underline">
+                keyword templates
+              </Link>
+            </li>
+            <li>
+              Slack / Telegram via Make.com —{" "}
+              <Link href="/docs/integrations/make" className="text-sky-400 hover:underline">
+                integration guide
+              </Link>
+            </li>
+            <li>
+              Custom backend —{" "}
+              <Link href="/docs/webhooks" className="text-sky-400 hover:underline">
+                webhook verification
+              </Link>
+            </li>
+          </ul>
+        </CardContent>
+      </Card>
+
       <Card className="mb-6">
         <CardHeader>
           <CardTitle>Add Monitor</CardTitle>
-          <CardDescription>Watch a user&apos;s new tweets (optional keyword filter)</CardDescription>
+          <CardDescription>
+            Watch a user&apos;s new tweets.{" "}
+            <Link href="/docs/guides/trading-keywords" className="text-sky-400 hover:underline">
+              Keyword templates
+            </Link>{" "}
+            for macro, flow, and ticker filters.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={createMonitor} className="flex flex-wrap gap-4">

@@ -1,0 +1,19 @@
+{
+  "name": "xflux-mcp-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Thin MCP server for the XFlux read API",
+  "type": "module",
+  "bin": {
+    "xflux-mcp": "./index.mjs"
+  },
+  "scripts": {
+    "start": "node index.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

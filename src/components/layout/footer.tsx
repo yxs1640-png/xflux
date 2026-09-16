@@ -23,9 +23,11 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-zinc-500">
               <li><Link href="/signals" className="hover:text-white transition-colors">Live Signals</Link></li>
               <li><Link href="/use-cases" className="hover:text-white transition-colors">Use Cases</Link></li>
+              <li><Link href="/use-cases/trading-alerts" className="hover:text-white transition-colors">Trading alerts</Link></li>
               <li><Link href="/docs" className="hover:text-white transition-colors">API Docs</Link></li>
               <li><Link href="/twitter-webhook" className="hover:text-white transition-colors">Twitter Webhooks</Link></li>
               <li><Link href="/docs/integrations/make" className="hover:text-white transition-colors">Make.com integration</Link></li>
+              <li><Link href="/docs/integrations/mcp" className="hover:text-white transition-colors">MCP server</Link></li>
               <li><Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
               <li><Link href="/feedback" className="hover:text-white transition-colors">Feedback</Link></li>
               <li><Link href="/dashboard" className="hover:text-white transition-colors">Dashboard</Link></li>

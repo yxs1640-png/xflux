@@ -27,8 +27,8 @@ const USE_CASES = [
     ],
     unlike: "Unlike read-only API proxies, you don't build the polling layer yourself.",
     capabilities: ["Monitor", "Webhooks"],
-    docHref: "/docs/monitors",
-    docLabel: "Monitor guide",
+    docHref: "/use-cases/trading-alerts",
+    docLabel: "Trading alerts guide",
   },
   {
     icon: Bot,

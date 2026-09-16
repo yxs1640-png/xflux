@@ -4,6 +4,8 @@ Current campaign: **Campaign #1** · Performance Max · ¥20/day · US · Maximi
 
 **New (optional):** Make/automation **Search** long-tail — see [`MAKE-AUTOMATION-CAMPAIGN.md`](./MAKE-AUTOMATION-CAMPAIGN.md). Keep Campaign #1 unchanged; add as a second campaign when ready.
 
+**New pages (Sep 2026):** Trading alerts, keyword templates, MCP docs — GSC indexing + PMax copy in [`GSC-DIRECTIONS.md`](./GSC-DIRECTIONS.md).
+
 **Conversion goals playbook:** see [`CONVERSION-GOALS.md`](./CONVERSION-GOALS.md) (primary sign-up, secondary purchase, enhanced conversions, bidding stages).
 
 ## P0 — Do today (biggest impact)

@@ -36,6 +36,13 @@ const COMPARE = [
   { label: "Time to first alert", diy: "Days of engineering", xflux: "Minutes" },
 ];
 
+const STREAM_COMPARE = [
+  { label: "Monthly cost", official: "$5,000+ (Pro filtered stream)", xflux: "From $19/mo (Starter)" },
+  { label: "Scope", official: "Rule-based firehose", xflux: "Accounts you choose" },
+  { label: "Webhook to your app", official: "You consume the stream", xflux: "Signed HTTP POST" },
+  { label: "Self-serve signup", official: "Enterprise / approval", xflux: "Minutes" },
+];
+
 export default function TwitterWebhookPage() {
   return (
     <>
@@ -64,6 +71,9 @@ export default function TwitterWebhookPage() {
               </Link>
               <Link href="/docs/integrations/make">
                 <Button variant="outline" size="lg">Make.com guide</Button>
+              </Link>
+              <Link href="/use-cases/trading-alerts">
+                <Button variant="outline" size="lg">Trading alerts</Button>
               </Link>
               <Link href="/signals">
                 <Button variant="outline" size="lg">Live signal digests</Button>
@@ -153,6 +163,47 @@ X-XFlux-Signature: sha256=...
                 </tbody>
               </table>
             </div>
+          </section>
+
+          <section className="mb-16">
+            <h2 className="text-2xl font-bold text-white mb-6">Official stream vs XFlux monitors</h2>
+            <p className="text-zinc-400 text-sm mb-4">
+              X&apos;s filtered stream API is priced for enterprises ($5,000+/mo). If you only need
+              alerts when specific accounts post, monitors + webhooks are faster to ship and
+              cheaper to run.
+            </p>
+            <div className="overflow-x-auto rounded-xl border border-zinc-800 mb-4">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-zinc-800 bg-zinc-900/50">
+                    <th className="px-4 py-3 text-left text-zinc-400 font-medium" />
+                    <th className="px-4 py-3 text-left text-zinc-400 font-medium">
+                      Official filtered stream
+                    </th>
+                    <th className="px-4 py-3 text-left text-sky-400 font-medium">XFlux monitors</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {STREAM_COMPARE.map((row) => (
+                    <tr key={row.label} className="border-b border-zinc-800 last:border-0">
+                      <td className="px-4 py-3 text-zinc-300">{row.label}</td>
+                      <td className="px-4 py-3 text-zinc-500">{row.official}</td>
+                      <td className="px-4 py-3 text-zinc-200">{row.xflux}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-sm text-zinc-500">
+              Trading workflows:{" "}
+              <Link href="/use-cases/trading-alerts" className="text-sky-400 hover:underline">
+                macro & flow alert setup
+              </Link>{" "}
+              ·{" "}
+              <Link href="/docs/guides/trading-keywords" className="text-sky-400 hover:underline">
+                keyword templates
+              </Link>
+            </p>
           </section>
 
           <section className="mb-16">

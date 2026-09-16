@@ -35,13 +35,32 @@ export default async function PricingPage() {
             <h1 className="text-4xl font-bold text-white">Pricing</h1>
             <p className="mt-4 text-zinc-400 max-w-xl mx-auto">
               Monthly plans for read API access and account monitors. HTTP webhooks on Starter and
-              above.
+              above — a practical alternative to the official $5,000/mo filtered stream.
             </p>
             {!checkoutEnabled && (
               <p className="mt-3 text-sm text-amber-200/80">
                 Paid plans are coming soon — start with the Free tier today (no credit card).
               </p>
             )}
+          </div>
+
+          <div className="mb-12 mx-auto max-w-3xl rounded-xl border border-zinc-800 bg-zinc-900/40 p-6 text-center">
+            <h2 className="text-lg font-semibold text-white mb-2">
+              Need alerts, not a $5,000/mo firehose?
+            </h2>
+            <p className="text-sm text-zinc-400 mb-4">
+              Official X API filtered stream starts at $5,000/month. XFlux Starter ($19/mo) monitors
+              the accounts you pick and POSTs signed webhooks on new tweets — with optional keyword
+              filters for trading and macro workflows.
+            </p>
+            <div className="flex flex-wrap justify-center gap-3">
+              <Link href="/use-cases/trading-alerts">
+                <Button variant="outline" size="sm">Trading alerts</Button>
+              </Link>
+              <Link href="/twitter-webhook">
+                <Button variant="outline" size="sm">Webhook integration</Button>
+              </Link>
+            </div>
           </div>
 
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">

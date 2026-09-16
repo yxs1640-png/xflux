@@ -12,8 +12,9 @@ export function ProductOverview() {
             Pull with REST — or get pushed when accounts post
           </h2>
           <p className="mt-4 text-zinc-400 max-w-2xl mx-auto">
-            Use the read API in your app, bot, or data pipeline. Add monitors when you need alerts
-            without writing polling infrastructure.
+            Use the read API in your app, bot, or data pipeline. Add monitors when you need
+            account-level alerts — a practical alternative to the official $5,000/mo filtered
+            stream, from $19/mo.
           </p>
         </div>
 
@@ -61,9 +62,14 @@ X-XFlux-Signature: sha256=...
   "tweet": { "id": "...", "text": "..." }
 }`}
             </pre>
-            <Link href="/twitter-webhook" className="inline-flex items-center gap-1 text-sm text-sky-400 hover:text-sky-300 mt-4">
-              Twitter webhook integration <ArrowRight className="h-4 w-4" />
-            </Link>
+            <div className="flex flex-wrap gap-4 mt-4">
+              <Link href="/twitter-webhook" className="inline-flex items-center gap-1 text-sm text-sky-400 hover:text-sky-300">
+                Twitter webhook integration <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link href="/use-cases/trading-alerts" className="inline-flex items-center gap-1 text-sm text-sky-400 hover:text-sky-300">
+                Trading alerts <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
           </div>
         </div>
 
