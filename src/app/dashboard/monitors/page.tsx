@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { PlanTier } from "@prisma/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -276,6 +277,7 @@ function MonitorWebhookPanel({
 }
 
 export default function MonitorsPage() {
+  const searchParams = useSearchParams();
   const [planTier, setPlanTier] = useState<PlanTier>("FREE");
   const canDeliverWebhooks = planTier !== "FREE";
   const [monitors, setMonitors] = useState<Monitor[]>([]);
@@ -298,6 +300,11 @@ export default function MonitorsPage() {
     const interval = setInterval(fetchMonitors, 30_000);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    const add = searchParams.get("add");
+    if (add) setUsername(add.replace(/^@/, ""));
+  }, [searchParams]);
 
   function updateMonitor(updated: Monitor) {
     setMonitors((prev) => prev.map((m) => (m.id === updated.id ? updated : m)));

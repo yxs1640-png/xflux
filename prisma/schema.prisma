@@ -278,6 +278,28 @@ enum SignalTopicSubmissionStatus {
   REJECTED
 }
 
+enum PredictorNiche {
+  MACRO
+  TRADING
+  CRYPTO
+  GEOPOLITICS
+}
+
+enum PredictorClaimStatus {
+  OPEN
+  HIT
+  MISS
+  INCONCLUSIVE
+  EXPIRED
+}
+
+enum PredictorDiscoveryRunStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
 /** Private user-defined signal board (dashboard digest). */
 model CustomSignal {
   id            String   @id @default(cuid())
@@ -341,4 +363,65 @@ model CommunitySignalTopic {
 
   @@index([submittedById])
   @@index([publishedAt])
+}
+
+/** Discovered X account that makes market/macro predictions. */
+model PredictorProfile {
+  id              String         @id @default(cuid())
+  username        String         @unique
+  displayName     String?
+  niche           PredictorNiche
+  bio             String?
+  followerCount   Int?
+  discoveryScore  Float          @default(0)
+  accuracyScore   Float?
+  totalClaims     Int            @default(0)
+  verifiedClaims  Int            @default(0)
+  hitCount        Int            @default(0)
+  missCount       Int            @default(0)
+  lastScannedAt   DateTime?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  claims PredictorClaim[]
+
+  @@index([niche, discoveryScore])
+  @@index([accuracyScore])
+}
+
+/** Extracted prediction claim from a tweet. */
+model PredictorClaim {
+  id             String               @id @default(cuid())
+  predictorId    String
+  tweetId        String
+  tweetText      String
+  niche          PredictorNiche
+  subject        String
+  direction      String?
+  claimSummary   String
+  confidence     Float
+  status         PredictorClaimStatus @default(OPEN)
+  statusReason   String?
+  tweetCreatedAt DateTime
+  verifiedAt     DateTime?
+  createdAt      DateTime             @default(now())
+
+  predictor PredictorProfile @relation(fields: [predictorId], references: [id], onDelete: Cascade)
+
+  @@unique([predictorId, tweetId])
+  @@index([predictorId, tweetCreatedAt])
+  @@index([status, tweetCreatedAt])
+}
+
+/** Background discovery run log. */
+model PredictorDiscoveryRun {
+  id          String                      @id @default(cuid())
+  status      PredictorDiscoveryRunStatus @default(PENDING)
+  niche       PredictorNiche?
+  seedsScanned Int                        @default(0)
+  authorsFound Int                        @default(0)
+  claimsAdded  Int                        @default(0)
+  startedAt   DateTime                    @default(now())
+  finishedAt  DateTime?
+  error       String?
 }

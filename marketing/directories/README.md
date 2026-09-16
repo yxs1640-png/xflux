@@ -65,7 +65,7 @@ Free tier: 1,000 API calls/month and 1 monitor. Paid plans from $19/mo with webh
 | Channel | Status | Action |
 |---------|--------|--------|
 | [public-apis](https://github.com/public-apis/public-apis) | PR #6809 open | Wait for merge |
-| [AlternativeTo](https://alternativeto.net) | Submitted | Wait for review; add alternatives on competitor pages |
+| [AlternativeTo](https://alternativeto.net) | Submitted | See **`alternativeto-playbook.md`** — check status, optimize, cross-link |
 | [free-for.dev](https://github.com/ripienaar/free-for-dev) | PR #4733 open | Wait for merge |
 | [SaaSHub](https://www.saashub.com/submit) | Ready | See `saashub-submit.md` |
 | [Dev.to](https://dev.to) | Published | https://dev.to/xfluxapi/get-started-with-xflux-xtwitter-api-in-60-seconds-e40 |
@@ -74,11 +74,6 @@ Free tier: 1,000 API calls/month and 1 monitor. Paid plans from $19/mo with webh
 | [Reddit r/SideProject](https://reddit.com/r/SideProject) | Ready | See `../reddit/01-sideproject-showcase.md` |
 | Google Ads PMax | Running | Final URL + 极佳素材 ✓ |
 
-## AlternativeTo — post-approval
+## AlternativeTo
 
-After listing goes live, visit competitor pages and click **Add XFlux as alternative**:
-
-- https://alternativeto.net/software/twitter-api/
-- Search: TwitterAPI.IO, GetXAPI, TWINT
-
-This increases cross-link visibility in search.
+Full step-by-step: **`alternativeto-playbook.md`** (submit copy, competitor URLs, cross-link strategy).
