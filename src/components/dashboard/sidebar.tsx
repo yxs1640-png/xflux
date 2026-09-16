@@ -27,7 +27,7 @@ const NAV = [
   { href: "/dashboard/usage", label: "Usage", icon: BarChart3 },
   { href: "/dashboard/monitors", label: "Monitors", icon: Radar },
   { href: "/dashboard/signals", label: "My Signals", icon: Sparkles },
-  { href: "/dashboard/predictors", label: "Predictors", icon: Target },
+  { href: "/dashboard/predictors", label: "Smart Money", icon: Target },
   { href: "/dashboard/billing", label: "Billing", icon: CreditCard },
   { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];

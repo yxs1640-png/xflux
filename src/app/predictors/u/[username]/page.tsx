@@ -6,6 +6,7 @@ import { PredictorClaimsList } from "@/components/predictors/predictor-claims-li
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { pageMetadata } from "@/lib/seo";
+import { SMART_MONEY } from "@/lib/predictor-discovery/copy";
 import { getPredictorByUsername } from "@/lib/predictor-discovery/queries";
 import { NICHE_META, slugFromNiche } from "@/lib/predictor-discovery/types";
 
@@ -24,8 +25,8 @@ export async function generateMetadata({ params }: PageProps) {
   if (!predictor) return {};
 
   return pageMetadata({
-    title: `@${predictor.username} — X Predictor Profile`,
-    description: `Prediction claims and accuracy tracking for @${predictor.username} on X/Twitter.`,
+    title: `@${predictor.username} — Smart Money Profile on X`,
+    description: `Recent market calls and activity score for @${predictor.username}. Monitor with XFlux webhooks.`,
     path: `/predictors/u/${predictor.username}`,
   });
 }
@@ -54,6 +55,7 @@ export default async function PredictorProfilePage({ params }: PageProps) {
           </Link>
 
           <div className="mt-6 mb-8">
+            <p className="text-xs text-emerald-500/80 uppercase tracking-wide mb-2">{SMART_MONEY.badge}</p>
             <h1 className="text-3xl font-bold text-white">@{predictor.username}</h1>
             {predictor.displayName && (
               <p className="text-zinc-400 mt-1">{predictor.displayName}</p>
@@ -71,13 +73,16 @@ export default async function PredictorProfilePage({ params }: PageProps) {
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
             {[
-              { label: "Discovery", value: predictor.discoveryScore.toFixed(1) },
+              { label: SMART_MONEY.stats.activity, value: predictor.discoveryScore.toFixed(1) },
               {
-                label: "Accuracy",
+                label: SMART_MONEY.stats.trackRecord,
                 value: predictor.accuracyScore != null ? `${predictor.accuracyScore}%` : "—",
               },
-              { label: "Claims", value: String(predictor.totalClaims) },
-              { label: "Hits / Misses", value: `${predictor.hitCount} / ${predictor.missCount}` },
+              { label: SMART_MONEY.stats.totalCalls, value: String(predictor.totalClaims) },
+              {
+                label: SMART_MONEY.stats.hitsMisses,
+                value: `${predictor.hitCount} / ${predictor.missCount}`,
+              },
             ].map((s) => (
               <div key={s.label} className="rounded-lg border border-zinc-800 bg-zinc-900/40 p-3">
                 <p className="text-xs text-zinc-500">{s.label}</p>
@@ -87,16 +92,13 @@ export default async function PredictorProfilePage({ params }: PageProps) {
           </div>
 
           <Link href={`/dashboard/monitors?add=${predictor.username}`}>
-            <Button className="mb-8">Monitor @{predictor.username}</Button>
+            <Button className="mb-8">{SMART_MONEY.monitorCta(predictor.username)}</Button>
           </Link>
 
-          <h2 className="text-lg font-semibold text-white mb-4">Extracted predictions (14d window)</h2>
+          <h2 className="text-lg font-semibold text-white mb-4">{SMART_MONEY.profileCallsHeading}</h2>
           <PredictorClaimsList claims={predictor.claims} />
 
-          <p className="text-xs text-zinc-600 mt-8">
-            Not financial advice. Accuracy uses author follow-up language heuristics, not market
-            backtests.
-          </p>
+          <p className="text-xs text-zinc-600 mt-8 leading-relaxed">{SMART_MONEY.disclaimer}</p>
         </div>
       </main>
       <Footer />

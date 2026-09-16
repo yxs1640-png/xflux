@@ -83,7 +83,7 @@ export default function TradingAlertsPage() {
                 <Button variant="outline" size="lg">Keyword templates</Button>
               </Link>
               <Link href="/predictors">
-                <Button variant="outline" size="lg">Predictor Discovery</Button>
+                <Button variant="outline" size="lg">Smart Money accounts</Button>
               </Link>
               <Link href="/signals/trading">
                 <Button variant="outline" size="lg">Live market signals</Button>

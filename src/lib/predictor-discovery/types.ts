@@ -16,22 +16,22 @@ export const NICHE_META: Record<
   MACRO: {
     slug: "macro",
     label: "Macro & rates",
-    description: "Fed, inflation, CPI, rates, and macro catalyst voices on X.",
+    description: "Voices that call Fed moves, CPI, yields, and recession risk before headlines spread.",
   },
   TRADING: {
     slug: "trading",
     label: "Trading & markets",
-    description: "Equity, index, flow, and market-timing accounts.",
+    description: "Flow scanners, index commentators, and accounts that post actionable market calls.",
   },
   CRYPTO: {
     slug: "crypto",
     label: "Crypto",
-    description: "Bitcoin, majors, and on-chain narrative predictors.",
+    description: "Bitcoin, majors, and on-chain accounts that lead narrative shifts early.",
   },
   GEOPOLITICS: {
     slug: "geopolitics",
     label: "Geopolitics",
-    description: "Policy, sanctions, war, and risk-off forecast accounts.",
+    description: "Policy, sanctions, and conflict watchers that move risk sentiment on X.",
   },
 };
 

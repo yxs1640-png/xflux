@@ -1,6 +1,14 @@
 import { Badge } from "@/components/ui/badge";
 import type { PredictorClaim } from "@prisma/client";
 
+const STATUS_LABEL: Record<PredictorClaim["status"], string> = {
+  OPEN: "Open",
+  HIT: "Right",
+  MISS: "Wrong",
+  INCONCLUSIVE: "Unclear",
+  EXPIRED: "Expired",
+};
+
 const STATUS_VARIANT: Record<
   PredictorClaim["status"],
   "default" | "success" | "warning"
@@ -14,7 +22,11 @@ const STATUS_VARIANT: Record<
 
 export function PredictorClaimsList({ claims }: { claims: PredictorClaim[] }) {
   if (claims.length === 0) {
-    return <p className="text-sm text-zinc-500">No extracted claims in the last 14 days.</p>;
+    return (
+      <p className="text-sm text-zinc-500">
+        No forward-looking calls detected in the last 14 days.
+      </p>
+    );
   }
 
   return (
@@ -25,12 +37,12 @@ export function PredictorClaimsList({ claims }: { claims: PredictorClaim[] }) {
           className="rounded-lg border border-zinc-800 bg-zinc-900/40 p-4"
         >
           <div className="flex flex-wrap items-center gap-2 mb-2">
-            <Badge variant={STATUS_VARIANT[c.status]}>{c.status}</Badge>
+            <Badge variant={STATUS_VARIANT[c.status]}>{STATUS_LABEL[c.status]}</Badge>
             {c.direction && (
               <span className="text-xs text-zinc-500 capitalize">{c.direction}</span>
             )}
             <span className="text-xs text-zinc-600">
-              {c.tweetCreatedAt.toLocaleDateString()} · confidence {(c.confidence * 100).toFixed(0)}%
+              {c.tweetCreatedAt.toLocaleDateString()}
             </span>
           </div>
           <p className="text-sm text-zinc-300">{c.claimSummary}</p>
