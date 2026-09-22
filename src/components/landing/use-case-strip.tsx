@@ -82,6 +82,25 @@ export function UseCaseStrip() {
             </Card>
           ))}
         </div>
+
+        <p className="mt-10 text-center text-sm text-zinc-500">
+          Scene-specific guides:{" "}
+          <Link href="/use-cases/trading-alerts" className="text-sky-400 hover:text-sky-300">
+            Trading alerts
+          </Link>
+          {" · "}
+          <Link href="/use-cases/ai-research" className="text-sky-400 hover:text-sky-300">
+            AI research
+          </Link>
+          {" · "}
+          <Link href="/use-cases/crypto-alerts" className="text-sky-400 hover:text-sky-300">
+            Crypto alerts
+          </Link>
+          {" · "}
+          <Link href="/docs/compare/pricing" className="text-sky-400 hover:text-sky-300">
+            vs official X API pricing
+          </Link>
+        </p>
       </div>
     </section>
   );

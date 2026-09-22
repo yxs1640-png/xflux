@@ -51,11 +51,20 @@ export default async function PricingPage() {
             <p className="text-sm text-zinc-400 mb-4">
               Official X API filtered stream starts at $5,000/month. XFlux Starter ($19/mo) monitors
               the accounts you pick and POSTs signed webhooks on new tweets — with optional keyword
-              filters for trading and macro workflows.
+              filters for trading, AI, and crypto workflows.
             </p>
             <div className="flex flex-wrap justify-center gap-3">
+              <Link href="/docs/compare/pricing">
+                <Button variant="outline" size="sm">vs official X API</Button>
+              </Link>
               <Link href="/use-cases/trading-alerts">
                 <Button variant="outline" size="sm">Trading alerts</Button>
+              </Link>
+              <Link href="/use-cases/ai-research">
+                <Button variant="outline" size="sm">AI research</Button>
+              </Link>
+              <Link href="/use-cases/crypto-alerts">
+                <Button variant="outline" size="sm">Crypto alerts</Button>
               </Link>
               <Link href="/twitter-webhook">
                 <Button variant="outline" size="sm">Webhook integration</Button>

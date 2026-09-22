@@ -18,6 +18,7 @@ import { pageMetadata } from "@/lib/seo";
 import { SIGNAL_FRESHNESS_DESC_SUFFIX, SIGNAL_FRESHNESS_TITLE } from "@/lib/signals/freshness-copy";
 import { Breadcrumbs, SignalFaqSection } from "@/components/signals/signal-seo-blocks";
 import { SignalsHubJsonLd } from "@/components/seo/signals-json-ld";
+import { SeoGuideLinks } from "@/components/seo/seo-guide-links";
 
 const TOPIC_COUNT = getSignalTopicCount();
 
@@ -82,6 +83,10 @@ export default function SignalsHubPage() {
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </p>
+            <SeoGuideLinks
+              className="mt-8 mx-auto max-w-2xl text-center"
+              heading="Turn digests into monitors & API workflows"
+            />
           </div>
 
           <nav

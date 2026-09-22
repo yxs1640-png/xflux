@@ -12,6 +12,7 @@ import {
   SIGNAL_FRESHNESS_BADGE,
   SIGNAL_FRESHNESS_PAGE_HINT,
 } from "@/lib/signals/freshness-copy";
+import { SeoGuideLinks } from "@/components/seo/seo-guide-links";
 
 type SignalFeedPageProps = {
   topic: SignalTopicConfig;
@@ -106,13 +107,16 @@ export function SignalFeedPage({ topic, children }: SignalFeedPageProps) {
                 alerts or signed webhooks when they post.
               </CardDescription>
             </CardHeader>
-            <CardContent className="flex flex-wrap gap-3">
-              <Link href={`/register?src=${topic.registerSrc}`}>
-                <Button>Start free — add a monitor</Button>
-              </Link>
-              <Link href="/docs/monitors">
-                <Button variant="outline">How monitors work</Button>
-              </Link>
+            <CardContent className="flex flex-col gap-4">
+              <div className="flex flex-wrap gap-3">
+                <Link href={`/register?src=${topic.registerSrc}`}>
+                  <Button>Start free — add a monitor</Button>
+                </Link>
+                <Link href="/docs/monitors">
+                  <Button variant="outline">How monitors work</Button>
+                </Link>
+              </div>
+              <SeoGuideLinks heading="Related guides" />
             </CardContent>
           </Card>
 

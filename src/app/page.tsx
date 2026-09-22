@@ -129,10 +129,27 @@ export default async function HomePage() {
               );
               })}
             </div>
-            <div className="text-center mt-8">
+            <div className="text-center mt-8 space-y-3">
               <Link href={pricingHref} className="text-sm text-sky-400 hover:text-sky-300">
                 View all plans and limits →
               </Link>
+              <p className="text-sm text-zinc-500">
+                <Link href="/docs/compare/pricing" className="text-sky-400 hover:text-sky-300">
+                  Compare to official X API
+                </Link>
+                {" · "}
+                <Link href="/use-cases/trading-alerts" className="text-sky-400 hover:text-sky-300">
+                  Trading
+                </Link>
+                {" · "}
+                <Link href="/use-cases/ai-research" className="text-sky-400 hover:text-sky-300">
+                  AI research
+                </Link>
+                {" · "}
+                <Link href="/use-cases/crypto-alerts" className="text-sky-400 hover:text-sky-300">
+                  Crypto
+                </Link>
+              </p>
             </div>
           </div>
         </section>

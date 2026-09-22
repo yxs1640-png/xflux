@@ -52,13 +52,31 @@ export function PriceComparison({ registerHref = "/register?src=homepage_compare
           ))}
         </div>
 
-        <div className="mt-8 text-center">
+        <div className="mt-8 text-center space-y-4">
           <Link href={registerHref}>
             <Button size="lg">
               Start free — no credit card
               <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
+          <p className="text-sm text-zinc-500">
+            Full breakdown:{" "}
+            <Link href="/docs/compare/pricing" className="text-sky-400 hover:text-sky-300">
+              Pricing vs official X API
+            </Link>
+            {" · "}
+            <Link href="/use-cases/trading-alerts" className="text-sky-400 hover:text-sky-300">
+              Trading alerts
+            </Link>
+            {" · "}
+            <Link href="/use-cases/ai-research" className="text-sky-400 hover:text-sky-300">
+              AI research
+            </Link>
+            {" · "}
+            <Link href="/use-cases/crypto-alerts" className="text-sky-400 hover:text-sky-300">
+              Crypto alerts
+            </Link>
+          </p>
         </div>
       </div>
     </section>
