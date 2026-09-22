@@ -1,17 +1,53 @@
 # GSC & Ads — New Direction Pages (Sep 2026)
 
-Three product directions shipped. Use this for Search Console indexing and Google Ads asset updates.
+Product and docs pages for Search Console indexing and Google Ads asset updates.
 
 ## Request indexing (GSC)
 
-Priority URLs (URL Inspection → Request indexing):
+Priority URLs (URL Inspection → Request indexing), after Vercel deploy is live:
+
+### Wave A — already listed (re-check if needed)
 
 | URL | Why |
 |-----|-----|
-| `https://www.xfluxapi.com/use-cases/trading-alerts` | Trading/macro landing — matches "markets twitter" impressions |
+| `https://www.xfluxapi.com/use-cases/trading-alerts` | Trading/macro landing |
 | `https://www.xfluxapi.com/docs/guides/trading-keywords` | Long-tail monitor keyword queries |
 | `https://www.xfluxapi.com/docs/integrations/mcp` | MCP / AI agent discovery |
-| `https://www.xfluxapi.com/docs/integrations/make` | Already live — re-request if needed |
+| `https://www.xfluxapi.com/docs/integrations/make` | Make.com automation |
+
+### Wave B — use cases + compare (Sep 22–23)
+
+| URL | Why |
+|-----|-----|
+| `https://www.xfluxapi.com/use-cases` | Use-cases hub |
+| `https://www.xfluxapi.com/use-cases/ai-research` | AI lab timelines / RAG / MCP |
+| `https://www.xfluxapi.com/use-cases/crypto-alerts` | Crypto / memecoin KOL monitors |
+| `https://www.xfluxapi.com/docs/compare/pricing` | “X API alternative / pricing” queries |
+
+### Wave C — docs depth (indexing support)
+
+| URL | Why |
+|-----|-----|
+| `https://www.xfluxapi.com/docs/authentication` | Auth / API key how-to |
+| `https://www.xfluxapi.com/docs/errors` | Error codes reference |
+| `https://www.xfluxapi.com/docs/guides/search` | Search operators long-tail |
+| `https://www.xfluxapi.com/docs/faq` | FAQ / featured-snippet style |
+
+Copy-paste list (one per line):
+
+```
+https://www.xfluxapi.com/use-cases
+https://www.xfluxapi.com/use-cases/ai-research
+https://www.xfluxapi.com/use-cases/crypto-alerts
+https://www.xfluxapi.com/use-cases/trading-alerts
+https://www.xfluxapi.com/docs/compare/pricing
+https://www.xfluxapi.com/docs/authentication
+https://www.xfluxapi.com/docs/errors
+https://www.xfluxapi.com/docs/guides/search
+https://www.xfluxapi.com/docs/faq
+https://www.xfluxapi.com/docs/integrations/mcp
+https://www.xfluxapi.com/docs/guides/trading-keywords
+```
 
 ## PMax asset group additions
 
@@ -24,17 +60,23 @@ Keep final URL: `/register?utm_campaign=pmax_v1`
 - Trading Alerts From X/Twitter
 - Monitor Macro Voices on X
 - Signed Webhooks for Traders
+- AI Research From X Timelines
+- Crypto KOL Alerts From $19
 
-### Descriptions (add 2)
+### Descriptions (add 2–3)
 
 - Watch @accounts on X with keyword filters. Signed webhooks to your server or Make.com — from $19/mo, not $5,000/mo stream.
 - REST API + account monitors in one place. Free tier to start. Trading keyword templates included.
+- Compare XFlux flat plans to official X API pricing — monitors and webhooks built in.
 
 ### Sitelinks (add)
 
 | Text | URL |
 |------|-----|
 | Trading Alerts | `/use-cases/trading-alerts?utm_source=google&utm_medium=cpc` |
+| AI Research | `/use-cases/ai-research?utm_source=google&utm_medium=cpc` |
+| Crypto Alerts | `/use-cases/crypto-alerts?utm_source=google&utm_medium=cpc` |
+| Pricing vs X API | `/docs/compare/pricing?utm_source=google&utm_medium=cpc` |
 | Keyword Templates | `/docs/guides/trading-keywords?utm_source=google&utm_medium=cpc` |
 | MCP for AI Agents | `/docs/integrations/mcp?utm_source=google&utm_medium=cpc` |
 
@@ -46,6 +88,10 @@ Keep final URL: `/register?utm_campaign=pmax_v1`
 - x api alternative cheap
 - twitter mcp claude
 - macro twitter alerts
+- crypto twitter alerts
+- memecoin twitter monitor
+- openai twitter api
+- twitter api pricing comparison
 
 ## Search campaign (optional, long-tail)
 
@@ -63,6 +109,22 @@ Phrase match keywords:
 
 Final URL: `/use-cases/trading-alerts?utm_source=google&utm_medium=cpc&utm_campaign=search_trading`
 
+**Ad group: AI research**
+
+- "ai twitter api"
+- "openai twitter monitor"
+- "twitter rag pipeline"
+
+Final URL: `/use-cases/ai-research?utm_source=google&utm_medium=cpc&utm_campaign=search_ai`
+
+**Ad group: Crypto alerts**
+
+- "crypto twitter alerts"
+- "memecoin twitter monitor"
+- "solana kol webhook"
+
+Final URL: `/use-cases/crypto-alerts?utm_source=google&utm_medium=cpc&utm_campaign=search_crypto`
+
 **Ad group: MCP / developers**
 
 - "twitter mcp server"
@@ -71,15 +133,25 @@ Final URL: `/use-cases/trading-alerts?utm_source=google&utm_medium=cpc&utm_campa
 
 Final URL: `/docs/integrations/mcp?utm_source=google&utm_medium=cpc&utm_campaign=search_mcp`
 
+**Ad group: Pricing / alternative**
+
+- "x api alternative"
+- "twitter api pricing"
+- "cheap twitter api"
+
+Final URL: `/docs/compare/pricing?utm_source=google&utm_medium=cpc&utm_campaign=search_compare`
+
 ## Messaging guardrails
 
 - **Do say:** "from $19/mo", "account monitors", "signed webhooks", "alternative to $5,000/mo filtered stream"
 - **Don't say:** "official X partner", "real-time streaming", "guaranteed trade signals"
 - Monitors poll on a schedule (1s–5min by plan) — not sub-second latency
+- Official pricing figures change — always point compare page disclaimer to docs.x.com
 
 ## Internal links (already on site)
 
 Homepage hero → streaming price point  
 Pricing → trading alerts + webhook CTAs  
 Monitors Dashboard → workflow hints  
-Footer → trading alerts, MCP docs  
+Footer → trading alerts, AI research, crypto alerts, MCP docs  
+Docs sidebar → Use cases + Pricing vs official X API  
