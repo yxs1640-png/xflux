@@ -1,17 +1,44 @@
 {
-  "name": "xflux-mcp-server",
+  "name": "@xflux/xflux-mcp-server",
   "version": "1.0.0",
-  "private": true,
-  "description": "Thin MCP server for the XFlux read API",
+  "description": "MCP server for the XFlux X/Twitter read API — search, profiles, and timelines for Claude Desktop and Cursor",
   "type": "module",
-  "bin": {
-    "xflux-mcp": "./index.mjs"
+  "license": "MIT",
+  "author": "XFlux",
+  "homepage": "https://www.xfluxapi.com/docs/integrations/mcp",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yxs1640-png/xflux.git",
+    "directory": "mcp-server"
   },
+  "bugs": {
+    "url": "https://github.com/yxs1640-png/xflux/issues"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "twitter",
+    "x",
+    "xflux",
+    "claude",
+    "cursor"
+  ],
+  "mcpName": "io.github.yxs1640-png/xflux",
+  "bin": {
+    "xflux-mcp": "index.mjs"
+  },
+  "files": [
+    "index.mjs",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
-    "start": "node index.mjs"
+    "start": "node index.mjs",
+    "prepublishOnly": "node --check index.mjs"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.12.1"
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "zod": "^3.24.0"
   },
   "engines": {
     "node": ">=18"

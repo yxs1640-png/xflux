@@ -72,24 +72,23 @@ export default function McpIntegrationPage() {
 
       <DocHeading id="install">Install & run</DocHeading>
       <p className="text-zinc-400 text-sm mb-4">
-        Source lives in the repo at <code className="text-zinc-300">mcp-server/</code>. You need
-        Node 18+ and an API key from the Dashboard.
+        Install via npm as{" "}
+        <code className="text-zinc-300">@xflux/xflux-mcp-server</code> (Registry name{" "}
+        <code className="text-zinc-300">io.github.yxs1640-png/xflux</code>). You need Node 18+ and
+        an API key from the Dashboard.
       </p>
-      <CodeBlock>{`cd mcp-server
-npm install
-export XFLUX_API_KEY=xflux_your_key_here
-node index.mjs`}</CodeBlock>
+      <CodeBlock>{`export XFLUX_API_KEY=xflux_your_key_here
+npx @xflux/xflux-mcp-server`}</CodeBlock>
 
       <DocHeading id="cursor">Cursor configuration</DocHeading>
       <p className="text-zinc-400 text-sm mb-4">
-        Add to Cursor MCP settings (Settings → MCP → Edit config). Use the absolute path to{" "}
-        <code className="text-zinc-300">index.mjs</code> on your machine:
+        Add to Cursor MCP settings (Settings → MCP → Edit config):
       </p>
       <CodeBlock>{`{
   "mcpServers": {
     "xflux": {
-      "command": "node",
-      "args": ["/path/to/xflux/mcp-server/index.mjs"],
+      "command": "npx",
+      "args": ["-y", "@xflux/xflux-mcp-server"],
       "env": {
         "XFLUX_API_KEY": "xflux_your_key_here"
       }
