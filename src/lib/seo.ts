@@ -5,7 +5,7 @@ export const SITE_URL = LEGAL.website;
 export const SITE_NAME = "XFlux";
 
 export const DEFAULT_DESCRIPTION =
-  "Affordable X/Twitter read API for profiles, timelines, and search, plus scheduled account monitors with signed HTTP webhooks. Free tier available — no credit card required.";
+  "Affordable X/Twitter read API for profiles, timelines, and search, plus scheduled account monitors, signed HTTP webhooks, and an MCP server for Claude and Cursor. Free tier available — no credit card required.";
 
 export function pageMetadata({
   title,

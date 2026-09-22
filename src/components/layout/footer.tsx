@@ -14,8 +14,11 @@ export function Footer() {
               <span className="font-bold text-white">XFlux</span>
             </div>
             <p className="text-sm text-zinc-500">
-              X/Twitter read API and account monitors for developers. Paid plans include signed HTTP
-              webhooks.
+              X/Twitter read API, account monitors, and MCP for Claude/Cursor (
+              <Link href="/docs/integrations/mcp" className="hover:text-white transition-colors">
+                npx @xflux/xflux-mcp-server
+              </Link>
+              ). Paid plans include signed HTTP webhooks.
             </p>
           </div>
           <div>
@@ -50,6 +53,11 @@ export function Footer() {
               <li>User & tweet lookup</li>
               <li>Search API</li>
               <li>Account monitors</li>
+              <li>
+                <Link href="/docs/integrations/mcp" className="hover:text-white transition-colors">
+                  MCP for Claude / Cursor
+                </Link>
+              </li>
               <li>HTTP webhooks (paid)</li>
             </ul>
           </div>

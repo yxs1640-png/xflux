@@ -8,9 +8,21 @@ Affordable & stable X/Twitter API proxy service — MVP built with Next.js 15, T
 - **User auth** — Email/password registration and login (NextAuth)
 - **API Keys** — Generate and manage `xflux_*` API keys
 - **REST API proxy** — User profiles, tweets, search (mock + optional live Twitter API v2)
+- **MCP server** — Official Registry + npm (`@xflux/xflux-mcp-server`) for Claude Desktop & Cursor
 - **Dashboard** — Usage stats, API logs, quota tracking
 - **Monitors** — KOL tweet monitoring task management
 - **Billing** — Stripe Checkout subscriptions (Starter / Growth / Pro / Scale); see [docs/STRIPE.md](docs/STRIPE.md)
+
+## MCP (Claude / Cursor)
+
+Published on the [MCP Registry](https://registry.modelcontextprotocol.io) as `io.github.yxs1640-png/xflux` and on npm as [`@xflux/xflux-mcp-server`](https://www.npmjs.com/package/@xflux/xflux-mcp-server).
+
+```bash
+export XFLUX_API_KEY=xflux_your_key_here
+npx -y @xflux/xflux-mcp-server
+```
+
+Docs: https://www.xfluxapi.com/docs/integrations/mcp
 
 ## Tech Stack
 

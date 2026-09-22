@@ -54,6 +54,21 @@ export default function McpIntegrationPage() {
         </ul>
       </Callout>
 
+      <p className="text-zinc-400 text-sm mb-6 leading-relaxed">
+        <strong className="text-white">Install:</strong>{" "}
+        <a
+          href="https://www.npmjs.com/package/@xflux/xflux-mcp-server"
+          className="text-sky-400 hover:underline"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          @xflux/xflux-mcp-server
+        </a>
+        {" · "}
+        <strong className="text-white">Registry:</strong>{" "}
+        <code className="text-zinc-300">io.github.yxs1640-png/xflux</code>
+      </p>
+
       <DocHeading id="tools">Available tools</DocHeading>
       <ul className="list-disc list-inside space-y-2 text-zinc-400 text-sm mb-6">
         <li>

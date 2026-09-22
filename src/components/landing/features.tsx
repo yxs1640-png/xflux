@@ -47,9 +47,9 @@ const FEATURES = [
   },
   {
     icon: Terminal,
-    title: "Developer First",
+    title: "MCP for AI agents",
     description:
-      "REST API and comprehensive docs. Integrate in minutes.",
+      "Official MCP Registry + npm: npx @xflux/xflux-mcp-server. Use XFlux from Claude Desktop and Cursor with your API key.",
     status: "available" as const,
   },
 ];
@@ -63,8 +63,8 @@ export function Features() {
             What XFlux ships today
           </h2>
           <p className="mt-4 text-zinc-400 max-w-2xl mx-auto">
-            Read endpoints and account monitors are live now. Posting and DM automation are on the
-            roadmap.
+            Read endpoints, account monitors, and MCP for AI agents are live now. Posting and DM
+            automation are on the roadmap.
           </p>
         </div>
 
