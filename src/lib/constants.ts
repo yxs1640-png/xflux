@@ -111,6 +111,18 @@ export const API_ENDPOINTS = [
     params: "?q=keyword&limit=20",
   },
   {
+    method: "GET",
+    path: "/api/v1/monitors",
+    description: "List your account monitors (read-only)",
+    params: "?include_hits=1&hit_limit=3",
+  },
+  {
+    method: "GET",
+    path: "/api/v1/monitors/:id/hits",
+    description: "List recent hits for one monitor (read-only)",
+    params: "?limit=20",
+  },
+  {
     method: "POST",
     path: "/api/v1/tweets",
     description: "Post a new tweet (coming soon)",

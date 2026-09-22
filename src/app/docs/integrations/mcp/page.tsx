@@ -40,16 +40,16 @@ export default function McpIntegrationPage() {
       <Callout title="What this is (and isn&apos;t)">
         <ul className="list-disc list-inside space-y-1 text-sm leading-relaxed">
           <li>
-            <strong className="text-white">Is:</strong> on-demand tweet/user lookups for coding
-            agents and research workflows.
+            <strong className="text-white">Is:</strong> on-demand tweet/user lookups plus{" "}
+            <strong className="text-white">read-only</strong> access to your monitor list and hits.
           </li>
           <li>
-            <strong className="text-white">Isn&apos;t:</strong> a replacement for account monitors,
-            streaming, or webhook delivery — use{" "}
+            <strong className="text-white">Isn&apos;t:</strong> a replacement for creating monitors,
+            streaming, or webhook delivery — configure those in the{" "}
             <Link href="/docs/monitors" className="text-sky-400 hover:underline">
-              monitors
-            </Link>{" "}
-            for always-on alerts.
+              Dashboard
+            </Link>
+            .
           </li>
         </ul>
       </Callout>
@@ -72,16 +72,24 @@ export default function McpIntegrationPage() {
       <DocHeading id="tools">Available tools</DocHeading>
       <ul className="list-disc list-inside space-y-2 text-zinc-400 text-sm mb-6">
         <li>
-          <code className="text-zinc-300">xflux_get_user</code> — profile by @username
+          <code className="text-zinc-300">xflux_get_user</code> — profile by @username (compact)
         </li>
         <li>
-          <code className="text-zinc-300">xflux_search_tweets</code> — search recent posts
+          <code className="text-zinc-300">xflux_search_tweets</code> — search recent posts (compact)
         </li>
         <li>
-          <code className="text-zinc-300">xflux_get_user_tweets</code> — user timeline
+          <code className="text-zinc-300">xflux_get_user_tweets</code> — user timeline (compact)
         </li>
         <li>
-          <code className="text-zinc-300">xflux_get_tweet</code> — single tweet by ID
+          <code className="text-zinc-300">xflux_get_tweet</code> — single tweet by ID (compact)
+        </li>
+        <li>
+          <code className="text-zinc-300">xflux_list_monitors</code> — your monitors (read-only;
+          optional recent hits)
+        </li>
+        <li>
+          <code className="text-zinc-300">xflux_get_monitor_hits</code> — hits for one monitor
+          (read-only)
         </li>
       </ul>
 
@@ -121,11 +129,13 @@ npx @xflux/xflux-mcp-server`}</CodeBlock>
       <DocHeading id="monitors">Monitors + MCP together</DocHeading>
       <p className="text-zinc-400 text-sm mb-4 leading-relaxed">
         Typical pattern: use MCP during development to explore accounts and craft keyword filters,
-        then set up{" "}
+        create monitors in the Dashboard, then inspect hits with{" "}
+        <code className="text-zinc-300">xflux_list_monitors</code> /{" "}
+        <code className="text-zinc-300">xflux_get_monitor_hits</code>. For production alerts, use{" "}
         <Link href="/docs/guides/trading-keywords" className="text-sky-400 hover:underline">
           trading keyword templates
         </Link>{" "}
-        in the Dashboard for production alerts. Route webhooks to Make.com per the{" "}
+        and route webhooks to Make.com per the{" "}
         <Link href="/docs/integrations/make" className="text-sky-400 hover:underline">
           Make guide
         </Link>

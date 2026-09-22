@@ -10,10 +10,12 @@ Monitors and webhooks are configured in the [Dashboard](https://www.xfluxapi.com
 
 | Tool | Description |
 |------|-------------|
-| `xflux_get_user` | Profile lookup by @username |
-| `xflux_search_tweets` | Search recent tweets |
-| `xflux_get_user_tweets` | User timeline |
-| `xflux_get_tweet` | Single tweet by ID |
+| `xflux_get_user` | Profile lookup by @username (compact summary) |
+| `xflux_search_tweets` | Search recent tweets (compact summaries) |
+| `xflux_get_user_tweets` | User timeline (compact summaries) |
+| `xflux_get_tweet` | Single tweet by ID (compact summary) |
+| `xflux_list_monitors` | List your monitors (read-only; optional recent hits) |
+| `xflux_get_monitor_hits` | Hits for one monitor (read-only) |
 
 ## Resources
 

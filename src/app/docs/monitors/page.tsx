@@ -105,6 +105,25 @@ export default function MonitorsDocsPage() {
         Most public X accounts work reliably. A small number of restricted or high-profile accounts
         may fail to poll. If you see an error, try another account or contact support.
       </Callout>
+
+      <DocHeading id="api-read">Read via API / MCP</DocHeading>
+      <p className="text-zinc-400 text-sm leading-relaxed mb-4">
+        List monitors and hits with your API key (create/edit still happens in the Dashboard):
+      </p>
+      <ul className="list-disc list-inside space-y-1 text-sm text-zinc-400 mb-4">
+        <li>
+          <code className="text-zinc-300">GET /api/v1/monitors</code>
+        </li>
+        <li>
+          <code className="text-zinc-300">GET /api/v1/monitors/:id/hits</code>
+        </li>
+        <li>
+          MCP tools{" "}
+          <Link href="/docs/integrations/mcp" className="text-sky-400 hover:underline">
+            xflux_list_monitors / xflux_get_monitor_hits
+          </Link>
+        </li>
+      </ul>
     </>
   );
 }
