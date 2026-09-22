@@ -2,11 +2,13 @@ import Link from "next/link";
 import {
   ArrowRight,
   Bot,
+  Coins,
   LineChart,
   Radar,
   Search,
   Sparkles,
   Target,
+  Terminal,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,29 +24,61 @@ const USE_CASES = [
       "You follow influential accounts but can't sit on X all day — and most API tools only let you pull data on demand.",
     solution: [
       "Monitor @accounts on a schedule — no cron jobs to maintain",
-      "Get signed webhooks when new tweets land (paid plans)",
-      "Review hit history in the Dashboard",
+      "Keyword filters for Fed, flow, or ticker-specific hits",
+      "Signed webhooks into Make, Slack, or your bot (paid)",
     ],
-    unlike: "Unlike read-only API proxies, you don't build the polling layer yourself.",
+    unlike: "Unlike the official filtered stream ($5,000+/mo), you watch accounts you pick from $19.",
     capabilities: ["Monitor", "Webhooks"],
     docHref: "/use-cases/trading-alerts",
     docLabel: "Trading alerts guide",
   },
   {
     icon: Bot,
-    audience: "AI & data builders",
-    title: "Feed tweets into RAG, sentiment, and analytics",
+    audience: "AI builders",
+    title: "Aggregate AI lab & researcher timelines",
     problem:
-      "Your pipeline needs profiles, timelines, and search results — but the official API is costly and slow to approve.",
+      "You need OpenAI, Anthropic, DeepMind, and researcher posts in one pipeline — without official API friction.",
     solution: [
-      "REST endpoints for users, tweets, and search",
-      "Bearer API key — integrate in minutes",
-      "1,000 free calls/month to prototype",
+      "Poll timelines and search via REST or MCP",
+      "Batch @handles into a research digest",
+      "1,000 free API calls/month to prototype",
     ],
-    unlike: "Unlike scrapers, you get stable JSON and documented limits.",
-    capabilities: ["API"],
-    docHref: "/docs/quickstart",
-    docLabel: "API quickstart",
+    unlike: "Unlike scrapers, you get stable JSON, quotas, and an MCP server for Claude/Cursor.",
+    capabilities: ["API", "MCP"],
+    docHref: "/use-cases/ai-research",
+    docLabel: "AI research guide",
+  },
+  {
+    icon: Coins,
+    audience: "Crypto & memecoins",
+    title: "Alert when crypto KOLs mention tokens",
+    problem:
+      "Memecoin and trading accounts move markets in minutes — manual refresh is too slow.",
+    solution: [
+      "Monitor KOLs with token/keyword filters",
+      "Webhook hits to Telegram, Discord, or your bot",
+      "Browse live crypto digests and Smart Money accounts",
+    ],
+    unlike: "Unlike enterprise listening suites, setup is self-serve and priced for builders.",
+    capabilities: ["Monitor", "Webhooks"],
+    docHref: "/use-cases/crypto-alerts",
+    docLabel: "Crypto alerts guide",
+  },
+  {
+    icon: Terminal,
+    audience: "AI agents",
+    title: "Give Claude or Cursor live X data",
+    problem:
+      "Agents need profiles, search, and your monitor hits without you pasting screenshots.",
+    solution: [
+      "Official MCP Registry package via npx",
+      "Compact summaries for agent context windows",
+      "Read-only monitor list and hits with your API key",
+    ],
+    unlike: "Unlike posting-focused MCP servers, XFlux is built for research and monitoring.",
+    capabilities: ["MCP", "API"],
+    docHref: "/docs/integrations/mcp",
+    docLabel: "MCP docs",
   },
   {
     icon: Sparkles,
@@ -67,7 +101,7 @@ const USE_CASES = [
     audience: "Growth & competitive intel",
     title: "Track competitors, founders, and industry voices",
     problem:
-      "Enterprise social listening is overkill and overpriced; wiring your own monitors eats engineering time.",
+      "Enterprise social listening is overkill; wiring your own monitors eats engineering time.",
     solution: [
       "Watch multiple public accounts per plan",
       "Dashboard timeline of every new hit",
@@ -112,6 +146,13 @@ const USE_CASES = [
   },
 ] as const;
 
+function capabilityClass(cap: string) {
+  if (cap === "API") return "border-sky-500/20 bg-sky-500/10 text-sky-300";
+  if (cap === "Monitor") return "border-cyan-500/20 bg-cyan-500/10 text-cyan-300";
+  if (cap === "MCP") return "border-violet-500/20 bg-violet-500/10 text-violet-300";
+  return "border-emerald-500/20 bg-emerald-500/10 text-emerald-300";
+}
+
 export function UseCases({
   registerHref = "/register?src=homepage_usecases",
 }: {
@@ -125,8 +166,8 @@ export function UseCases({
             Built for the jobs you actually have
           </h2>
           <p className="mt-4 text-zinc-400 max-w-3xl mx-auto">
-            Whether you need on-demand data or always-on account watches, XFlux combines a read API
-            and monitors in one place — without enterprise pricing or approval delays.
+            Whether you need on-demand reads, always-on KOL watches, or MCP for AI agents, XFlux
+            combines API and monitors — without enterprise pricing or approval delays.
           </p>
         </div>
 
@@ -164,14 +205,7 @@ export function UseCases({
                   {useCase.capabilities.map((cap) => (
                     <span
                       key={cap}
-                      className={cn(
-                        "rounded-full border px-2.5 py-0.5 text-xs",
-                        cap === "API"
-                          ? "border-sky-500/20 bg-sky-500/10 text-sky-300"
-                          : cap === "Monitor"
-                            ? "border-cyan-500/20 bg-cyan-500/10 text-cyan-300"
-                            : "border-emerald-500/20 bg-emerald-500/10 text-emerald-300"
-                      )}
+                      className={cn("rounded-full border px-2.5 py-0.5 text-xs", capabilityClass(cap))}
                     >
                       {cap}
                     </span>
@@ -191,18 +225,23 @@ export function UseCases({
 
         <div className="mt-12 rounded-xl border border-zinc-800 bg-zinc-900/40 px-6 py-8 text-center">
           <p className="text-zinc-300 mb-2 font-medium">
-            API for on-demand reads. Monitors for always-on watches. One account, one bill.
+            API for on-demand reads. Monitors for always-on watches. MCP for agents. One account.
           </p>
           <p className="text-sm text-zinc-500 mb-6 max-w-2xl mx-auto">
             Most alternatives sell you one or the other — cheap read access with no alerts, or
             expensive suites with no developer API. XFlux is both, from free tier up.
           </p>
-          <Link href={registerHref}>
-            <Button>
-              Start free — see if your use case fits
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          </Link>
+          <div className="flex flex-wrap justify-center gap-3">
+            <Link href={registerHref}>
+              <Button>
+                Start free — see if your use case fits
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+            <Link href="/docs/compare/pricing">
+              <Button variant="outline">Compare pricing vs official X API</Button>
+            </Link>
+          </div>
         </div>
       </div>
     </section>

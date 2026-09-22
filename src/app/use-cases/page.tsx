@@ -8,7 +8,7 @@ import { pageMetadata } from "@/lib/seo";
 export const metadata = pageMetadata({
   title: "Use Cases",
   description:
-    "How teams use XFlux for KOL alerts, RAG pipelines, competitive intel, webhooks, and indie projects — API plus monitors in one place.",
+    "How teams use XFlux for trading alerts, AI research aggregation, crypto KOL monitors, MCP agents, RAG pipelines, and indie projects.",
   path: "/use-cases",
 });
 

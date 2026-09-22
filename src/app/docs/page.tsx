@@ -132,6 +132,39 @@ export default function DocsIntroPage() {
         </Link>
       </div>
 
+      <DocHeading id="explore">Explore</DocHeading>
+      <ul className="list-disc list-inside space-y-2 text-zinc-400 text-sm mb-10">
+        <li>
+          <Link href="/use-cases" className="text-sky-400 hover:underline">
+            Use cases
+          </Link>{" "}
+          — trading, AI research, crypto alerts, MCP
+        </li>
+        <li>
+          <Link href="/docs/compare/pricing" className="text-sky-400 hover:underline">
+            Pricing vs official X API
+          </Link>
+        </li>
+        <li>
+          <Link href="/docs/faq" className="text-sky-400 hover:underline">
+            FAQ
+          </Link>
+        </li>
+        <li>
+          <Link href="/docs/authentication" className="text-sky-400 hover:underline">
+            Authentication
+          </Link>{" "}
+          ·{" "}
+          <Link href="/docs/errors" className="text-sky-400 hover:underline">
+            Errors
+          </Link>{" "}
+          ·{" "}
+          <Link href="/docs/guides/search" className="text-sky-400 hover:underline">
+            Search operators
+          </Link>
+        </li>
+      </ul>
+
       <DocHeading id="why-xflux">Why XFlux?</DocHeading>
       <ul className="list-disc list-inside space-y-2 text-zinc-400 text-sm leading-relaxed">
         <li>Official X API Basic is $100+/mo with approval — XFlux starts free (1,000 calls/mo)</li>

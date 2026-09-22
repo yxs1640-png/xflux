@@ -27,6 +27,8 @@ export function Footer() {
               <li><Link href="/signals" className="hover:text-white transition-colors">Live Signals</Link></li>
               <li><Link href="/use-cases" className="hover:text-white transition-colors">Use Cases</Link></li>
               <li><Link href="/use-cases/trading-alerts" className="hover:text-white transition-colors">Trading alerts</Link></li>
+              <li><Link href="/use-cases/ai-research" className="hover:text-white transition-colors">AI research</Link></li>
+              <li><Link href="/use-cases/crypto-alerts" className="hover:text-white transition-colors">Crypto alerts</Link></li>
               <li><Link href="/predictors" className="hover:text-white transition-colors">Smart Money</Link></li>
               <li><Link href="/docs" className="hover:text-white transition-colors">API Docs</Link></li>
               <li><Link href="/twitter-webhook" className="hover:text-white transition-colors">Twitter Webhooks</Link></li>

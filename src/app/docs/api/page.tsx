@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { pageMetadata } from "@/lib/seo";
 import { CodeBlock, Callout, DocHeading } from "@/components/docs/doc-blocks";
 import { Badge } from "@/components/ui/badge";
@@ -23,7 +24,16 @@ export default function ApiDocsPage() {
 
       <DocHeading id="auth">Authentication</DocHeading>
       <p className="text-zinc-400 text-sm mb-4">
-        Pass your API key via Bearer token or <code className="text-zinc-300">X-API-Key</code> header.
+        Pass your API key via Bearer token or <code className="text-zinc-300">X-API-Key</code>{" "}
+        header. Full guide:{" "}
+        <Link href="/docs/authentication" className="text-sky-400 hover:underline">
+          Authentication
+        </Link>
+        . Error codes:{" "}
+        <Link href="/docs/errors" className="text-sky-400 hover:underline">
+          Errors
+        </Link>
+        .
       </p>
       <CodeBlock>{`Authorization: Bearer xflux_YOUR_API_KEY
 # or

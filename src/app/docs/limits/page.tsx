@@ -158,6 +158,10 @@ export default function LimitsDocsPage() {
         . See also{" "}
         <Link href="/pricing" className="text-sky-400 hover:underline">
           Pricing
+        </Link>{" "}
+        and{" "}
+        <Link href="/docs/compare/pricing" className="text-sky-400 hover:underline">
+          Pricing vs official X API
         </Link>
         .
       </p>
