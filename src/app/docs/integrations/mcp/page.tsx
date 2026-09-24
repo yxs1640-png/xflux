@@ -5,13 +5,14 @@ import { Callout, CodeBlock, DocHeading } from "@/components/docs/doc-blocks";
 export const metadata = pageMetadata({
   title: "XFlux MCP Server — X/Twitter Data for AI Agents",
   description:
-    "Connect Claude Desktop or Cursor to the XFlux read API via MCP. Search tweets, look up profiles, and pull timelines with your API key.",
+    "Connect Claude Desktop or Cursor to the XFlux read API via MCP. Search tweets, look up profiles, pull timelines, and discover Smart Money accounts with your API key.",
   path: "/docs/integrations/mcp",
   keywords: [
     "xflux mcp",
     "twitter mcp server",
     "claude x api",
     "cursor mcp twitter",
+    "smart money twitter mcp",
   ],
 });
 
@@ -30,18 +31,24 @@ export default function McpIntegrationPage() {
           Model Context Protocol
         </a>{" "}
         to give AI agents access to the XFlux <strong className="text-white">read API</strong> —
-        search, profiles, and timelines. Monitors and webhooks are still configured in the{" "}
+        search, profiles, timelines, and{" "}
+        <Link href="/predictors" className="text-sky-400 hover:underline">
+          Smart Money
+        </Link>{" "}
+        discovery. Monitors and webhooks are still configured in the{" "}
         <Link href="/dashboard/monitors" className="text-sky-400 hover:underline">
           Dashboard
         </Link>
-        ; the MCP layer is intentionally thin.
+        ; the MCP layer stays read-oriented.
       </p>
 
       <Callout title="What this is (and isn&apos;t)">
         <ul className="list-disc list-inside space-y-1 text-sm leading-relaxed">
           <li>
-            <strong className="text-white">Is:</strong> on-demand tweet/user lookups plus{" "}
-            <strong className="text-white">read-only</strong> access to your monitor list and hits.
+            <strong className="text-white">Is:</strong> on-demand tweet/user lookups,{" "}
+            <strong className="text-white">Smart Money</strong> account discovery (exclude list +
+            recent calls), plus <strong className="text-white">read-only</strong> access to your
+            monitor list and hits.
           </li>
           <li>
             <strong className="text-white">Isn&apos;t:</strong> a replacement for creating monitors,
@@ -91,7 +98,35 @@ export default function McpIntegrationPage() {
           <code className="text-zinc-300">xflux_get_monitor_hits</code> — hits for one monitor
           (read-only)
         </li>
+        <li>
+          <code className="text-zinc-300">xflux_smart_money_list</code> — ranked Smart Money accounts
+          + recent calls; pass <code className="text-zinc-300">exclude</code> for handles you
+          already track
+        </li>
+        <li>
+          <code className="text-zinc-300">xflux_smart_money_profile</code> — one account + recent
+          prediction calls
+        </li>
+        <li>
+          <code className="text-zinc-300">xflux_smart_money_claims</code> — recent calls across
+          accounts
+        </li>
       </ul>
+
+      <Callout title="Smart Money for agents">
+        <p className="text-sm leading-relaxed">
+          When an agent needs to{" "}
+          <strong className="text-white">
+            find new X accounts that make forward-looking macro / market calls
+          </strong>
+          , use <code className="text-zinc-300">xflux_smart_money_list</code> (with an exclude list)
+          instead of pasting a long analyst prompt into Google. Hub:{" "}
+          <Link href="/predictors" className="text-sky-400 hover:underline">
+            /predictors
+          </Link>
+          . Then open the Dashboard to add a Monitor on any @handle.
+        </p>
+      </Callout>
 
       <DocHeading id="install">Install & run</DocHeading>
       <p className="text-zinc-400 text-sm mb-4">
@@ -128,8 +163,9 @@ npx @xflux/xflux-mcp-server`}</CodeBlock>
 
       <DocHeading id="monitors">Monitors + MCP together</DocHeading>
       <p className="text-zinc-400 text-sm mb-4 leading-relaxed">
-        Typical pattern: use MCP during development to explore accounts and craft keyword filters,
-        create monitors in the Dashboard, then inspect hits with{" "}
+        Typical pattern: discover accounts with{" "}
+        <code className="text-zinc-300">xflux_smart_money_list</code>, explore with search/timeline
+        tools, create monitors in the Dashboard, then inspect hits with{" "}
         <code className="text-zinc-300">xflux_list_monitors</code> /{" "}
         <code className="text-zinc-300">xflux_get_monitor_hits</code>. For production alerts, use{" "}
         <Link href="/docs/guides/trading-keywords" className="text-sky-400 hover:underline">

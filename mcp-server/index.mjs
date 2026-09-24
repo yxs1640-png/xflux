@@ -17,7 +17,11 @@ async function xfluxFetch(path, params = {}) {
     if (v != null && v !== "") url.searchParams.set(k, String(v));
   }
   const res = await fetch(url, {
-    headers: { Authorization: `Bearer ${API_KEY}` },
+    headers: {
+      Authorization: `Bearer ${API_KEY}`,
+      "User-Agent": "XFlux-MCP/1.2",
+      "X-XFlux-Client": "mcp",
+    },
   });
   const body = await res.text();
   let json;
@@ -138,9 +142,95 @@ function formatMonitorHits(payload) {
   return [header, "", ...blocks].join("\n\n");
 }
 
+function formatClaimLine(c, index) {
+  const prefix = index != null ? `${index}. ` : "";
+  const handle = c.username ? `@${c.username}` : "";
+  const when = c.tweet_created_at || "";
+  const dir = c.direction ? ` (${c.direction})` : "";
+  return [
+    `${prefix}${handle}${when ? ` · ${when}` : ""}${c.niche ? ` · ${c.niche}` : ""}`,
+    `${c.claim_summary || c.subject || "?"}${dir}`,
+    c.url || (c.tweet_id ? `tweet_id: ${c.tweet_id}` : null),
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+function formatSmartMoneyList(payload) {
+  const list = Array.isArray(payload?.data) ? payload.data : [];
+  const meta = payload?.meta ?? {};
+  if (!list.length) {
+    return "No Smart Money accounts matched (try a broader niche or fewer excludes). Hub: https://www.xfluxapi.com/predictors";
+  }
+  const header = [
+    `${list.length} Smart Money account(s)`,
+    meta.niche ? `niche=${meta.niche}` : null,
+    meta.days ? `last ${meta.days}d` : null,
+    meta.exclude_count ? `excluded ${meta.exclude_count}` : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+
+  const blocks = list.map((p, i) => {
+    const lines = [
+      `${i + 1}. @${p.username}${p.display_name ? ` — ${p.display_name}` : ""} [${p.niche}]`,
+      `   activity=${p.discovery_score ?? "?"}${p.accuracy_score != null ? ` · track=${p.accuracy_score}` : ""} · claims=${p.total_claims ?? 0}`,
+      p.profile_url ? `   ${p.profile_url}` : null,
+      `   Monitor: https://www.xfluxapi.com/dashboard/monitors`,
+    ];
+    const claims = Array.isArray(p.recent_claims) ? p.recent_claims : [];
+    if (claims.length) {
+      lines.push("   recent calls:");
+      for (const c of claims.slice(0, 3)) {
+        lines.push(`   - ${trimText(c.claim_summary, 160)}${c.url ? ` · ${c.url}` : ""}`);
+      }
+    }
+    return lines.filter(Boolean).join("\n");
+  });
+  return [header, "", ...blocks].join("\n\n");
+}
+
+function formatSmartMoneyProfile(payload) {
+  const p = payload?.data;
+  if (!p) return "Profile not found.";
+  const lines = [
+    `@${p.username}${p.display_name ? ` — ${p.display_name}` : ""} [${p.niche}]`,
+    p.bio ? `Bio: ${trimText(p.bio, 200)}` : null,
+    `activity=${p.discovery_score ?? "?"}${p.accuracy_score != null ? ` · track=${p.accuracy_score}` : ""} · claims=${p.total_claims ?? 0} · hits/misses=${p.hit_count ?? 0}/${p.miss_count ?? 0}`,
+    p.profile_url || null,
+    p.x_url || null,
+    "Add Monitor: https://www.xfluxapi.com/dashboard/monitors",
+  ];
+  const claims = Array.isArray(p.recent_claims) ? p.recent_claims : [];
+  if (!claims.length) {
+    return [...lines.filter(Boolean), "", "No recent claims in window."].join("\n");
+  }
+  return [
+    ...lines.filter(Boolean),
+    "",
+    `${claims.length} recent call(s):`,
+    "",
+    ...claims.map((c, i) => formatClaimLine({ ...c, username: p.username }, i + 1)),
+  ].join("\n\n");
+}
+
+function formatSmartMoneyClaims(payload) {
+  const list = Array.isArray(payload?.data) ? payload.data : [];
+  const meta = payload?.meta ?? {};
+  const header = [
+    `${list.length} Smart Money call(s)`,
+    meta.niche ? `niche=${meta.niche}` : null,
+    meta.days ? `last ${meta.days}d` : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+  if (!list.length) return `${header}\n\nNo claims in window.`;
+  return [header, "", ...list.map((c, i) => formatClaimLine(c, i + 1))].join("\n\n");
+}
+
 const server = new McpServer({
   name: "xflux",
-  version: "1.1.0",
+  version: "1.2.0",
 });
 
 server.tool(
@@ -226,6 +316,85 @@ server.tool(
   }
 );
 
+server.tool(
+  "xflux_smart_money_list",
+  "Discover ranked Smart Money X/Twitter accounts (macro, trading, crypto, geopolitics) that posted extractable forward-looking calls recently. Pass exclude to skip handles you already track. Prefer this over googling long analyst prompts.",
+  {
+    niche: z
+      .enum(["MACRO", "TRADING", "CRYPTO", "GEOPOLITICS", "macro", "trading", "crypto", "geopolitics"])
+      .optional()
+      .describe("Optional niche filter"),
+    limit: z
+      .number()
+      .int()
+      .min(1)
+      .max(20)
+      .optional()
+      .describe("Max accounts to return (default 4)"),
+    exclude: z
+      .string()
+      .optional()
+      .describe("Comma-separated @handles to exclude (already tracked)"),
+    days: z
+      .number()
+      .int()
+      .min(1)
+      .max(90)
+      .optional()
+      .describe("Only accounts with a call in the last N days (default 14)"),
+  },
+  async ({ niche, limit, exclude, days }) => {
+    const data = await xfluxFetch("/smart-money", {
+      niche: niche ? String(niche).toUpperCase() : undefined,
+      limit: limit ?? 4,
+      exclude: exclude || undefined,
+      days: days ?? 14,
+    });
+    return textResult(formatSmartMoneyList(data));
+  }
+);
+
+server.tool(
+  "xflux_smart_money_profile",
+  "Get one Smart Money account profile plus recent extracted prediction calls (default last 14 days).",
+  {
+    username: z.string().describe("Handle without @"),
+    days: z.number().int().min(1).max(90).optional().describe("Claim window in days (default 14)"),
+    limit: z.number().int().min(1).max(50).optional().describe("Max claims (default 20)"),
+  },
+  async ({ username, days, limit }) => {
+    const handle = username.replace(/^@/, "");
+    const data = await xfluxFetch(`/smart-money/${encodeURIComponent(handle)}`, {
+      days: days ?? 14,
+      limit: limit ?? 20,
+    });
+    return textResult(formatSmartMoneyProfile(data));
+  }
+);
+
+server.tool(
+  "xflux_smart_money_claims",
+  "List recent Smart Money prediction calls across accounts. Optional niche and exclude list.",
+  {
+    niche: z
+      .enum(["MACRO", "TRADING", "CRYPTO", "GEOPOLITICS", "macro", "trading", "crypto", "geopolitics"])
+      .optional()
+      .describe("Optional niche filter"),
+    exclude: z.string().optional().describe("Comma-separated @handles to exclude"),
+    limit: z.number().int().min(1).max(50).optional().describe("Max claims (default 20)"),
+    days: z.number().int().min(1).max(90).optional().describe("Window in days (default 14)"),
+  },
+  async ({ niche, exclude, limit, days }) => {
+    const data = await xfluxFetch("/smart-money/claims", {
+      niche: niche ? String(niche).toUpperCase() : undefined,
+      exclude: exclude || undefined,
+      limit: limit ?? 20,
+      days: days ?? 14,
+    });
+    return textResult(formatSmartMoneyClaims(data));
+  }
+);
+
 server.resource(
   "trading-keywords",
   "xflux://docs/trading-keywords",
@@ -272,6 +441,37 @@ REST: GET /api/v1/monitors , GET /api/v1/monitors/:id/hits
 
 Docs: https://www.xfluxapi.com/docs/monitors
 Make.com: https://www.xfluxapi.com/docs/integrations/make`,
+      },
+    ],
+  })
+);
+
+server.resource(
+  "smart-money",
+  "xflux://docs/smart-money",
+  {
+    description: "Smart Money discovery niches, exclude usage, and monitor CTA",
+    mimeType: "text/plain",
+  },
+  async () => ({
+    contents: [
+      {
+        uri: "xflux://docs/smart-money",
+        mimeType: "text/plain",
+        text: `XFlux Smart Money — ranked X accounts that post forward-looking market calls.
+
+Niches: MACRO | TRADING | CRYPTO | GEOPOLITICS
+
+Agent workflow (prefer MCP tools over pasting long prompts into Google):
+1. xflux_smart_money_list — limit=4, days=14, exclude="handle1,handle2,..."
+2. xflux_smart_money_profile — dig into one @username
+3. xflux_smart_money_claims — recent call stream across accounts
+4. Open Dashboard → Monitors to watch any @handle + optional keywords/webhooks
+
+Hub: https://www.xfluxapi.com/predictors
+REST: GET /api/v1/smart-money , /api/v1/smart-money/:username , /api/v1/smart-money/claims
+
+Not financial advice. Calls are auto-extracted from public tweets.`,
       },
     ],
   })

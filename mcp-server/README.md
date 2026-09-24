@@ -1,6 +1,6 @@
 # XFlux MCP Server
 
-Thin [Model Context Protocol](https://modelcontextprotocol.io) server that exposes the XFlux **read API** to Claude Desktop, Cursor, and other MCP clients.
+Thin [Model Context Protocol](https://modelcontextprotocol.io) server that exposes the XFlux **read API** to Claude Desktop, Cursor, and other MCP clients — including **Smart Money** account discovery.
 
 **Registry name:** `io.github.yxs1640-png/xflux`
 
@@ -16,11 +16,15 @@ Monitors and webhooks are configured in the [Dashboard](https://www.xfluxapi.com
 | `xflux_get_tweet` | Single tweet by ID (compact summary) |
 | `xflux_list_monitors` | List your monitors (read-only; optional recent hits) |
 | `xflux_get_monitor_hits` | Hits for one monitor (read-only) |
+| `xflux_smart_money_list` | Ranked Smart Money accounts + recent calls (`exclude`, niche, 14d window) |
+| `xflux_smart_money_profile` | One Smart Money profile + recent prediction calls |
+| `xflux_smart_money_claims` | Recent Smart Money calls across accounts |
 
 ## Resources
 
 - `xflux://docs/trading-keywords` — monitor keyword templates
 - `xflux://docs/monitors` — monitor + webhook setup summary
+- `xflux://docs/smart-money` — niches, exclude workflow, Monitor CTA
 
 ## Quick start (npm)
 
