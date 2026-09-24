@@ -1,6 +1,8 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { pageMetadata } from "@/lib/seo";
 import { DocHeading } from "@/components/docs/doc-blocks";
+import { FaqJsonLd } from "@/components/seo/faq-json-ld";
 
 export const metadata = pageMetadata({
   title: "FAQ",
@@ -9,9 +11,11 @@ export const metadata = pageMetadata({
   path: "/docs/faq",
 });
 
-const FAQS = [
+const FAQS: { q: string; answerText: string; a: ReactNode }[] = [
   {
     q: "Does Free include live webhooks?",
+    answerText:
+      "Free can save a webhook URL and send test pings. Live monitor.hit delivery requires Starter ($19/mo) or above.",
     a: (
       <>
         Free can save a webhook URL and send <strong className="text-white">test pings</strong>. Live{" "}
@@ -26,6 +30,8 @@ const FAQS = [
   },
   {
     q: "Do monitors use my API quota?",
+    answerText:
+      "No. Background polling does not consume monthly API call quota. Calling /api/v1/* (including list monitors / hits) does.",
     a: (
       <>
         No. Background polling does not consume monthly API call quota. Calling{" "}
@@ -35,10 +41,12 @@ const FAQS = [
   },
   {
     q: "MCP vs REST — which should I use?",
+    answerText:
+      "Use MCP inside Claude Desktop / Cursor for agent workflows. Use REST from your backend, scripts, or Make. Same API key and quotas.",
     a: (
       <>
         Use{" "}
-        <Link href="/docs/integrations/mcp" className="text-sky-400 hover:underline">
+        <Link href="/mcp" className="text-sky-400 hover:underline">
           MCP
         </Link>{" "}
         inside Claude Desktop / Cursor for agent workflows. Use REST from your backend, scripts, or
@@ -48,6 +56,8 @@ const FAQS = [
   },
   {
     q: "Can I create monitors via API?",
+    answerText:
+      "Create and edit monitors in the Dashboard. API/MCP support read-only list and hits (GET /api/v1/monitors).",
     a: (
       <>
         Create and edit monitors in the{" "}
@@ -62,12 +72,14 @@ const FAQS = [
   },
   {
     q: "When should I use the official X API instead?",
+    answerText:
+      "When you need write access (post/DM), full-archive search, compliance products, or official partnership.",
     a: (
       <>
         When you need write access (post/DM), full-archive search, compliance products, or official
         partnership. Compare costs on{" "}
-        <Link href="/docs/compare/pricing" className="text-sky-400 hover:underline">
-          Pricing vs official X API
+        <Link href="/compare/x-api" className="text-sky-400 hover:underline">
+          XFlux vs official X API
         </Link>
         .
       </>
@@ -75,6 +87,8 @@ const FAQS = [
   },
   {
     q: "Why did a monitor fail on a high-profile account?",
+    answerText:
+      "Most public accounts work; a small set of restricted accounts may not poll reliably. Try another handle.",
     a: (
       <>
         Most public accounts work; a small set of restricted accounts may not poll reliably. Try
@@ -88,6 +102,8 @@ const FAQS = [
   },
   {
     q: "Where do I see usage and rate limits?",
+    answerText:
+      "Dashboard → Usage for monthly quota. See Errors and Plans & Limits docs for rate-limit details.",
     a: (
       <>
         Dashboard → Usage for monthly quota. Error codes and per-minute caps:{" "}
@@ -102,11 +118,14 @@ const FAQS = [
       </>
     ),
   },
-] as const;
+];
 
 export default function FaqDocsPage() {
   return (
     <>
+      <FaqJsonLd
+        items={FAQS.map((item) => ({ question: item.q, answer: item.answerText }))}
+      />
       <h1 className="text-4xl font-bold text-white mb-4">FAQ</h1>
       <p className="text-zinc-400 mb-8">Common questions about quotas, monitors, MCP, and pricing.</p>
 

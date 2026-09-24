@@ -4,10 +4,12 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 
 const LINK_KEYS = [
-  { href: "/docs/compare/pricing", labelKey: "comparePricing" as const },
+  { href: "/compare", labelKey: "comparePricing" as const },
   { href: "/use-cases/trading-alerts", labelKey: "tradingAlerts" as const },
   { href: "/use-cases/ai-research", labelKey: "aiResearch" as const },
   { href: "/use-cases/crypto-alerts", labelKey: "cryptoAlerts" as const },
+  { href: "/blog", labelKey: "blog" as const },
+  { href: "/mcp", labelKey: "mcp" as const },
 ] as const;
 
 export function SeoGuideLinks({

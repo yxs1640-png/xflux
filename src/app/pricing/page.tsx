@@ -8,6 +8,7 @@ import { Footer } from "@/components/layout/footer";
 import { PLANS, PAID_PLAN_COMING_SOON_LABEL } from "@/lib/constants";
 import { isBillingCheckoutEnabled } from "@/lib/billing-config";
 import { pageMetadata } from "@/lib/seo";
+import { PricingProductJsonLd } from "@/components/seo/product-json-ld";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
@@ -30,6 +31,7 @@ export default async function PricingPage() {
 
   return (
     <>
+      <PricingProductJsonLd />
       <Header />
       <main className="pt-24 pb-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">

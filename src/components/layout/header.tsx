@@ -22,15 +22,21 @@ export function Header() {
           <span className="text-lg font-bold text-white">XFlux</span>
         </Link>
 
-        <nav className="hidden items-center gap-8 md:flex">
+        <nav className="hidden items-center gap-6 lg:gap-8 md:flex">
           <Link href="/signals" className="text-sm text-zinc-400 hover:text-white transition-colors">
             {t("signals")}
+          </Link>
+          <Link href="/predictors" className="text-sm text-zinc-400 hover:text-white transition-colors">
+            {t("predictors")}
+          </Link>
+          <Link href="/twitter-webhook" className="text-sm text-zinc-400 hover:text-white transition-colors">
+            {t("webhooks")}
           </Link>
           <Link href="/docs" className="text-sm text-zinc-400 hover:text-white transition-colors">
             {t("docs")}
           </Link>
-          <Link href="/use-cases" className="text-sm text-zinc-400 hover:text-white transition-colors">
-            {t("useCases")}
+          <Link href="/blog" className="hidden lg:inline text-sm text-zinc-400 hover:text-white transition-colors">
+            {t("blog")}
           </Link>
           <Link href="/pricing" className="text-sm text-zinc-400 hover:text-white transition-colors">
             {t("pricing")}

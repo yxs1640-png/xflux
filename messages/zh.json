@@ -19,7 +19,12 @@
     "useCases": "用例",
     "pricing": "定价",
     "dashboard": "控制台",
-    "documentation": "文档"
+    "documentation": "文档",
+    "predictors": "Smart Money",
+    "webhooks": "Webhooks",
+    "blog": "博客",
+    "compare": "对比",
+    "mcp": "MCP"
   },
   "footer": {
     "tagline": "X/Twitter 读取 API、账号监控，以及面向 Claude/Cursor 的 MCP(<mcp>npx @xflux/xflux-mcp-server</mcp>)。付费计划含签名 HTTP Webhook。",
@@ -54,7 +59,11 @@
     "privacy": "隐私政策",
     "refund": "退款政策",
     "acceptableUse": "可接受使用政策",
-    "copyright": "© {year} XFlux。与 X Corp. 无关联。"
+    "copyright": "© {year} XFlux。与 X Corp. 无关联。",
+    "blog": "博客",
+    "compareApis": "API 对比",
+    "discordAlerts": "Discord 告警",
+    "mcpLanding": "面向 Agent 的 MCP"
   },
   "dashboard": {
     "overview": "概览",
@@ -98,7 +107,12 @@
     "compare": "对比",
     "pricingVsOfficial": "定价对比官方 X API",
     "help": "帮助",
-    "faq": "常见问题"
+    "faq": "常见问题",
+    "pythonGuide": "Python 快速开始",
+    "nodeGuide": "Node.js 快速开始",
+    "vsSocialData": "对比 SocialData",
+    "compareHub": "对比替代方案",
+    "vsSorsa": "对比 Sorsa API"
   },
   "home": {
     "heroBadge": "Twitter / X 数据 API",
@@ -177,10 +191,12 @@
   },
   "seoGuides": {
     "explore": "探索指南",
-    "comparePricing": "XFlux 对比官方 X API 定价",
+    "comparePricing": "对比 XFlux 与替代方案",
     "tradingAlerts": "交易与宏观提醒",
     "aiResearch": "来自 X 的 AI 研究",
-    "cryptoAlerts": "加密货币与 Meme 币提醒"
+    "cryptoAlerts": "加密货币与 Meme 币提醒",
+    "blog": "博客与指南",
+    "mcp": "Claude / Cursor MCP"
   },
   "useCases": {
     "stripTitle": "为真实工作流而建",

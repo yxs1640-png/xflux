@@ -3,6 +3,9 @@ import { getRequestConfig } from "next-intl/server";
 import { defaultLocale, isLocale, LOCALE_COOKIE, type Locale } from "./config";
 import { deepMergeMessages } from "./merge";
 
+const BOT_UA =
+  /googlebot|bingbot|slurp|duckduckbot|baiduspider|yandexbot|facebookexternalhit|twitterbot|linkedinbot|embedly|quora link preview|showyoubot|outbrain|pinterest|applebot|semrushbot|ahrefsbot|mj12bot|dotbot|petalbot/i;
+
 function negotiateLocale(acceptLanguage: string | null): Locale {
   if (!acceptLanguage) return defaultLocale;
 
@@ -22,15 +25,19 @@ function negotiateLocale(acceptLanguage: string | null): Locale {
 }
 
 export default getRequestConfig(async () => {
-  const cookieStore = await cookies();
-  const cookieLocale = cookieStore.get(LOCALE_COOKIE)?.value;
+  const headerStore = await headers();
+  const ua = headerStore.get("user-agent");
 
+  // Crawlers always get English so UI matches EN metadata/canonicals.
   let locale: Locale = defaultLocale;
-  if (isLocale(cookieLocale)) {
-    locale = cookieLocale;
-  } else {
-    const headerStore = await headers();
-    locale = negotiateLocale(headerStore.get("accept-language"));
+  if (!ua || !BOT_UA.test(ua)) {
+    const cookieStore = await cookies();
+    const cookieLocale = cookieStore.get(LOCALE_COOKIE)?.value;
+    if (isLocale(cookieLocale)) {
+      locale = cookieLocale;
+    } else {
+      locale = negotiateLocale(headerStore.get("accept-language"));
+    }
   }
 
   const enMessages = (await import("../../messages/en.json")).default;
@@ -41,7 +48,6 @@ export default getRequestConfig(async () => {
 
   return {
     locale,
-    // Missing keys in a locale fall back to English instead of showing "namespace.key"
     messages: deepMergeMessages(
       enMessages as Record<string, unknown>,
       localeMessages as Record<string, unknown>

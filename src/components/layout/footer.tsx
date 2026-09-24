@@ -42,8 +42,11 @@ export async function Footer() {
               <li><Link href="/predictors" className="hover:text-white transition-colors">{t("smartMoney")}</Link></li>
               <li><Link href="/docs" className="hover:text-white transition-colors">{t("apiDocs")}</Link></li>
               <li><Link href="/twitter-webhook" className="hover:text-white transition-colors">{t("twitterWebhooks")}</Link></li>
+              <li><Link href="/twitter-discord-alerts" className="hover:text-white transition-colors">{t("discordAlerts")}</Link></li>
               <li><Link href="/docs/integrations/make" className="hover:text-white transition-colors">{t("makeIntegration")}</Link></li>
-              <li><Link href="/docs/integrations/mcp" className="hover:text-white transition-colors">{t("mcpServer")}</Link></li>
+              <li><Link href="/mcp" className="hover:text-white transition-colors">{t("mcpLanding")}</Link></li>
+              <li><Link href="/compare" className="hover:text-white transition-colors">{t("compareApis")}</Link></li>
+              <li><Link href="/blog" className="hover:text-white transition-colors">{t("blog")}</Link></li>
               <li><Link href="/pricing" className="hover:text-white transition-colors">{t("pricing")}</Link></li>
               <li><Link href="/feedback" className="hover:text-white transition-colors">{t("feedback")}</Link></li>
               <li><Link href="/dashboard" className="hover:text-white transition-colors">{t("dashboard")}</Link></li>

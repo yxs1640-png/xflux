@@ -19,7 +19,12 @@
     "useCases": "Use Cases",
     "pricing": "Pricing",
     "dashboard": "Dashboard",
-    "documentation": "Documentation"
+    "documentation": "Documentation",
+    "predictors": "Smart Money",
+    "webhooks": "Webhooks",
+    "blog": "Blog",
+    "compare": "Compare",
+    "mcp": "MCP"
   },
   "footer": {
     "tagline": "X/Twitter read API, account monitors, and MCP for Claude/Cursor (<mcp>npx @xflux/xflux-mcp-server</mcp>). Paid plans include signed HTTP webhooks.",
@@ -54,7 +59,11 @@
     "privacy": "Privacy Policy",
     "refund": "Refund Policy",
     "acceptableUse": "Acceptable Use",
-    "copyright": "© {year} XFlux. Not affiliated with X Corp."
+    "copyright": "© {year} XFlux. Not affiliated with X Corp.",
+    "blog": "Blog",
+    "compareApis": "Compare APIs",
+    "discordAlerts": "Discord alerts",
+    "mcpLanding": "MCP for agents"
   },
   "dashboard": {
     "overview": "Overview",
@@ -98,7 +107,12 @@
     "compare": "Compare",
     "pricingVsOfficial": "Pricing vs official X API",
     "help": "Help",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "pythonGuide": "Python quickstart",
+    "nodeGuide": "Node.js quickstart",
+    "vsSocialData": "vs SocialData",
+    "compareHub": "Compare alternatives",
+    "vsSorsa": "vs Sorsa API"
   },
   "home": {
     "heroBadge": "Twitter / X data API",
@@ -177,10 +191,12 @@
   },
   "seoGuides": {
     "explore": "Explore guides",
-    "comparePricing": "XFlux vs official X API pricing",
+    "comparePricing": "Compare XFlux vs alternatives",
     "tradingAlerts": "Trading & macro alerts",
     "aiResearch": "AI research from X",
-    "cryptoAlerts": "Crypto & memecoin alerts"
+    "cryptoAlerts": "Crypto & memecoin alerts",
+    "blog": "Blog & guides",
+    "mcp": "MCP for Claude / Cursor"
   },
   "useCases": {
     "stripTitle": "Built for real workflows",

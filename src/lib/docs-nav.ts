@@ -24,6 +24,8 @@ export const DOC_NAV_SECTIONS: DocNavSection[] = [
       { titleKey: "apiReference", href: "/docs/api" },
       { titleKey: "errors", href: "/docs/errors" },
       { titleKey: "searchOperators", href: "/docs/guides/search" },
+      { titleKey: "pythonGuide", href: "/docs/guides/python" },
+      { titleKey: "nodeGuide", href: "/docs/guides/nodejs" },
       { titleKey: "plansLimits", href: "/docs/limits" },
     ],
   },
@@ -54,7 +56,12 @@ export const DOC_NAV_SECTIONS: DocNavSection[] = [
   },
   {
     titleKey: "compare",
-    items: [{ titleKey: "pricingVsOfficial", href: "/docs/compare/pricing" }],
+    items: [
+      { titleKey: "compareHub", href: "/compare" },
+      { titleKey: "pricingVsOfficial", href: "/docs/compare/pricing" },
+      { titleKey: "vsSorsa", href: "/compare/sorsa" },
+      { titleKey: "vsSocialData", href: "/compare/socialdata" },
+    ],
   },
   {
     titleKey: "help",

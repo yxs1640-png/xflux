@@ -137,6 +137,9 @@ export default function PricingComparePage() {
         <Link href="/pricing">
           <Button>See XFlux plans</Button>
         </Link>
+        <Link href="/compare">
+          <Button variant="outline">All comparisons</Button>
+        </Link>
         <Link href="/docs/limits">
           <Button variant="outline">Plans &amp; limits</Button>
         </Link>

@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { defaultLocale, isLocale, LOCALE_COOKIE, locales, type Locale } from "@/i18n/config";
 
+/** Common crawler UAs — force English so UI language matches EN metadata/canonicals. */
+const BOT_UA =
+  /googlebot|bingbot|slurp|duckduckbot|baiduspider|yandexbot|facebookexternalhit|twitterbot|linkedinbot|embedly|quora link preview|showyoubot|outbrain|pinterest|applebot|semrushbot|ahrefsbot|mj12bot|dotbot|petalbot/i;
+
+function isCrawler(ua: string | null): boolean {
+  return Boolean(ua && BOT_UA.test(ua));
+}
+
 function negotiateLocale(acceptLanguage: string | null): Locale {
   if (!acceptLanguage) return defaultLocale;
 
@@ -21,6 +29,19 @@ function negotiateLocale(acceptLanguage: string | null): Locale {
 
 export function middleware(request: NextRequest) {
   const response = NextResponse.next();
+  const ua = request.headers.get("user-agent");
+
+  if (isCrawler(ua)) {
+    // Do not persist a bot locale cookie forever for humans who share caches;
+    // set EN only for this response path.
+    response.cookies.set(LOCALE_COOKIE, defaultLocale, {
+      path: "/",
+      maxAge: 60 * 60, // short-lived
+      sameSite: "lax",
+    });
+    return response;
+  }
+
   const existing = request.cookies.get(LOCALE_COOKIE)?.value;
 
   if (!isLocale(existing)) {
@@ -36,9 +57,7 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // Skip static assets and API; locale cookie still set on first page hit
   matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)"],
 };
 
-// Keep locales referenced so tree-shaking doesn't drop the config import side
 void locales;

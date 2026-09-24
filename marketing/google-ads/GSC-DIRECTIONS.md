@@ -49,6 +49,46 @@ https://www.xfluxapi.com/docs/integrations/mcp
 https://www.xfluxapi.com/docs/guides/trading-keywords
 ```
 
+### Wave D — SEO content machine (Sep 24)
+
+| URL | Why |
+|-----|-----|
+| `https://www.xfluxapi.com/compare` | Alternatives hub |
+| `https://www.xfluxapi.com/compare/x-api` | vs official X API |
+| `https://www.xfluxapi.com/compare/sorsa` | vs Sorsa API |
+| `https://www.xfluxapi.com/compare/socialdata` | vs SocialData |
+| `https://www.xfluxapi.com/blog` | Blog hub |
+| `https://www.xfluxapi.com/blog/twitter-api-alternative` | Head commercial term |
+| `https://www.xfluxapi.com/blog/x-api-cost-2026` | Pricing SERP |
+| `https://www.xfluxapi.com/blog/twitter-account-monitor-webhook` | Monitor/webhook intent |
+| `https://www.xfluxapi.com/blog/twitter-trading-alerts` | Trading alerts |
+| `https://www.xfluxapi.com/blog/twitter-mcp-claude-cursor` | MCP SERP |
+| `https://www.xfluxapi.com/blog/twitter-api-python-nodejs` | Language how-to |
+| `https://www.xfluxapi.com/mcp` | MCP marketing landing |
+| `https://www.xfluxapi.com/twitter-discord-alerts` | Discord monitor intent |
+| `https://www.xfluxapi.com/docs/guides/python` | Python guide |
+| `https://www.xfluxapi.com/docs/guides/nodejs` | Node guide |
+
+Wave D copy-paste:
+
+```
+https://www.xfluxapi.com/compare
+https://www.xfluxapi.com/compare/x-api
+https://www.xfluxapi.com/compare/sorsa
+https://www.xfluxapi.com/compare/socialdata
+https://www.xfluxapi.com/blog
+https://www.xfluxapi.com/blog/twitter-api-alternative
+https://www.xfluxapi.com/blog/x-api-cost-2026
+https://www.xfluxapi.com/blog/twitter-account-monitor-webhook
+https://www.xfluxapi.com/blog/twitter-trading-alerts
+https://www.xfluxapi.com/blog/twitter-mcp-claude-cursor
+https://www.xfluxapi.com/blog/twitter-api-python-nodejs
+https://www.xfluxapi.com/mcp
+https://www.xfluxapi.com/twitter-discord-alerts
+https://www.xfluxapi.com/docs/guides/python
+https://www.xfluxapi.com/docs/guides/nodejs
+```
+
 ## PMax asset group additions
 
 Keep final URL: `/register?utm_campaign=pmax_v1`
