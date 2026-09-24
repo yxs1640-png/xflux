@@ -1,14 +1,15 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { FaqJsonLd } from "@/components/seo/faq-json-ld";
 import { pageMetadata } from "@/lib/seo";
 import {
-  COMPARE_PAGES,
   getAllCompareSlugs,
   getComparePage,
+  getComparePages,
 } from "@/lib/compare/competitors";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -19,7 +20,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
-  const page = getComparePage(slug);
+  const page = getComparePage(slug, "en");
   if (!page) return {};
   return pageMetadata({
     title: page.title,
@@ -31,10 +32,12 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function CompareSlugPage({ params }: Props) {
   const { slug } = await params;
-  const page = getComparePage(slug);
+  const locale = await getLocale();
+  const t = await getTranslations("compareUi");
+  const page = getComparePage(slug, locale);
   if (!page) notFound();
 
-  const others = COMPARE_PAGES.filter((p) => p.slug !== page.slug);
+  const others = getComparePages(locale).filter((p) => p.slug !== page.slug);
 
   return (
     <>
@@ -44,7 +47,7 @@ export default async function CompareSlugPage({ params }: Props) {
         <div className="mx-auto max-w-4xl px-4 sm:px-6">
           <p className="text-sm text-zinc-500 mb-4">
             <Link href="/compare" className="text-sky-400 hover:underline">
-              Compare
+              {t("breadcrumb")}
             </Link>
             <span className="mx-2">/</span>
             <span className="text-zinc-400">{page.competitorName}</span>
@@ -55,7 +58,7 @@ export default async function CompareSlugPage({ params }: Props) {
           <p className="text-lg text-zinc-400 leading-relaxed mb-10">{page.description}</p>
 
           <section className="mb-14">
-            <h2 className="text-2xl font-bold text-white mb-6">Side-by-side</h2>
+            <h2 className="text-2xl font-bold text-white mb-6">{t("sideBySide")}</h2>
             <div className="overflow-x-auto rounded-xl border border-zinc-800">
               <table className="w-full text-sm">
                 <thead>
@@ -64,7 +67,9 @@ export default async function CompareSlugPage({ params }: Props) {
                     <th className="px-4 py-3 text-left text-zinc-400 font-medium">
                       {page.competitorName}
                     </th>
-                    <th className="px-4 py-3 text-left text-sky-400 font-medium">XFlux</th>
+                    <th className="px-4 py-3 text-left text-sky-400 font-medium">
+                      {t("colXflux")}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -83,7 +88,7 @@ export default async function CompareSlugPage({ params }: Props) {
           <div className="grid gap-8 sm:grid-cols-2 mb-14">
             <section className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-6">
               <h2 className="text-lg font-semibold text-white mb-4">
-                Choose {page.competitorName} when
+                {t("chooseThem", { name: page.competitorName })}
               </h2>
               <ul className="list-disc list-inside space-y-2 text-sm text-zinc-400">
                 {page.whenThem.map((item) => (
@@ -92,7 +97,7 @@ export default async function CompareSlugPage({ params }: Props) {
               </ul>
             </section>
             <section className="rounded-xl border border-sky-500/20 bg-sky-500/5 p-6">
-              <h2 className="text-lg font-semibold text-white mb-4">Choose XFlux when</h2>
+              <h2 className="text-lg font-semibold text-white mb-4">{t("chooseUs")}</h2>
               <ul className="list-disc list-inside space-y-2 text-sm text-zinc-300">
                 {page.whenUs.map((item) => (
                   <li key={item}>{item}</li>
@@ -103,7 +108,7 @@ export default async function CompareSlugPage({ params }: Props) {
 
           {page.faqs.length > 0 && (
             <section className="mb-14">
-              <h2 className="text-2xl font-bold text-white mb-6">FAQ</h2>
+              <h2 className="text-2xl font-bold text-white mb-6">{t("faq")}</h2>
               <dl className="space-y-6">
                 {page.faqs.map((faq) => (
                   <div key={faq.question}>
@@ -116,7 +121,7 @@ export default async function CompareSlugPage({ params }: Props) {
           )}
 
           <section className="mb-14">
-            <h2 className="text-lg font-semibold text-white mb-4">Related</h2>
+            <h2 className="text-lg font-semibold text-white mb-4">{t("related")}</h2>
             <ul className="flex flex-wrap gap-x-4 gap-y-2">
               {page.relatedLinks.map((link) => (
                 <li key={link.href}>
@@ -129,27 +134,25 @@ export default async function CompareSlugPage({ params }: Props) {
           </section>
 
           <section className="rounded-xl border border-zinc-800 bg-zinc-900/30 p-8 text-center mb-14">
-            <h2 className="text-xl font-bold text-white mb-2">Try XFlux</h2>
-            <p className="text-zinc-400 text-sm mb-6 max-w-lg mx-auto">
-              Free reads + 1 monitor. Starter from $19/mo for signed webhooks.
-            </p>
+            <h2 className="text-xl font-bold text-white mb-2">{t("tryTitle")}</h2>
+            <p className="text-zinc-400 text-sm mb-6 max-w-lg mx-auto">{t("tryDesc")}</p>
             <div className="flex flex-wrap justify-center gap-3">
               <Link href="/register?src=compare_page">
-                <Button size="lg">Create free account</Button>
+                <Button size="lg">{t("createAccount")}</Button>
               </Link>
               <Link href="/pricing">
                 <Button variant="outline" size="lg">
-                  Pricing
+                  {t("pricing")}
                 </Button>
               </Link>
               <Link href="/twitter-webhook">
                 <Button variant="outline" size="lg">
-                  Webhooks
+                  {t("webhooks")}
                 </Button>
               </Link>
               <Link href="/mcp">
                 <Button variant="outline" size="lg">
-                  MCP
+                  {t("mcp")}
                 </Button>
               </Link>
             </div>
@@ -157,7 +160,7 @@ export default async function CompareSlugPage({ params }: Props) {
 
           {others.length > 0 && (
             <section>
-              <h2 className="text-lg font-semibold text-white mb-4">Other comparisons</h2>
+              <h2 className="text-lg font-semibold text-white mb-4">{t("otherComparisons")}</h2>
               <ul className="space-y-2">
                 {others.map((p) => (
                   <li key={p.slug}>

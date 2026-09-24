@@ -566,10 +566,20 @@ console.log((await search.json()).data.length, "results");`,
   },
 ];
 
+import { BLOG_POSTS_ZH } from "./posts-zh";
+
 export function getPost(slug: string): BlogPost | undefined {
   return BLOG_POSTS.find((p) => p.slug === slug);
 }
 
 export function getAllSlugs(): string[] {
   return BLOG_POSTS.map((p) => p.slug);
+}
+
+export function getBlogPosts(locale: string): BlogPost[] {
+  return locale === "zh" ? BLOG_POSTS_ZH : BLOG_POSTS;
+}
+
+export function getBlogPost(slug: string, locale: string): BlogPost | undefined {
+  return getBlogPosts(locale).find((p) => p.slug === slug) ?? getPost(slug);
 }

@@ -1,9 +1,10 @@
 import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { pageMetadata } from "@/lib/seo";
-import { BLOG_POSTS } from "@/lib/blog/posts";
+import { getBlogPosts } from "@/lib/blog/posts";
 
 export const metadata = pageMetadata({
   title: "Blog — X/Twitter API Guides",
@@ -18,8 +19,10 @@ export const metadata = pageMetadata({
   ],
 });
 
-export default function BlogHubPage() {
-  const posts = [...BLOG_POSTS].sort((a, b) =>
+export default async function BlogHubPage() {
+  const locale = await getLocale();
+  const t = await getTranslations("blogUi");
+  const posts = [...getBlogPosts(locale)].sort((a, b) =>
     b.datePublished.localeCompare(a.datePublished)
   );
 
@@ -29,11 +32,8 @@ export default function BlogHubPage() {
       <main className="pt-24 pb-16">
         <div className="mx-auto max-w-4xl px-4 sm:px-6">
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-white sm:text-5xl">Blog</h1>
-            <p className="mt-4 text-lg text-zinc-400 max-w-2xl mx-auto">
-              Pricing, alternatives, webhooks, trading alerts, MCP, and code samples — written for
-              developers building on public X/Twitter data.
-            </p>
+            <h1 className="text-4xl font-bold text-white sm:text-5xl">{t("title")}</h1>
+            <p className="mt-4 text-lg text-zinc-400 max-w-2xl mx-auto">{t("subtitle")}</p>
           </div>
 
           <ul className="space-y-6 mb-16">
@@ -55,25 +55,22 @@ export default function BlogHubPage() {
                   href={`/blog/${post.slug}`}
                   className="text-sm text-sky-400 hover:underline"
                 >
-                  Read article →
+                  {t("readArticle")}
                 </Link>
               </li>
             ))}
           </ul>
 
           <section className="rounded-xl border border-zinc-800 bg-zinc-900/30 p-8 text-center">
-            <h2 className="text-xl font-bold text-white mb-2">Try XFlux free</h2>
-            <p className="text-zinc-400 text-sm mb-6 max-w-lg mx-auto">
-              1,000 API calls/month and 1 account monitor — no credit card. Upgrade for signed
-              webhooks from $19/mo.
-            </p>
+            <h2 className="text-xl font-bold text-white mb-2">{t("tryTitle")}</h2>
+            <p className="text-zinc-400 text-sm mb-6 max-w-lg mx-auto">{t("tryDesc")}</p>
             <div className="flex flex-wrap justify-center gap-3">
               <Link href="/register?src=blog_hub">
-                <Button size="lg">Create free account</Button>
+                <Button size="lg">{t("createAccount")}</Button>
               </Link>
               <Link href="/pricing">
                 <Button variant="outline" size="lg">
-                  Pricing
+                  {t("pricing")}
                 </Button>
               </Link>
             </div>

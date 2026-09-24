@@ -261,10 +261,17 @@ export const COMPARE_PAGES: ComparePage[] = [
   },
 ];
 
-export function getComparePage(slug: string): ComparePage | undefined {
-  return COMPARE_PAGES.find((p) => p.slug === slug);
+import { COMPARE_PAGES_ZH } from "./competitors-zh";
+
+export function getComparePage(slug: string, locale = "en"): ComparePage | undefined {
+  const pages = locale === "zh" ? COMPARE_PAGES_ZH : COMPARE_PAGES;
+  return pages.find((p) => p.slug === slug) ?? COMPARE_PAGES.find((p) => p.slug === slug);
 }
 
 export function getAllCompareSlugs(): string[] {
   return COMPARE_PAGES.map((p) => p.slug);
+}
+
+export function getComparePages(locale: string): ComparePage[] {
+  return locale === "zh" ? COMPARE_PAGES_ZH : COMPARE_PAGES;
 }

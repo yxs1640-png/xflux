@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Bot, Check, Terminal } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { CodeBlock } from "@/components/docs/doc-blocks";
@@ -22,87 +23,66 @@ export const metadata = pageMetadata({
   ],
 });
 
-const FAQS = [
-  {
-    question: "Is this the same as other “xflux” MCP packages?",
-    answer:
-      "No. @xflux/xflux-mcp-server is for the XFlux X/Twitter API at xfluxapi.com. Unrelated Figma or design MCPs that share the name are different products.",
-  },
-  {
-    question: "What can agents do with MCP?",
-    answer:
-      "Read profiles, search tweets, pull timelines, look up tweets, list monitors/hits (read-only), and discover Smart Money accounts. Create monitors and webhooks in the Dashboard.",
-  },
-  {
-    question: "Does MCP use my API quota?",
-    answer:
-      "Yes — each tool call counts like a REST request against your plan quota.",
-  },
-];
+export default async function McpMarketingPage() {
+  const t = await getTranslations("mcpLanding");
 
-export default function McpMarketingPage() {
+  const faqs = [
+    { question: t("faq1Q"), answer: t("faq1A") },
+    { question: t("faq2Q"), answer: t("faq2A") },
+    { question: t("faq3Q"), answer: t("faq3A") },
+  ];
+
+  const cards = [
+    { icon: Terminal, title: t("card1Title"), text: t("card1Text") },
+    { icon: Bot, title: t("card2Title"), text: t("card2Text") },
+    { icon: Check, title: t("card3Title"), text: t("card3Text") },
+  ];
+
   return (
     <>
-      <FaqJsonLd items={FAQS} />
+      <FaqJsonLd items={faqs} />
       <Header />
       <main className="pt-24 pb-16">
         <div className="mx-auto max-w-4xl px-4 sm:px-6">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/10 px-3 py-1 text-sm text-violet-300 mb-6">
               <Bot className="h-4 w-4" />
-              Model Context Protocol
+              {t("badge")}
             </div>
             <h1 className="text-4xl font-bold text-white sm:text-5xl leading-tight">
-              X/Twitter data for Claude &amp; Cursor
+              {t("title")}
             </h1>
             <p className="mt-6 text-lg text-zinc-400 max-w-2xl mx-auto leading-relaxed">
-              Run{" "}
-              <code className="text-zinc-200">@xflux/xflux-mcp-server</code> with your XFlux API
-              key. Agents get search, profiles, timelines, and Smart Money discovery — monitors stay
-              in the Dashboard.
+              {t("subtitleBefore")}{" "}
+              <code className="text-zinc-200">@xflux/xflux-mcp-server</code>{" "}
+              {t("subtitleAfter")}
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Link href="/register?src=mcp_landing">
-                <Button size="lg">Get an API key</Button>
+                <Button size="lg">{t("ctaKey")}</Button>
               </Link>
               <Link href="/docs/integrations/mcp">
                 <Button variant="outline" size="lg">
-                  Full MCP docs
+                  {t("ctaDocs")}
                 </Button>
               </Link>
               <Link href="/pricing">
                 <Button variant="outline" size="lg">
-                  Pricing
+                  {t("ctaPricing")}
                 </Button>
               </Link>
             </div>
           </div>
 
           <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 mb-12 text-sm text-amber-100/90 leading-relaxed">
-            <strong className="text-amber-200">Name disambiguation:</strong> This page is for XFlux
-            (xfluxapi.com) — the X/Twitter read API. It is{" "}
-            <strong className="text-white">not</strong> related to other products or Figma MCP
-            servers that also use the word “xflux.”
+            <strong className="text-amber-200">{t("disambiguationTitle")}</strong>{" "}
+            {t("disambiguationBefore")}{" "}
+            <strong className="text-white">{t("disambiguationStrong")}</strong>{" "}
+            {t("disambiguationAfter")}
           </div>
 
           <div className="grid gap-6 sm:grid-cols-3 mb-16">
-            {[
-              {
-                icon: Terminal,
-                title: "One npx command",
-                text: "npx @xflux/xflux-mcp-server with XFLUX_API_KEY — Node 18+.",
-              },
-              {
-                icon: Bot,
-                title: "Claude + Cursor",
-                text: "Same JSON config block for both MCP clients.",
-              },
-              {
-                icon: Check,
-                title: "Read + Smart Money",
-                text: "Lookups plus ranked forward-looking accounts for research agents.",
-              },
-            ].map(({ icon: Icon, title, text }) => (
+            {cards.map(({ icon: Icon, title, text }) => (
               <Card key={title}>
                 <CardHeader>
                   <Icon className="h-8 w-8 text-violet-400 mb-2" />
@@ -114,9 +94,9 @@ export default function McpMarketingPage() {
           </div>
 
           <section className="mb-16">
-            <h2 className="text-2xl font-bold text-white mb-4">Install</h2>
+            <h2 className="text-2xl font-bold text-white mb-4">{t("installTitle")}</h2>
             <p className="text-zinc-400 text-sm mb-4">
-              Package:{" "}
+              {t("installPackage")}{" "}
               <a
                 href="https://www.npmjs.com/package/@xflux/xflux-mcp-server"
                 className="text-sky-400 hover:underline"
@@ -125,18 +105,16 @@ export default function McpMarketingPage() {
               >
                 @xflux/xflux-mcp-server
               </a>
-              . Registry: <code className="text-zinc-300">io.github.yxs1640-png/xflux</code>.
+              . {t("installRegistry")}{" "}
+              <code className="text-zinc-300">io.github.yxs1640-png/xflux</code>.
             </p>
             <CodeBlock>{`export XFLUX_API_KEY=xflux_your_key_here
 npx @xflux/xflux-mcp-server`}</CodeBlock>
           </section>
 
           <section className="mb-16">
-            <h2 className="text-2xl font-bold text-white mb-4">Cursor / Claude config</h2>
-            <p className="text-zinc-400 text-sm mb-4">
-              Add to Cursor MCP settings or Claude Desktop{" "}
-              <code className="text-zinc-300">claude_desktop_config.json</code>, then restart.
-            </p>
+            <h2 className="text-2xl font-bold text-white mb-4">{t("configTitle")}</h2>
+            <p className="text-zinc-400 text-sm mb-4">{t("configBlurb")}</p>
             <CodeBlock>{`{
   "mcpServers": {
     "xflux": {
@@ -151,9 +129,9 @@ npx @xflux/xflux-mcp-server`}</CodeBlock>
           </section>
 
           <section className="mb-16">
-            <h2 className="text-2xl font-bold text-white mb-4">FAQ</h2>
+            <h2 className="text-2xl font-bold text-white mb-4">{t("faqTitle")}</h2>
             <dl className="space-y-6">
-              {FAQS.map((faq) => (
+              {faqs.map((faq) => (
                 <div key={faq.question}>
                   <dt className="font-semibold text-white mb-2">{faq.question}</dt>
                   <dd className="text-sm text-zinc-400 leading-relaxed">{faq.answer}</dd>
@@ -163,22 +141,22 @@ npx @xflux/xflux-mcp-server`}</CodeBlock>
           </section>
 
           <section className="rounded-xl border border-zinc-800 bg-zinc-900/30 p-8 text-center">
-            <h2 className="text-xl font-bold text-white mb-2">Ready for agents?</h2>
+            <h2 className="text-xl font-bold text-white mb-2">{t("ctaBottomTitle")}</h2>
             <p className="text-zinc-400 text-sm mb-6 max-w-lg mx-auto">
-              Free tier includes 1,000 API calls/month. Full tool reference lives in the docs.
+              {t("ctaBottomDesc")}
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               <Link href="/register?src=mcp_landing_cta">
-                <Button size="lg">Create free account</Button>
+                <Button size="lg">{t("createAccount")}</Button>
               </Link>
               <Link href="/docs/integrations/mcp">
                 <Button variant="outline" size="lg">
-                  MCP documentation
+                  {t("mcpDocs")}
                 </Button>
               </Link>
               <Link href="/twitter-webhook">
                 <Button variant="outline" size="lg">
-                  Webhooks
+                  {t("webhooks")}
                 </Button>
               </Link>
             </div>

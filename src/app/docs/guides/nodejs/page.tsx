@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { pageMetadata } from "@/lib/seo";
 import { Callout, CodeBlock, DocHeading } from "@/components/docs/doc-blocks";
 import { DOC_BASE_URL } from "@/lib/docs-nav";
@@ -16,31 +17,31 @@ export const metadata = pageMetadata({
   ],
 });
 
-export default function NodejsGuidePage() {
+export default async function NodejsGuidePage() {
+  const t = await getTranslations("docsNode");
+
   return (
     <>
-      <h1 className="text-4xl font-bold text-white mb-4">Node.js guide</h1>
+      <h1 className="text-4xl font-bold text-white mb-4">{t("title")}</h1>
       <p className="text-zinc-400 mb-8 leading-relaxed">
-        Node 18+ includes global <code className="text-zinc-300">fetch</code>. Base URL:{" "}
-        <code className="text-zinc-300">{DOC_BASE_URL}</code>. Pass{" "}
-        <code className="text-zinc-300">Authorization: Bearer xflux_…</code>.
+        {t("introBefore")} <code className="text-zinc-300">{DOC_BASE_URL}</code>.
       </p>
 
-      <DocHeading id="setup">Setup</DocHeading>
+      <DocHeading id="setup">{t("setup")}</DocHeading>
       <ol className="list-decimal list-inside space-y-2 text-zinc-400 text-sm leading-relaxed mb-4">
         <li>
           <Link href="/register" className="text-sky-400 hover:underline">
-            Register
+            {t("register")}
           </Link>{" "}
-          and copy your API key
+          {t("setup1After")} API key
         </li>
         <li>
-          Export <code className="text-zinc-300">XFLUX_API_KEY</code>
+          {t("setup2")} <code className="text-zinc-300">XFLUX_API_KEY</code>
         </li>
       </ol>
       <CodeBlock>{`export XFLUX_API_KEY=xflux_YOUR_KEY`}</CodeBlock>
 
-      <DocHeading id="helper">Shared headers</DocHeading>
+      <DocHeading id="helper">{t("helper")}</DocHeading>
       <CodeBlock>{`const BASE = "${DOC_BASE_URL}";
 const headers = {
   Authorization: \`Bearer \${process.env.XFLUX_API_KEY}\`,
@@ -60,11 +61,11 @@ async function getJson(path, query) {
   return res.json();
 }`}</CodeBlock>
 
-      <DocHeading id="profile">Get a user profile</DocHeading>
+      <DocHeading id="profile">{t("profile")}</DocHeading>
       <CodeBlock>{`const { data: user } = await getJson("/users/elonmusk");
 console.log(user.username, user.followers_count);`}</CodeBlock>
 
-      <DocHeading id="timeline">User timeline</DocHeading>
+      <DocHeading id="timeline">{t("timeline")}</DocHeading>
       <CodeBlock>{`const { data: tweets } = await getJson("/users/OpenAI/tweets", {
   limit: 10,
 });
@@ -72,14 +73,13 @@ for (const t of tweets) {
   console.log(t.id, (t.text || "").slice(0, 100));
 }`}</CodeBlock>
 
-      <DocHeading id="search">Search</DocHeading>
+      <DocHeading id="search">{t("search")}</DocHeading>
       <p className="text-zinc-400 text-sm mb-4">
-        See{" "}
+        {t("searchBlurbBefore")}{" "}
         <Link href="/docs/guides/search" className="text-sky-400 hover:underline">
-          Search operators
+          {t("searchLink")}
         </Link>{" "}
-        for <code className="text-zinc-300">from:</code>, phrases, and{" "}
-        <code className="text-zinc-300">lang:</code>.
+        {t("searchBlurbAfter")}
       </p>
       <CodeBlock>{`const { data: results } = await getJson("/search", {
   q: "from:OpenAI lang:en",
@@ -87,20 +87,13 @@ for (const t of tweets) {
 });
 console.log(results.length, "results");`}</CodeBlock>
 
-      <DocHeading id="tweet">Tweet by ID</DocHeading>
+      <DocHeading id="tweet">{t("tweet")}</DocHeading>
       <CodeBlock>{`const tweetId = "1234567890";
 const { data: tweet } = await getJson(\`/tweets/\${tweetId}\`);
 console.log(tweet);`}</CodeBlock>
 
-      <DocHeading id="webhook-verify">Verify monitor webhooks (Express)</DocHeading>
-      <p className="text-zinc-400 text-sm mb-4 leading-relaxed">
-        Live <code className="text-zinc-300">monitor.hit</code> delivery requires Starter+. Always
-        verify HMAC — full reference in{" "}
-        <Link href="/docs/webhooks" className="text-sky-400 hover:underline">
-          Webhooks
-        </Link>
-        .
-      </p>
+      <DocHeading id="webhook-verify">{t("verifyTitle")}</DocHeading>
+      <p className="text-zinc-400 text-sm mb-4 leading-relaxed">{t("verifyBlurb")}</p>
       <CodeBlock>{`import crypto from "crypto";
 import express from "express";
 
@@ -133,38 +126,28 @@ app.post(
   }
 );`}</CodeBlock>
 
-      <Callout title="MCP for agents">
-        Prefer{" "}
-        <Link href="/docs/integrations/mcp" className="text-sky-400 hover:underline">
-          @xflux/xflux-mcp-server
-        </Link>{" "}
-        inside Claude or Cursor instead of hand-rolling tool wrappers. Marketing overview:{" "}
-        <Link href="/mcp" className="text-sky-400 hover:underline">
-          /mcp
-        </Link>
-        .
-      </Callout>
+      <Callout title={t("calloutTitle")}>{t("callout")}</Callout>
 
-      <DocHeading id="related">Related</DocHeading>
+      <DocHeading id="related">{t("related")}</DocHeading>
       <ul className="list-disc list-inside space-y-2 text-zinc-400 text-sm">
         <li>
           <Link href="/docs/guides/python" className="text-sky-400 hover:underline">
-            Python guide
+            {t("pythonGuide")}
           </Link>
         </li>
         <li>
           <Link href="/docs/api" className="text-sky-400 hover:underline">
-            API Reference
+            {t("apiRef")}
           </Link>
         </li>
         <li>
           <Link href="/docs/quickstart" className="text-sky-400 hover:underline">
-            Quickstart
+            {t("quickstart")}
           </Link>
         </li>
         <li>
           <Link href="/blog/twitter-api-python-nodejs" className="text-sky-400 hover:underline">
-            Blog: Python + Node examples
+            {t("blogLink")}
           </Link>
         </li>
       </ul>

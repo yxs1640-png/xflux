@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { ArticleJsonLd } from "@/components/seo/article-json-ld";
 import { FaqJsonLd } from "@/components/seo/faq-json-ld";
 import { pageMetadata } from "@/lib/seo";
-import { BLOG_POSTS, getAllSlugs, getPost } from "@/lib/blog/posts";
+import { getAllSlugs, getBlogPost, getBlogPosts, getPost } from "@/lib/blog/posts";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -28,10 +29,12 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
-  const post = getPost(slug);
+  const locale = await getLocale();
+  const t = await getTranslations("blogUi");
+  const post = getBlogPost(slug, locale);
   if (!post) notFound();
 
-  const others = BLOG_POSTS.filter((p) => p.slug !== post.slug).slice(0, 4);
+  const others = getBlogPosts(locale).filter((p) => p.slug !== post.slug).slice(0, 4);
 
   return (
     <>
@@ -47,7 +50,7 @@ export default async function BlogPostPage({ params }: Props) {
         <article className="mx-auto max-w-3xl px-4 sm:px-6">
           <p className="text-sm text-zinc-500 mb-4">
             <Link href="/blog" className="text-sky-400 hover:underline">
-              Blog
+              {t("breadcrumb")}
             </Link>
             <span className="mx-2">/</span>
             <time dateTime={post.datePublished}>{post.datePublished}</time>
@@ -77,7 +80,7 @@ export default async function BlogPostPage({ params }: Props) {
 
           {post.faqs.length > 0 && (
             <section className="mb-14">
-              <h2 className="text-2xl font-bold text-white mb-6">FAQ</h2>
+              <h2 className="text-2xl font-bold text-white mb-6">{t("faq")}</h2>
               <dl className="space-y-6">
                 {post.faqs.map((faq) => (
                   <div key={faq.question}>
@@ -90,18 +93,15 @@ export default async function BlogPostPage({ params }: Props) {
           )}
 
           <section className="rounded-xl border border-zinc-800 bg-zinc-900/30 p-8 text-center mb-14">
-            <h2 className="text-xl font-bold text-white mb-2">Build with XFlux</h2>
-            <p className="text-zinc-400 text-sm mb-6 max-w-lg mx-auto">
-              Free tier for reads and one monitor. Starter from $19/mo for signed webhooks and faster
-              polling.
-            </p>
+            <h2 className="text-xl font-bold text-white mb-2">{t("buildTitle")}</h2>
+            <p className="text-zinc-400 text-sm mb-6 max-w-lg mx-auto">{t("buildDesc")}</p>
             <div className="flex flex-wrap justify-center gap-3">
               <Link href="/register?src=blog_post">
-                <Button size="lg">Create free account</Button>
+                <Button size="lg">{t("createAccount")}</Button>
               </Link>
               <Link href="/pricing">
                 <Button variant="outline" size="lg">
-                  View pricing
+                  {t("viewPricing")}
                 </Button>
               </Link>
             </div>
@@ -109,7 +109,7 @@ export default async function BlogPostPage({ params }: Props) {
 
           {others.length > 0 && (
             <section>
-              <h2 className="text-lg font-semibold text-white mb-4">More from the blog</h2>
+              <h2 className="text-lg font-semibold text-white mb-4">{t("moreFromBlog")}</h2>
               <ul className="space-y-3">
                 {others.map((p) => (
                   <li key={p.slug}>
