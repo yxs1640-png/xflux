@@ -1,74 +1,64 @@
 export interface DocNavItem {
-  title: string;
+  titleKey: string;
   href: string;
-  description?: string;
+  descriptionKey?: string;
 }
 
 export interface DocNavSection {
-  title: string;
+  titleKey: string;
   items: DocNavItem[];
 }
 
 export const DOC_NAV_SECTIONS: DocNavSection[] = [
   {
-    title: "Start",
+    titleKey: "start",
     items: [
-      { title: "Introduction", href: "/docs", description: "What is XFlux" },
-      { title: "Quickstart", href: "/docs/quickstart", description: "Get your first API call in 5 minutes" },
-      { title: "Authentication", href: "/docs/authentication", description: "API keys and request headers" },
+      { titleKey: "introduction", href: "/docs" },
+      { titleKey: "quickstart", href: "/docs/quickstart" },
+      { titleKey: "authentication", href: "/docs/authentication" },
     ],
   },
   {
-    title: "API",
+    titleKey: "api",
     items: [
-      { title: "API Reference", href: "/docs/api", description: "REST endpoints" },
-      { title: "Errors", href: "/docs/errors", description: "Error codes and HTTP status" },
-      { title: "Search operators", href: "/docs/guides/search", description: "from:, lang:, quotes, and examples" },
-      { title: "Plans & Limits", href: "/docs/limits", description: "Quotas, intervals, and rate limits" },
+      { titleKey: "apiReference", href: "/docs/api" },
+      { titleKey: "errors", href: "/docs/errors" },
+      { titleKey: "searchOperators", href: "/docs/guides/search" },
+      { titleKey: "plansLimits", href: "/docs/limits" },
     ],
   },
   {
-    title: "Monitors",
+    titleKey: "monitors",
     items: [
-      { title: "Monitors", href: "/docs/monitors", description: "Poll accounts and record new tweets" },
-      { title: "Webhooks", href: "/docs/webhooks", description: "Signed POST callbacks on monitor hits" },
-      {
-        title: "Trading keyword templates",
-        href: "/docs/guides/trading-keywords",
-        description: "Copy-paste monitor filters for macro & flow",
-      },
+      { titleKey: "monitorsItem", href: "/docs/monitors" },
+      { titleKey: "webhooks", href: "/docs/webhooks" },
+      { titleKey: "tradingKeywords", href: "/docs/guides/trading-keywords" },
     ],
   },
   {
-    title: "Integrations",
+    titleKey: "integrations",
     items: [
-      { title: "Make.com integration", href: "/docs/integrations/make", description: "Twitter webhooks → Make automation" },
-      { title: "MCP server", href: "/docs/integrations/mcp", description: "Use XFlux from Claude Desktop & Cursor" },
+      { titleKey: "make", href: "/docs/integrations/make" },
+      { titleKey: "mcp", href: "/docs/integrations/mcp" },
     ],
   },
   {
-    title: "Use cases",
+    titleKey: "useCases",
     items: [
-      { title: "Overview", href: "/use-cases", description: "Jobs XFlux is built for" },
-      { title: "Trading alerts", href: "/use-cases/trading-alerts", description: "Macro & flow monitors" },
-      { title: "AI research", href: "/use-cases/ai-research", description: "Lab timelines, RAG, MCP" },
-      { title: "Crypto alerts", href: "/use-cases/crypto-alerts", description: "KOL & memecoin monitors" },
-      { title: "Smart Money", href: "/predictors", description: "X accounts ranked by market calls" },
+      { titleKey: "overview", href: "/use-cases" },
+      { titleKey: "tradingAlerts", href: "/use-cases/trading-alerts" },
+      { titleKey: "aiResearch", href: "/use-cases/ai-research" },
+      { titleKey: "cryptoAlerts", href: "/use-cases/crypto-alerts" },
+      { titleKey: "smartMoney", href: "/predictors" },
     ],
   },
   {
-    title: "Compare",
-    items: [
-      {
-        title: "Pricing vs official X API",
-        href: "/docs/compare/pricing",
-        description: "Cost, access, monitors, and when to use which",
-      },
-    ],
+    titleKey: "compare",
+    items: [{ titleKey: "pricingVsOfficial", href: "/docs/compare/pricing" }],
   },
   {
-    title: "Help",
-    items: [{ title: "FAQ", href: "/docs/faq", description: "Common questions" }],
+    titleKey: "help",
+    items: [{ titleKey: "faq", href: "/docs/faq" }],
   },
 ];
 

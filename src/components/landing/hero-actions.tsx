@@ -1,12 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { AnalyticsEvents } from "@/lib/analytics/events";
 import { trackClientEvent } from "@/lib/analytics/client";
 
 export function HeroActions({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
+  const t = useTranslations("home");
+  const tc = useTranslations("common");
+
   function trackCta(cta: string, destination: string) {
     trackClientEvent(AnalyticsEvents.CTA_CLICKED, {
       cta,
@@ -27,7 +31,7 @@ export function HeroActions({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
         }
       >
         <Button size="lg" className="min-w-[180px]">
-          {isLoggedIn ? "Go to Dashboard" : "Start Free"}
+          {isLoggedIn ? t("ctaGoDashboard") : t("ctaStartFree")}
           <ArrowRight className="h-4 w-4" />
         </Button>
       </Link>
@@ -36,7 +40,7 @@ export function HeroActions({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
         onClick={() => trackCta("see_api", "/docs/quickstart")}
       >
         <Button variant="outline" size="lg" className="min-w-[180px]">
-          See the API
+          {t("ctaSeeApi")}
         </Button>
       </Link>
       <Link
@@ -49,7 +53,7 @@ export function HeroActions({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
         }
       >
         <Button variant="ghost" size="lg" className="min-w-[140px] text-zinc-400">
-          {isLoggedIn ? "Billing" : "Pricing"}
+          {isLoggedIn ? tc("billing") : t("ctaPricing")}
         </Button>
       </Link>
     </div>

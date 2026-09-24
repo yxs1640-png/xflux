@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, Radar } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -30,62 +31,50 @@ export const metadata = pageMetadata({
   keywords: SIGNAL_HUB_KEYWORDS,
 });
 
-const HUB_FAQ = [
-  {
-    question: "What are XFlux signal digests?",
-    answer:
-      "Live pages that poll public X/Twitter accounts and search, then summarize who posted what, key themes, and which @handles to monitor — powered by the same API and monitors you can use in XFlux.",
-  },
-  {
-    question: "How is this different from scrolling X?",
-    answer:
-      "Digests aggregate multiple accounts and search in one view with brief analysis. Monitors go further: they alert you automatically when a specific @username posts, via Dashboard or webhooks.",
-  },
-  {
-    question: "Which topics are available?",
-    answer: `${TOPIC_COUNT}+ topics across AI, crypto, markets, startups, developers, security, policy, science, culture, and Twitter API monitoring — each with curated accounts plus live search.`,
-  },
-  {
-    question: "How do I get alerts for an account?",
-    answer:
-      "Create a free XFlux account, add a monitor for any public @username, and receive hits in the Dashboard. Paid plans from $19/mo add signed HTTP webhooks and faster polling.",
-  },
-];
+export default async function SignalsHubPage() {
+  const t = await getTranslations("signals");
 
-export default function SignalsHubPage() {
+  const hubFaq = [
+    { question: t("faq1Q"), answer: t("faq1A") },
+    { question: t("faq2Q"), answer: t("faq2A") },
+    { question: t("faq3Q"), answer: t("faq3A", { count: TOPIC_COUNT }) },
+    { question: t("faq4Q"), answer: t("faq4A") },
+  ];
+
   return (
     <>
       <SignalsHubJsonLd />
       <Header />
       <main className="pt-24 pb-16">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Signals" }]} />
+          <Breadcrumbs
+            items={[
+              { label: t("breadcrumbHome"), href: "/" },
+              { label: t("breadcrumbSignals") },
+            ]}
+          />
 
           <div className="mb-12 text-center">
             <div className="inline-flex items-center gap-2 rounded-full border border-sky-500/30 bg-sky-500/10 px-3 py-1 text-sm text-sky-300 mb-6">
               <Radar className="h-4 w-4" />
-              {TOPIC_COUNT} live signal digests
+              {t("hubBadge", { count: TOPIC_COUNT })}
             </div>
-            <h1 className="text-4xl font-bold text-white sm:text-5xl">
-              X/Twitter signals by topic
-            </h1>
+            <h1 className="text-4xl font-bold text-white sm:text-5xl">{t("hubTitle")}</h1>
             <p className="mt-4 text-lg text-zinc-400 max-w-3xl mx-auto leading-relaxed">
-              Curated live feeds across {TOPIC_COUNT} verticals — AI, crypto, trading, startups,
-              dev, security, and more. Each digest shows who posted what, what it means, and how to
-              monitor accounts with XFlux.
+              {t("hubSubtitle", { count: TOPIC_COUNT })}
             </p>
             <p className="mt-4">
               <Link
                 href="/dashboard/signals"
                 className="text-sm text-sky-400 hover:text-sky-300 inline-flex items-center gap-1"
               >
-                Build your own board or submit a public topic
+                {t("buildOwnBoard")}
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </p>
             <SeoGuideLinks
               className="mt-8 mx-auto max-w-2xl text-center"
-              heading="Turn digests into monitors & API workflows"
+              heading={t("relatedGuides")}
             />
           </div>
 
@@ -122,11 +111,11 @@ export default function SignalsHubPage() {
                     <p className="mt-1 text-sm text-zinc-500">{category.description}</p>
                     {featuredA && featuredB && (
                       <p className="mt-2 text-sm text-zinc-400">
-                        Start with{" "}
+                        {t("startWith")}{" "}
                         <Link href={`/signals/${featuredA.slug}`} className="text-sky-400 hover:text-sky-300">
                           {featuredA.title}
                         </Link>{" "}
-                        or{" "}
+                        {t("or")}{" "}
                         <Link href={`/signals/${featuredB.slug}`} className="text-sky-400 hover:text-sky-300">
                           {featuredB.title}
                         </Link>
@@ -154,7 +143,7 @@ export default function SignalsHubPage() {
                           </CardHeader>
                           <CardContent>
                             <p className="text-xs text-zinc-500 mb-3">
-                              Watching{" "}
+                              {t("watching")}{" "}
                               {topic.watchAccounts
                                 .map((a) => `@${a}`)
                                 .slice(0, 3)
@@ -162,7 +151,7 @@ export default function SignalsHubPage() {
                               {topic.watchAccounts.length > 3 ? "…" : ""}
                             </p>
                             <span className="inline-flex items-center gap-1 text-sm text-sky-400">
-                              Open digest
+                              {t("openDigest")}
                               <ArrowRight className="h-4 w-4" />
                             </span>
                           </CardContent>
@@ -175,7 +164,7 @@ export default function SignalsHubPage() {
             })}
           </div>
 
-          <SignalFaqSection items={HUB_FAQ} />
+          <SignalFaqSection items={hubFaq} />
         </div>
       </main>
       <Footer />

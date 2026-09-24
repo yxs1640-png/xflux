@@ -2,11 +2,15 @@
 
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { Zap } from "lucide-react";
 
 export function Header() {
   const { data: session } = useSession();
+  const t = useTranslations("nav");
+  const tc = useTranslations("common");
 
   return (
     <header className="fixed top-0 z-50 w-full border-b border-zinc-800/50 bg-zinc-950/80 backdrop-blur-xl">
@@ -20,48 +24,49 @@ export function Header() {
 
         <nav className="hidden items-center gap-8 md:flex">
           <Link href="/signals" className="text-sm text-zinc-400 hover:text-white transition-colors">
-            Signals
+            {t("signals")}
           </Link>
           <Link href="/docs" className="text-sm text-zinc-400 hover:text-white transition-colors">
-            Docs
+            {t("docs")}
           </Link>
           <Link href="/use-cases" className="text-sm text-zinc-400 hover:text-white transition-colors">
-            Use Cases
+            {t("useCases")}
           </Link>
           <Link href="/pricing" className="text-sm text-zinc-400 hover:text-white transition-colors">
-            Pricing
+            {t("pricing")}
           </Link>
           {session && (
             <Link href="/dashboard" className="text-sm text-zinc-400 hover:text-white transition-colors">
-              Dashboard
+              {t("dashboard")}
             </Link>
           )}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <LanguageSwitcher compact />
           {session ? (
             <>
-              <span className="hidden text-sm text-zinc-400 sm:inline">
+              <span className="hidden text-sm text-zinc-400 lg:inline">
                 {session.user.email}
               </span>
               <Link href="/dashboard/billing">
                 <Button variant="outline" size="sm">
-                  Billing
+                  {tc("billing")}
                 </Button>
               </Link>
               <Link href="/dashboard">
-                <Button size="sm">Dashboard</Button>
+                <Button size="sm">{tc("dashboard")}</Button>
               </Link>
             </>
           ) : (
             <>
               <Link href="/login">
                 <Button variant="ghost" size="sm">
-                  Sign in
+                  {tc("signIn")}
                 </Button>
               </Link>
               <Link href="/register?src=header">
-                <Button size="sm">Get API Key</Button>
+                <Button size="sm">{tc("getApiKey")}</Button>
               </Link>
             </>
           )}

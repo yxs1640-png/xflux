@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Bot, Radar, Search, Terminal, Zap } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { CodeBlock } from "@/components/docs/doc-blocks";
@@ -51,7 +52,9 @@ const WORKFLOW = [
   },
 ];
 
-export default function AiResearchPage() {
+export default async function AiResearchPage() {
+  const t = await getTranslations("useCaseAi");
+
   return (
     <>
       <Header />
@@ -60,25 +63,29 @@ export default function AiResearchPage() {
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 rounded-full border border-sky-500/30 bg-sky-500/10 px-3 py-1 text-sm text-sky-400 mb-6">
               <Bot className="h-4 w-4" />
-              AI research aggregation
+              {t("badge")}
             </div>
             <h1 className="text-4xl font-bold text-white sm:text-5xl leading-tight">
-              Follow AI Labs and Researchers Without Scraping X
+              {t("title")}
             </h1>
             <p className="mt-6 text-lg text-zinc-400 max-w-2xl mx-auto leading-relaxed">
-              Poll public timelines and search for OpenAI, Anthropic, DeepMind, and researcher
-              voices. Feed results into RAG, digests, or Claude/Cursor via the{" "}
-              <strong className="text-zinc-200">XFlux MCP server</strong>.
+              {t.rich("subtitle", {
+                strong: (chunks) => <strong className="text-zinc-200">{chunks}</strong>,
+              })}
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Link href="/register?src=ai_research">
-                <Button size="lg">Start free — get an API key</Button>
+                <Button size="lg">{t("ctaStart")}</Button>
               </Link>
               <Link href="/docs/integrations/mcp">
-                <Button variant="outline" size="lg">MCP for Claude / Cursor</Button>
+                <Button variant="outline" size="lg">
+                  {t("ctaMcp")}
+                </Button>
               </Link>
               <Link href="/signals/ai">
-                <Button variant="outline" size="lg">Live AI signals</Button>
+                <Button variant="outline" size="lg">
+                  {t("ctaSignals")}
+                </Button>
               </Link>
             </div>
           </div>

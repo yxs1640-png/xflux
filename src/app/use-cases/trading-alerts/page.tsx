@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Bell, LineChart, TrendingUp, Webhook, Zap } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { CodeBlock } from "@/components/docs/doc-blocks";
@@ -54,7 +55,9 @@ const WORKFLOW = [
   },
 ];
 
-export default function TradingAlertsPage() {
+export default async function TradingAlertsPage() {
+  const t = await getTranslations("useCaseTrading");
+
   return (
     <>
       <Header />
@@ -63,30 +66,34 @@ export default function TradingAlertsPage() {
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-sm text-emerald-400 mb-6">
               <LineChart className="h-4 w-4" />
-              Trading & macro alerts
+              {t("badge")}
             </div>
             <h1 className="text-4xl font-bold text-white sm:text-5xl leading-tight">
-              X/Twitter Trading Alerts Without the $5,000/mo Stream
+              {t("title")}
             </h1>
             <p className="mt-6 text-lg text-zinc-400 max-w-2xl mx-auto leading-relaxed">
-              The official X API filtered stream starts at{" "}
-              <strong className="text-zinc-200">$5,000/month</strong>. XFlux monitors the accounts
-              you care about and pushes{" "}
-              <strong className="text-zinc-200">signed webhooks</strong> when they post — with
-              optional keyword filters for macro, flow, or ticker-specific alerts.
+              {t.rich("subtitle", {
+                strong: (chunks) => <strong className="text-zinc-200">{chunks}</strong>,
+              })}
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Link href="/register?src=trading_alerts">
-                <Button size="lg">Start free — add your first monitor</Button>
+                <Button size="lg">{t("ctaStart")}</Button>
               </Link>
               <Link href="/docs/guides/trading-keywords">
-                <Button variant="outline" size="lg">Keyword templates</Button>
+                <Button variant="outline" size="lg">
+                  {t("ctaKeywords")}
+                </Button>
               </Link>
               <Link href="/predictors">
-                <Button variant="outline" size="lg">Smart Money accounts</Button>
+                <Button variant="outline" size="lg">
+                  {t("ctaSmartMoney")}
+                </Button>
               </Link>
               <Link href="/signals/trading">
-                <Button variant="outline" size="lg">Live market signals</Button>
+                <Button variant="outline" size="lg">
+                  {t("ctaSignals")}
+                </Button>
               </Link>
             </div>
           </div>

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Loader2, Play } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { LEGAL } from "@/lib/legal-config";
 import { cn } from "@/lib/utils";
@@ -9,7 +10,6 @@ import {
   DEMO_PLACEHOLDER_RESPONSE,
   DEMO_PROFILE_PRESETS,
   DEMO_SEARCH_PRESETS,
-  DEMO_TABS,
   DEMO_TIMELINE_PRESETS,
   type DemoTab,
 } from "@/lib/demo-config";
@@ -40,6 +40,7 @@ function buildAuthPath(tab: DemoTab, profileUser: string, searchQuery: string, t
 }
 
 export function ApiPlayground() {
+  const t = useTranslations("apiPlayground");
   const [tab, setTab] = useState<DemoTab>("profile");
   const [username, setUsername] = useState(DEFAULT_USERNAME);
   const [timelineUser, setTimelineUser] = useState(DEFAULT_USERNAME);
@@ -66,7 +67,12 @@ export function ApiPlayground() {
   const curlCommand = `curl -H "Authorization: Bearer xflux_YOUR_KEY" \\
   ${authPath}`;
 
-  const activeHint = DEMO_TABS.find((t) => t.id === tab)?.hint ?? "";
+  const tabs = [
+    { id: "profile" as const, label: t("tabProfile"), hint: t("hintProfile") },
+    { id: "search" as const, label: t("tabSearch"), hint: t("hintSearch") },
+    { id: "timeline" as const, label: t("tabTimeline"), hint: t("hintTimeline") },
+  ];
+  const activeHint = tabs.find((item) => item.id === tab)?.hint ?? "";
 
   function switchTab(next: DemoTab) {
     setTab(next);
@@ -82,14 +88,14 @@ export function ApiPlayground() {
       const res = await fetch(demoPath);
       const json = await res.json();
       if (!res.ok) {
-        setError(typeof json.error === "string" ? json.error : "Request failed");
+        setError(typeof json.error === "string" ? json.error : t("errorRequestFailed"));
         setIsLive(false);
         return;
       }
       setResponse(JSON.stringify(json, null, 2));
       setIsLive(true);
     } catch {
-      setError("Network error — try again");
+      setError(t("errorNetwork"));
       setIsLive(false);
     } finally {
       setLoading(false);
@@ -100,7 +106,7 @@ export function ApiPlayground() {
     <div className="rounded-xl border border-zinc-800 bg-zinc-900/90 shadow-2xl shadow-black/40 overflow-hidden text-left">
       <div className="border-b border-zinc-800 px-4 py-3 flex items-center justify-between gap-3">
         <div className="flex items-center gap-1 rounded-lg bg-zinc-950 p-1">
-          {DEMO_TABS.map((item) => (
+          {tabs.map((item) => (
             <button
               key={item.id}
               type="button"
@@ -117,9 +123,9 @@ export function ApiPlayground() {
           ))}
         </div>
         {isLive ? (
-          <span className="text-xs text-emerald-400">Live response</span>
+          <span className="text-xs text-emerald-400">{t("statusLive")}</span>
         ) : (
-          <span className="text-xs text-zinc-500">Ready</span>
+          <span className="text-xs text-zinc-500">{t("statusReady")}</span>
         )}
       </div>
 
@@ -128,7 +134,8 @@ export function ApiPlayground() {
 
         {tab === "profile" && (
           <PlaygroundInput
-            label="Username"
+            label={t("labelUsername")}
+            runLabel={t("runLive")}
             value={username}
             onChange={setUsername}
             placeholder="elonmusk"
@@ -143,7 +150,8 @@ export function ApiPlayground() {
 
         {tab === "search" && (
           <PlaygroundInput
-            label="Search query"
+            label={t("labelSearch")}
+            runLabel={t("runLive")}
             value={searchQuery}
             onChange={setSearchQuery}
             placeholder="from:elonmusk"
@@ -158,7 +166,8 @@ export function ApiPlayground() {
 
         {tab === "timeline" && (
           <PlaygroundInput
-            label="Account"
+            label={t("labelAccount")}
+            runLabel={t("runLive")}
             value={timelineUser}
             onChange={setTimelineUser}
             placeholder="elonmusk"
@@ -173,7 +182,7 @@ export function ApiPlayground() {
 
         <div>
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="text-xs text-zinc-500">Demo request</span>
+            <span className="text-xs text-zinc-500">{t("demoRequest")}</span>
             <span className="rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-emerald-400">
               GET
             </span>
@@ -184,23 +193,21 @@ export function ApiPlayground() {
         </div>
 
         <div>
-          <div className="text-xs text-zinc-500 mb-1.5">With your API key</div>
+          <div className="text-xs text-zinc-500 mb-1.5">{t("withApiKey")}</div>
           <pre className="rounded-lg bg-zinc-950 border border-zinc-800 p-3 text-xs text-sky-400 overflow-x-auto whitespace-pre-wrap break-all">
             {curlCommand}
           </pre>
         </div>
 
         <div>
-          <div className="text-xs text-zinc-500 mb-1.5">Response</div>
+          <div className="text-xs text-zinc-500 mb-1.5">{t("response")}</div>
           {error && <p className="text-xs text-amber-400 mb-2">{error}</p>}
           <pre className="rounded-lg bg-zinc-950 border border-zinc-800 p-3 text-xs text-zinc-300 overflow-x-auto max-h-64 overflow-y-auto font-mono">
             {response}
           </pre>
         </div>
 
-        <p className="text-[11px] text-zinc-600 text-center">
-          Public demo · cached ~5 min · no signup · full API after free registration
-        </p>
+        <p className="text-[11px] text-zinc-600 text-center">{t("footerNote")}</p>
       </div>
     </div>
   );
@@ -208,6 +215,7 @@ export function ApiPlayground() {
 
 function PlaygroundInput({
   label,
+  runLabel,
   value,
   onChange,
   placeholder,
@@ -216,6 +224,7 @@ function PlaygroundInput({
   loading,
 }: {
   label: string;
+  runLabel: string;
   value: string;
   onChange: (value: string) => void;
   placeholder: string;
@@ -236,7 +245,7 @@ function PlaygroundInput({
         />
         <Button type="button" size="sm" onClick={onRun} disabled={loading} className="shrink-0">
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Play className="h-4 w-4" />}
-          Run live
+          {runLabel}
         </Button>
       </div>
       <div className="mt-2 flex flex-wrap gap-2">

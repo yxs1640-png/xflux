@@ -1,43 +1,36 @@
-import Link from "next/link";
+"use client";
 
-/** Shared internal links for SEO — homepage, pricing, signals. */
-export const SEO_GUIDE_LINKS = [
-  {
-    href: "/docs/compare/pricing",
-    label: "XFlux vs official X API pricing",
-  },
-  {
-    href: "/use-cases/trading-alerts",
-    label: "Trading & macro alerts",
-  },
-  {
-    href: "/use-cases/ai-research",
-    label: "AI research from X",
-  },
-  {
-    href: "/use-cases/crypto-alerts",
-    label: "Crypto & memecoin alerts",
-  },
+import Link from "next/link";
+import { useTranslations } from "next-intl";
+
+const LINK_KEYS = [
+  { href: "/docs/compare/pricing", labelKey: "comparePricing" as const },
+  { href: "/use-cases/trading-alerts", labelKey: "tradingAlerts" as const },
+  { href: "/use-cases/ai-research", labelKey: "aiResearch" as const },
+  { href: "/use-cases/crypto-alerts", labelKey: "cryptoAlerts" as const },
 ] as const;
 
 export function SeoGuideLinks({
   className = "",
-  heading = "Explore guides",
+  heading,
 }: {
   className?: string;
   heading?: string;
 }) {
+  const t = useTranslations("seoGuides");
+  const resolvedHeading = heading ?? t("explore");
+
   return (
-    <nav aria-label={heading} className={className}>
-      <p className="text-sm font-medium text-zinc-400 mb-3">{heading}</p>
+    <nav aria-label={resolvedHeading} className={className}>
+      <p className="text-sm font-medium text-zinc-400 mb-3">{resolvedHeading}</p>
       <ul className="flex flex-wrap gap-x-4 gap-y-2">
-        {SEO_GUIDE_LINKS.map((link) => (
+        {LINK_KEYS.map((link) => (
           <li key={link.href}>
             <Link
               href={link.href}
               className="text-sm text-sky-400 hover:text-sky-300 transition-colors"
             >
-              {link.label}
+              {t(link.labelKey)}
             </Link>
           </li>
         ))}

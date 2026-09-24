@@ -1,4 +1,5 @@
 import { getServerSession } from "next-auth";
+import { getTranslations } from "next-intl/server";
 import { authOptions } from "@/lib/auth";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -30,6 +31,7 @@ export const metadata = pageMetadata({
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
+  const t = await getTranslations("home");
   const isLoggedIn = !!session;
   const checkoutEnabled = isBillingCheckoutEnabled();
   const registerHref = isLoggedIn ? "/dashboard/billing" : "/register?src=homepage_pricing";
@@ -56,8 +58,8 @@ export default async function HomePage() {
         <section className="py-24 bg-zinc-900/20">
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-white">Simple, transparent pricing</h2>
-              <p className="mt-4 text-zinc-400">Start free, scale as you grow</p>
+              <h2 className="text-3xl font-bold text-white">{t("pricingTitle")}</h2>
+              <p className="mt-4 text-zinc-400">{t("pricingSubtitle")}</p>
             </div>
             <div className="grid gap-6 md:grid-cols-2 max-w-3xl mx-auto">
               {homepagePlans.map((plan) => {
@@ -70,19 +72,19 @@ export default async function HomePage() {
                 >
                   <CardHeader>
                     {plan.highlighted && (
-                      <span className="text-xs font-medium text-sky-400 mb-2">Most Popular</span>
+                      <span className="text-xs font-medium text-sky-400 mb-2">{t("mostPopular")}</span>
                     )}
                     <CardTitle>{plan.name}</CardTitle>
                     <CardDescription>
                       <span className="text-3xl font-bold text-white">
                         ${plan.price}
                       </span>
-                      {plan.price > 0 && <span>/mo</span>}
+                      {plan.price > 0 && <span>{t("perMonth")}</span>}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-zinc-400 mb-4">
-                      {plan.quota} API calls/mo · {plan.monitors} monitors
+                      {t("planMeta", { quota: plan.quota, monitors: plan.monitors })}
                     </p>
                     <ul className="space-y-2 mb-6">
                       {plan.features.slice(0, 4).map((f) => (
@@ -118,8 +120,8 @@ export default async function HomePage() {
                         >
                           {isLoggedIn
                             ? isPaidPlan
-                              ? "View billing"
-                              : "Go to Dashboard"
+                              ? t("viewBilling")
+                              : t("goDashboard")
                             : plan.cta}
                         </Button>
                       </Link>
@@ -131,23 +133,23 @@ export default async function HomePage() {
             </div>
             <div className="text-center mt-8 space-y-3">
               <Link href={pricingHref} className="text-sm text-sky-400 hover:text-sky-300">
-                View all plans and limits →
+                {t("viewAllPlans")}
               </Link>
               <p className="text-sm text-zinc-500">
                 <Link href="/docs/compare/pricing" className="text-sky-400 hover:text-sky-300">
-                  Compare to official X API
+                  {t("compareOfficial")}
                 </Link>
                 {" · "}
                 <Link href="/use-cases/trading-alerts" className="text-sky-400 hover:text-sky-300">
-                  Trading
+                  {t("linkTrading")}
                 </Link>
                 {" · "}
                 <Link href="/use-cases/ai-research" className="text-sky-400 hover:text-sky-300">
-                  AI research
+                  {t("linkAi")}
                 </Link>
                 {" · "}
                 <Link href="/use-cases/crypto-alerts" className="text-sky-400 hover:text-sky-300">
-                  Crypto
+                  {t("linkCrypto")}
                 </Link>
               </p>
             </div>
@@ -157,16 +159,14 @@ export default async function HomePage() {
         <section className="py-24">
           <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
             <h2 className="text-3xl font-bold text-white mb-4">
-              Ready to build with XFlux?
+              {t("ctaTitle")}
             </h2>
             <p className="text-zinc-400 mb-8">
-              {isLoggedIn
-                ? "Your API key is ready. Head to the dashboard to get started."
-                : "Get your API key in under a minute. 1,000 free calls every month — no credit card."}
+              {isLoggedIn ? t("ctaSubtitleLoggedIn") : t("ctaSubtitle")}
             </p>
             <Link href={ctaHref}>
               <Button size="lg">
-                {isLoggedIn ? "Open Dashboard" : "Create Free Account"}
+                {isLoggedIn ? t("ctaDashboard") : t("ctaButton")}
               </Button>
             </Link>
           </div>

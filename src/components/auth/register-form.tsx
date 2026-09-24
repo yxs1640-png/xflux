@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { Check } from "lucide-react";
 import { Header } from "@/components/layout/header";
 import { Button } from "@/components/ui/button";
@@ -23,13 +24,8 @@ import {
 
 const WELCOME_API_KEY_STORAGE = "xflux_welcome_api_key";
 
-const TRUST_POINTS = [
-  "1,000 free API calls every month",
-  "No credit card required",
-  "API key ready in under 60 seconds",
-];
-
 export function RegisterForm() {
+  const t = useTranslations("auth");
   const searchParams = useSearchParams();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -90,7 +86,7 @@ export function RegisterForm() {
 
     if (!res.ok) {
       setLoading(false);
-      setError(data.error || "Registration failed");
+      setError(data.error || t("registrationFailed"));
       return;
     }
 
@@ -112,7 +108,7 @@ export function RegisterForm() {
     setLoading(false);
 
     if (result?.error) {
-      setError("Account created but sign-in failed. Please sign in manually.");
+      setError(t("signInAfterCreateFailed"));
       return;
     }
 
@@ -130,14 +126,12 @@ export function RegisterForm() {
           <div className="lg:sticky lg:top-24">
             <Card className="w-full max-w-md mx-auto lg:mx-0 lg:ml-auto">
           <CardHeader className="text-center lg:text-left">
-            <CardTitle>Create your account</CardTitle>
-            <CardDescription>
-              Start with 1,000 free API calls per month — upgrade anytime.
-            </CardDescription>
+            <CardTitle>{t("registerTitle")}</CardTitle>
+            <CardDescription>{t("registerSubtitle")}</CardDescription>
           </CardHeader>
           <CardContent>
             <ul className="mb-6 space-y-2">
-              {TRUST_POINTS.map((point) => (
+              {[t("trustFreeCalls"), t("trustNoCard"), t("trustFastKey")].map((point) => (
                 <li key={point} className="flex items-start gap-2 text-sm text-zinc-400">
                   <Check className="h-4 w-4 text-sky-400 shrink-0 mt-0.5" />
                   {point}
@@ -152,30 +146,30 @@ export function RegisterForm() {
                 </div>
               )}
               <div>
-                <label className="mb-1.5 block text-sm text-zinc-400">Name</label>
+                <label className="mb-1.5 block text-sm text-zinc-400">{t("name")}</label>
                 <Input
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Your name"
+                  placeholder={t("namePlaceholder")}
                 />
               </div>
               <div>
-                <label className="mb-1.5 block text-sm text-zinc-400">Email</label>
+                <label className="mb-1.5 block text-sm text-zinc-400">{t("email")}</label>
                 <Input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
+                  placeholder={t("emailPlaceholder")}
                   required
                 />
               </div>
               <div>
-                <label className="mb-1.5 block text-sm text-zinc-400">Password</label>
+                <label className="mb-1.5 block text-sm text-zinc-400">{t("password")}</label>
                 <Input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Min 8 characters"
+                  placeholder={t("passwordHint")}
                   minLength={8}
                   required
                 />
@@ -186,17 +180,17 @@ export function RegisterForm() {
                 detail={userSourceDetail}
                 onDetailChange={setUserSourceDetail}
                 required={false}
-                label="How did you hear about XFlux?"
-                description="Optional — helps us improve."
+                label={t("sourceLabel")}
+                description={t("sourceDescription")}
               />
               <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Creating account..." : "Create free account"}
+                {loading ? t("creating") : t("createAccount")}
               </Button>
             </form>
             <p className="mt-6 text-center text-sm text-zinc-500">
-              Already have an account?{" "}
+              {t("hasAccount")}{" "}
               <Link href="/login" className="text-sky-400 hover:text-sky-300">
-                Sign in
+                {t("signIn")}
               </Link>
             </p>
           </CardContent>

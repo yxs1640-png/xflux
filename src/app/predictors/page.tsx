@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { TrendingUp, Users } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { PredictorLeaderboard } from "@/components/predictors/predictor-leaderboard";
@@ -25,6 +26,8 @@ export const metadata = pageMetadata({
 export const revalidate = 300;
 
 export default async function PredictorsPage() {
+  const t = await getTranslations("smartMoneyUi");
+  const sm = await getTranslations("smartMoney");
   let predictors: Awaited<ReturnType<typeof getTopPredictors>> = [];
   let recentClaims: Awaited<ReturnType<typeof getRecentClaims>> = [];
   let stats: Awaited<ReturnType<typeof getDiscoveryStats>> | null = null;
@@ -47,20 +50,22 @@ export default async function PredictorsPage() {
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-sm text-emerald-400 mb-6">
               <Users className="h-4 w-4" />
-              {SMART_MONEY.badge}
+              {sm("badge")}
             </div>
             <h1 className="text-4xl font-bold text-white sm:text-5xl leading-tight max-w-3xl mx-auto">
-              {SMART_MONEY.headline}
+              {sm("headline")}
             </h1>
             <p className="mt-6 text-lg text-zinc-400 max-w-2xl mx-auto leading-relaxed">
-              {SMART_MONEY.subhead}
+              {sm("subhead")}
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Link href="/register?src=smart_money">
-                <Button size="lg">Monitor an account — free</Button>
+                <Button size="lg">{t("ctaMonitor")}</Button>
               </Link>
               <Link href="/use-cases/trading-alerts">
-                <Button variant="outline" size="lg">Trading alerts setup</Button>
+                <Button variant="outline" size="lg">
+                  {t("ctaTrading")}
+                </Button>
               </Link>
             </div>
           </div>
@@ -82,25 +87,26 @@ export default async function PredictorsPage() {
 
           {stats?.lastRun && (
             <p className="text-xs text-zinc-600 mb-4 text-center">
-              Last scan: {stats.lastRun.startedAt.toLocaleString()} · {stats.predictors} accounts ·{" "}
-              {stats.claims} calls indexed
+              {t("lastScan", {
+                when: stats.lastRun.startedAt.toLocaleString(),
+                accounts: stats.predictors,
+                calls: stats.claims,
+              })}
             </p>
           )}
 
           <section className="mb-12">
             <h2 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
               <TrendingUp className="h-5 w-5 text-emerald-400" />
-              Most active voices right now
+              {t("mostActiveTitle")}
             </h2>
-            <p className="text-sm text-zinc-500 mb-4">
-              Sorted by activity score — how often they post extractable forward-looking calls.
-            </p>
+            <p className="text-sm text-zinc-500 mb-4">{t("mostActiveSubtitle")}</p>
             <PredictorLeaderboard predictors={predictors} />
           </section>
 
           {recentClaims.length > 0 && (
             <section className="mb-12">
-              <h2 className="text-xl font-bold text-white mb-4">Latest calls we picked up</h2>
+              <h2 className="text-xl font-bold text-white mb-4">{t("latestCallsTitle")}</h2>
               <ul className="space-y-3">
                 {recentClaims.map((c) => (
                   <li
@@ -122,7 +128,7 @@ export default async function PredictorsPage() {
           )}
 
           <section className="rounded-xl border border-zinc-800 bg-zinc-900/30 p-6 text-sm text-zinc-500 leading-relaxed">
-            <p>{SMART_MONEY.disclaimer}</p>
+            <p>{sm("disclaimer")}</p>
           </section>
         </div>
       </main>

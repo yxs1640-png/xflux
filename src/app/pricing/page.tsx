@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { authOptions } from "@/lib/auth";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -21,6 +22,7 @@ export const metadata = pageMetadata({
 export default async function PricingPage() {
   const session = await getServerSession(authOptions);
   const checkoutEnabled = isBillingCheckoutEnabled();
+  const t = await getTranslations("pricing");
 
   if (session) {
     redirect("/dashboard/billing");
@@ -32,42 +34,41 @@ export default async function PricingPage() {
       <main className="pt-24 pb-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="text-center mb-16">
-            <h1 className="text-4xl font-bold text-white">Pricing</h1>
-            <p className="mt-4 text-zinc-400 max-w-xl mx-auto">
-              Monthly plans for read API access and account monitors. HTTP webhooks on Starter and
-              above — a practical alternative to the official $5,000/mo filtered stream.
-            </p>
+            <h1 className="text-4xl font-bold text-white">{t("title")}</h1>
+            <p className="mt-4 text-zinc-400 max-w-xl mx-auto">{t("subtitle")}</p>
             {!checkoutEnabled && (
-              <p className="mt-3 text-sm text-amber-200/80">
-                Paid plans are coming soon — start with the Free tier today (no credit card).
-              </p>
+              <p className="mt-3 text-sm text-amber-200/80">{t("paidComingSoon")}</p>
             )}
           </div>
 
           <div className="mb-12 mx-auto max-w-3xl rounded-xl border border-zinc-800 bg-zinc-900/40 p-6 text-center">
-            <h2 className="text-lg font-semibold text-white mb-2">
-              Need alerts, not a $5,000/mo firehose?
-            </h2>
-            <p className="text-sm text-zinc-400 mb-4">
-              Official X API filtered stream starts at $5,000/month. XFlux Starter ($19/mo) monitors
-              the accounts you pick and POSTs signed webhooks on new tweets — with optional keyword
-              filters for trading, AI, and crypto workflows.
-            </p>
+            <h2 className="text-lg font-semibold text-white mb-2">{t("compareBoxTitle")}</h2>
+            <p className="text-sm text-zinc-400 mb-4">{t("compareBlurb")}</p>
             <div className="flex flex-wrap justify-center gap-3">
               <Link href="/docs/compare/pricing">
-                <Button variant="outline" size="sm">vs official X API</Button>
+                <Button variant="outline" size="sm">
+                  {t("compareCta")}
+                </Button>
               </Link>
               <Link href="/use-cases/trading-alerts">
-                <Button variant="outline" size="sm">Trading alerts</Button>
+                <Button variant="outline" size="sm">
+                  {t("tradingCta")}
+                </Button>
               </Link>
               <Link href="/use-cases/ai-research">
-                <Button variant="outline" size="sm">AI research</Button>
+                <Button variant="outline" size="sm">
+                  {t("aiCta")}
+                </Button>
               </Link>
               <Link href="/use-cases/crypto-alerts">
-                <Button variant="outline" size="sm">Crypto alerts</Button>
+                <Button variant="outline" size="sm">
+                  {t("cryptoCta")}
+                </Button>
               </Link>
               <Link href="/twitter-webhook">
-                <Button variant="outline" size="sm">Webhook integration</Button>
+                <Button variant="outline" size="sm">
+                  {t("webhookCta")}
+                </Button>
               </Link>
             </div>
           </div>
@@ -80,18 +81,18 @@ export default async function PricingPage() {
               >
                 <CardHeader>
                   {plan.highlighted && (
-                    <span className="text-xs font-medium text-sky-400 mb-2">Most Popular</span>
+                    <span className="text-xs font-medium text-sky-400 mb-2">{t("mostPopular")}</span>
                   )}
                   <CardTitle>{plan.name}</CardTitle>
                   <CardDescription>
                     <span className="text-4xl font-bold text-white">${plan.price}</span>
-                    {plan.price > 0 && <span className="text-zinc-500">/month</span>}
+                    {plan.price > 0 && <span className="text-zinc-500">{t("perMonth")}</span>}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="mb-6 space-y-2 text-sm text-zinc-400">
-                    <p>{plan.quota} API calls/month</p>
-                    <p>{plan.monitors} monitor tasks</p>
+                    <p>{t("apiCallsMonth", { quota: plan.quota })}</p>
+                    <p>{t("monitorTasks", { monitors: plan.monitors })}</p>
                   </div>
                   <ul className="space-y-3 mb-8">
                     {plan.features.map((f) => (

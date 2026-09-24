@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Bell, Coins, Radar, Webhook, Zap } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { CodeBlock } from "@/components/docs/doc-blocks";
@@ -54,7 +55,9 @@ const WORKFLOW = [
   },
 ];
 
-export default function CryptoAlertsPage() {
+export default async function CryptoAlertsPage() {
+  const t = await getTranslations("useCaseCrypto");
+
   return (
     <>
       <Header />
@@ -63,28 +66,34 @@ export default function CryptoAlertsPage() {
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-sm text-amber-400 mb-6">
               <Coins className="h-4 w-4" />
-              Crypto &amp; memecoin alerts
+              {t("badge")}
             </div>
             <h1 className="text-4xl font-bold text-white sm:text-5xl leading-tight">
-              Crypto KOL Alerts Without Building a Scraper
+              {t("title")}
             </h1>
             <p className="mt-6 text-lg text-zinc-400 max-w-2xl mx-auto leading-relaxed">
-              Watch public crypto accounts on a schedule. Filter by token keywords and get{" "}
-              <strong className="text-zinc-200">signed webhooks</strong> when they post — from{" "}
-              <strong className="text-zinc-200">$19/mo</strong> on Starter.
+              {t.rich("subtitle", {
+                strong: (chunks) => <strong className="text-zinc-200">{chunks}</strong>,
+              })}
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Link href="/register?src=crypto_alerts">
-                <Button size="lg">Start free — add a monitor</Button>
+                <Button size="lg">{t("ctaStart")}</Button>
               </Link>
               <Link href="/docs/guides/trading-keywords">
-                <Button variant="outline" size="lg">Keyword templates</Button>
+                <Button variant="outline" size="lg">
+                  {t("ctaKeywords")}
+                </Button>
               </Link>
               <Link href="/predictors">
-                <Button variant="outline" size="lg">Smart Money</Button>
+                <Button variant="outline" size="lg">
+                  {t("ctaSmartMoney")}
+                </Button>
               </Link>
               <Link href="/signals/crypto">
-                <Button variant="outline" size="lg">Live crypto signals</Button>
+                <Button variant="outline" size="lg">
+                  {t("ctaSignals")}
+                </Button>
               </Link>
             </div>
           </div>

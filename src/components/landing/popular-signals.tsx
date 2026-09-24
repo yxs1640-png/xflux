@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, Radar } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -7,8 +8,9 @@ import { POPULAR_SIGNAL_SLUGS, resolveSignalTopics } from "@/lib/signals/interna
 
 const POPULAR_TOPICS = resolveSignalTopics(POPULAR_SIGNAL_SLUGS);
 
-export function PopularSignals() {
+export async function PopularSignals() {
   if (POPULAR_TOPICS.length === 0) return null;
+  const t = await getTranslations("popularSignals");
 
   return (
     <section className="py-20 border-t border-zinc-800/50">
@@ -17,16 +19,14 @@ export function PopularSignals() {
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-sky-500/30 bg-sky-500/10 px-3 py-1 text-sm text-sky-300 mb-4">
               <Radar className="h-4 w-4" />
-              Live signal digests
+              {t("badge")}
             </div>
-            <h2 className="text-3xl font-bold text-white">Popular X/Twitter signals</h2>
-            <p className="mt-2 text-zinc-400 max-w-2xl">
-              Free live digests by topic — who posted what, key themes, and accounts to monitor.
-            </p>
+            <h2 className="text-3xl font-bold text-white">{t("title")}</h2>
+            <p className="mt-2 text-zinc-400 max-w-2xl">{t("subtitle")}</p>
           </div>
           <Link href="/signals">
             <Button variant="outline">
-              Browse all topics
+              {t("browseAll")}
               <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
@@ -50,7 +50,7 @@ export function PopularSignals() {
                 </CardHeader>
                 <CardContent>
                   <span className="inline-flex items-center gap-1 text-sm text-sky-400">
-                    Open digest
+                    {t("openDigest")}
                     <ArrowRight className="h-3.5 w-3.5" />
                   </span>
                 </CardContent>

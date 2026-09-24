@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Bell, Check, Shield, Webhook, Zap } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { CodeBlock } from "@/components/docs/doc-blocks";
@@ -14,36 +15,37 @@ export const metadata = pageMetadata({
   path: "/twitter-webhook",
 });
 
-const STEPS = [
-  {
-    title: "Add a monitor",
-    description: "Pick any public @username in the XFlux Dashboard. Optional keyword filters included.",
-  },
-  {
-    title: "Set your webhook URL",
-    description: "Paste an HTTPS endpoint. Copy the signing secret once — we POST on every new hit.",
-  },
-  {
-    title: "Handle events",
-    description: "Verify X-XFlux-Signature, parse JSON, trigger alerts, trading bots, or workflows.",
-  },
-];
+export default async function TwitterWebhookPage() {
+  const t = await getTranslations("twitterWebhook");
 
-const COMPARE = [
-  { label: "Background polling", diy: "You build & host cron", xflux: "Included" },
-  { label: "Twitter webhook delivery", diy: "Not available from X API", xflux: "Signed HTTP POST" },
-  { label: "Signature verification", diy: "Roll your own", xflux: "HMAC-SHA256 built-in" },
-  { label: "Time to first alert", diy: "Days of engineering", xflux: "Minutes" },
-];
+  const steps = [
+    { title: t("step1Title"), description: t("step1Desc") },
+    { title: t("step2Title"), description: t("step2Desc") },
+    { title: t("step3Title"), description: t("step3Desc") },
+  ];
 
-const STREAM_COMPARE = [
-  { label: "Monthly cost", official: "$5,000+ (Pro filtered stream)", xflux: "From $19/mo (Starter)" },
-  { label: "Scope", official: "Rule-based firehose", xflux: "Accounts you choose" },
-  { label: "Webhook to your app", official: "You consume the stream", xflux: "Signed HTTP POST" },
-  { label: "Self-serve signup", official: "Enterprise / approval", xflux: "Minutes" },
-];
+  const compare = [
+    { label: t("diyRow1Label"), diy: t("diyRow1Diy"), xflux: t("diyRow1Xflux") },
+    { label: t("diyRow2Label"), diy: t("diyRow2Diy"), xflux: t("diyRow2Xflux") },
+    { label: t("diyRow3Label"), diy: t("diyRow3Diy"), xflux: t("diyRow3Xflux") },
+    { label: t("diyRow4Label"), diy: t("diyRow4Diy"), xflux: t("diyRow4Xflux") },
+  ];
 
-export default function TwitterWebhookPage() {
+  const streamCompare = [
+    { label: t("streamRow1Label"), official: t("streamRow1Official"), xflux: t("streamRow1Xflux") },
+    { label: t("streamRow2Label"), official: t("streamRow2Official"), xflux: t("streamRow2Xflux") },
+    { label: t("streamRow3Label"), official: t("streamRow3Official"), xflux: t("streamRow3Xflux") },
+    { label: t("streamRow4Label"), official: t("streamRow4Official"), xflux: t("streamRow4Xflux") },
+  ];
+
+  const benefits = [
+    { icon: Bell, title: t("benefitAlertsTitle"), text: t("benefitAlertsText") },
+    { icon: Shield, title: t("benefitSignedTitle"), text: t("benefitSignedText") },
+    { icon: Zap, title: t("benefitNoTierTitle"), text: t("benefitNoTierText") },
+  ];
+
+  const trustItems = [t("trustCalls"), t("trustCard"), t("trustDocs")];
+
   return (
     <>
       <Header />
@@ -52,41 +54,45 @@ export default function TwitterWebhookPage() {
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 rounded-full border border-sky-500/30 bg-sky-500/10 px-3 py-1 text-sm text-sky-400 mb-6">
               <Webhook className="h-4 w-4" />
-              Twitter webhook integration
+              {t("badge")}
             </div>
             <h1 className="text-4xl font-bold text-white sm:text-5xl leading-tight">
-              Twitter Webhook Integration for Account Monitors
+              {t("title")}
             </h1>
             <p className="mt-6 text-lg text-zinc-400 max-w-2xl mx-auto leading-relaxed">
-              X does not ship a public webhook for new tweets. XFlux monitors accounts on a schedule
-              and delivers <strong className="text-zinc-200">signed HTTP webhooks</strong> to your
-              server when new posts appear — no polling code required.
+              {t.rich("subtitle", {
+                strong: (chunks) => <strong className="text-zinc-200">{chunks}</strong>,
+              })}
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Link href="/register?src=twitter_webhook_landing">
-                <Button size="lg">Start free — set up in minutes</Button>
+                <Button size="lg">{t("ctaStart")}</Button>
               </Link>
               <Link href="/docs/webhooks">
-                <Button variant="outline" size="lg">Webhook docs</Button>
+                <Button variant="outline" size="lg">
+                  {t("ctaDocs")}
+                </Button>
               </Link>
               <Link href="/docs/integrations/make">
-                <Button variant="outline" size="lg">Make.com guide</Button>
+                <Button variant="outline" size="lg">
+                  {t("ctaMake")}
+                </Button>
               </Link>
               <Link href="/use-cases/trading-alerts">
-                <Button variant="outline" size="lg">Trading alerts</Button>
+                <Button variant="outline" size="lg">
+                  {t("ctaTrading")}
+                </Button>
               </Link>
               <Link href="/signals">
-                <Button variant="outline" size="lg">Live signal digests</Button>
+                <Button variant="outline" size="lg">
+                  {t("ctaSignals")}
+                </Button>
               </Link>
             </div>
           </div>
 
           <div className="grid gap-6 sm:grid-cols-3 mb-16">
-            {[
-              { icon: Bell, title: "Real-time alerts", text: "Webhook fires within your plan poll interval." },
-              { icon: Shield, title: "Signed payloads", text: "Verify HMAC-SHA256 before trusting any event." },
-              { icon: Zap, title: "No official API tier", text: "Skip expensive X API tiers for read + notify use cases." },
-            ].map(({ icon: Icon, title, text }) => (
+            {benefits.map(({ icon: Icon, title, text }) => (
               <Card key={title}>
                 <CardHeader>
                   <Icon className="h-8 w-8 text-sky-400 mb-2" />
@@ -98,9 +104,9 @@ export default function TwitterWebhookPage() {
           </div>
 
           <section className="mb-16">
-            <h2 className="text-2xl font-bold text-white mb-6">How the integration works</h2>
+            <h2 className="text-2xl font-bold text-white mb-6">{t("howTitle")}</h2>
             <ol className="space-y-6">
-              {STEPS.map((step, i) => (
+              {steps.map((step, i) => (
                 <li key={step.title} className="flex gap-4">
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sky-500/20 text-sm font-bold text-sky-400">
                     {i + 1}
@@ -115,14 +121,14 @@ export default function TwitterWebhookPage() {
           </section>
 
           <section className="mb-16">
-            <h2 className="text-2xl font-bold text-white mb-4">Example webhook payload</h2>
+            <h2 className="text-2xl font-bold text-white mb-4">{t("payloadTitle")}</h2>
             <p className="text-zinc-400 text-sm mb-4">
-              Each <code className="text-zinc-300">monitor.hit</code> event includes tweet text, author,
-              and monitor metadata. See{" "}
+              {t("payloadBlurbBefore")}{" "}
+              <code className="text-zinc-300">monitor.hit</code> {t("payloadBlurbAfter")}{" "}
               <Link href="/docs/webhooks" className="text-sky-400 hover:underline">
-                full webhook documentation
+                {t("payloadDocsLink")}
               </Link>{" "}
-              for headers and signature verification.
+              {t("payloadBlurbEnd")}
             </p>
             <CodeBlock>{`POST https://your-server.com/webhooks/xflux
 Content-Type: application/json
@@ -142,18 +148,18 @@ X-XFlux-Signature: sha256=...
           </section>
 
           <section className="mb-16">
-            <h2 className="text-2xl font-bold text-white mb-6">Build it yourself vs XFlux</h2>
+            <h2 className="text-2xl font-bold text-white mb-6">{t("diyTitle")}</h2>
             <div className="overflow-x-auto rounded-xl border border-zinc-800">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-zinc-800 bg-zinc-900/50">
                     <th className="px-4 py-3 text-left text-zinc-400 font-medium" />
-                    <th className="px-4 py-3 text-left text-zinc-400 font-medium">DIY polling</th>
-                    <th className="px-4 py-3 text-left text-sky-400 font-medium">XFlux webhooks</th>
+                    <th className="px-4 py-3 text-left text-zinc-400 font-medium">{t("diyColDiy")}</th>
+                    <th className="px-4 py-3 text-left text-sky-400 font-medium">{t("diyColXflux")}</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {COMPARE.map((row) => (
+                  {compare.map((row) => (
                     <tr key={row.label} className="border-b border-zinc-800 last:border-0">
                       <td className="px-4 py-3 text-zinc-300">{row.label}</td>
                       <td className="px-4 py-3 text-zinc-500">{row.diy}</td>
@@ -166,25 +172,23 @@ X-XFlux-Signature: sha256=...
           </section>
 
           <section className="mb-16">
-            <h2 className="text-2xl font-bold text-white mb-6">Official stream vs XFlux monitors</h2>
-            <p className="text-zinc-400 text-sm mb-4">
-              X&apos;s filtered stream API is priced for enterprises ($5,000+/mo). If you only need
-              alerts when specific accounts post, monitors + webhooks are faster to ship and
-              cheaper to run.
-            </p>
+            <h2 className="text-2xl font-bold text-white mb-6">{t("streamTitle")}</h2>
+            <p className="text-zinc-400 text-sm mb-4">{t("streamBlurb")}</p>
             <div className="overflow-x-auto rounded-xl border border-zinc-800 mb-4">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-zinc-800 bg-zinc-900/50">
                     <th className="px-4 py-3 text-left text-zinc-400 font-medium" />
                     <th className="px-4 py-3 text-left text-zinc-400 font-medium">
-                      Official filtered stream
+                      {t("streamColOfficial")}
                     </th>
-                    <th className="px-4 py-3 text-left text-sky-400 font-medium">XFlux monitors</th>
+                    <th className="px-4 py-3 text-left text-sky-400 font-medium">
+                      {t("streamColXflux")}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {STREAM_COMPARE.map((row) => (
+                  {streamCompare.map((row) => (
                     <tr key={row.label} className="border-b border-zinc-800 last:border-0">
                       <td className="px-4 py-3 text-zinc-300">{row.label}</td>
                       <td className="px-4 py-3 text-zinc-500">{row.official}</td>
@@ -195,46 +199,40 @@ X-XFlux-Signature: sha256=...
               </table>
             </div>
             <p className="text-sm text-zinc-500">
-              Trading workflows:{" "}
+              {t("tradingWorkflows")}{" "}
               <Link href="/use-cases/trading-alerts" className="text-sky-400 hover:underline">
-                macro & flow alert setup
+                {t("macroFlowLink")}
               </Link>{" "}
               ·{" "}
               <Link href="/docs/guides/trading-keywords" className="text-sky-400 hover:underline">
-                keyword templates
+                {t("keywordTemplatesLink")}
               </Link>
             </p>
           </section>
 
           <section className="mb-16">
-            <h2 className="text-2xl font-bold text-white mb-4">Pricing</h2>
+            <h2 className="text-2xl font-bold text-white mb-4">{t("pricingTitle")}</h2>
             <Card className="border-sky-500/20">
               <CardHeader>
-                <CardTitle>Signed webhooks on Starter and above</CardTitle>
-                <CardDescription>
-                  Free tier includes 1 monitor with Dashboard hit history. HTTP webhooks start on
-                  Starter ($19/mo) with 3 monitors and 1s minimum poll interval.
-                </CardDescription>
+                <CardTitle>{t("pricingCardTitle")}</CardTitle>
+                <CardDescription>{t("pricingCardDesc")}</CardDescription>
               </CardHeader>
               <CardContent className="flex flex-wrap gap-4">
                 <Link href="/pricing">
-                  <Button>View all plans</Button>
+                  <Button>{t("viewPlans")}</Button>
                 </Link>
                 <Link href="/docs/monitors">
-                  <Button variant="outline">Monitor docs</Button>
+                  <Button variant="outline">{t("monitorDocs")}</Button>
                 </Link>
               </CardContent>
             </Card>
           </section>
 
           <section className="rounded-xl border border-zinc-800 bg-zinc-900/30 p-8 text-center">
-            <h2 className="text-xl font-bold text-white mb-2">Ready to integrate Twitter webhooks?</h2>
-            <p className="text-zinc-400 text-sm mb-6 max-w-lg mx-auto">
-              Create a free account, add a monitor, and upgrade to Starter when you need webhook
-              delivery to your backend.
-            </p>
+            <h2 className="text-xl font-bold text-white mb-2">{t("readyTitle")}</h2>
+            <p className="text-zinc-400 text-sm mb-6 max-w-lg mx-auto">{t("readyDesc")}</p>
             <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-zinc-400 mb-6">
-              {["1,000 free API calls/mo", "No credit card", "Docs + test webhook"].map((item) => (
+              {trustItems.map((item) => (
                 <li key={item} className="flex items-center gap-2">
                   <Check className="h-4 w-4 text-sky-400" />
                   {item}
@@ -242,7 +240,7 @@ X-XFlux-Signature: sha256=...
               ))}
             </ul>
             <Link href="/register?src=twitter_webhook_landing">
-              <Button size="lg">Create free account</Button>
+              <Button size="lg">{t("createAccount")}</Button>
             </Link>
           </section>
         </div>

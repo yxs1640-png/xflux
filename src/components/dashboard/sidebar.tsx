@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
@@ -20,22 +21,23 @@ import {
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { MonitorAlertsNavItem } from "@/components/dashboard/monitor-alerts-nav-item";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 
 const NAV = [
-  { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
-  { href: "/dashboard/api-keys", label: "API Keys", icon: Key },
-  { href: "/dashboard/usage", label: "Usage", icon: BarChart3 },
-  { href: "/dashboard/monitors", label: "Monitors", icon: Radar },
-  { href: "/dashboard/signals", label: "My Signals", icon: Sparkles },
-  { href: "/dashboard/predictors", label: "Smart Money", icon: Target },
-  { href: "/dashboard/billing", label: "Billing", icon: CreditCard },
-  { href: "/dashboard/settings", label: "Settings", icon: Settings },
+  { href: "/dashboard", labelKey: "overview" as const, icon: LayoutDashboard },
+  { href: "/dashboard/api-keys", labelKey: "apiKeys" as const, icon: Key },
+  { href: "/dashboard/usage", labelKey: "usage" as const, icon: BarChart3 },
+  { href: "/dashboard/monitors", labelKey: "monitors" as const, icon: Radar },
+  { href: "/dashboard/signals", labelKey: "mySignals" as const, icon: Sparkles },
+  { href: "/dashboard/predictors", labelKey: "smartMoney" as const, icon: Target },
+  { href: "/dashboard/billing", labelKey: "billing" as const, icon: CreditCard },
+  { href: "/dashboard/settings", labelKey: "settings" as const, icon: Settings },
 ];
 
 const RESOURCE_NAV = [
-  { href: "/signals", label: "Signals", icon: Radio },
-  { href: "/docs", label: "API Docs", icon: BookOpen },
-  { href: "/use-cases", label: "Use Cases", icon: Lightbulb },
+  { href: "/signals", labelKey: "signals" as const, icon: Radio },
+  { href: "/docs", labelKey: "apiDocs" as const, icon: BookOpen },
+  { href: "/use-cases", labelKey: "useCases" as const, icon: Lightbulb },
 ];
 
 function isResourceNavActive(pathname: string, href: string): boolean {
@@ -46,14 +48,18 @@ function isResourceNavActive(pathname: string, href: string): boolean {
 
 export function DashboardSidebar() {
   const pathname = usePathname();
+  const t = useTranslations("dashboard");
 
   return (
     <aside className="flex h-screen w-64 flex-col border-r border-zinc-800 bg-zinc-950">
-      <div className="flex h-16 items-center gap-2 border-b border-zinc-800 px-6">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-500">
-          <Zap className="h-4 w-4 text-white" />
+      <div className="flex h-16 items-center justify-between gap-2 border-b border-zinc-800 px-4">
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-sky-500">
+            <Zap className="h-4 w-4 text-white" />
+          </div>
+          <span className="font-bold text-white truncate">XFlux</span>
         </div>
-        <span className="font-bold text-white">XFlux</span>
+        <LanguageSwitcher compact />
       </div>
 
       <nav className="flex-1 overflow-y-auto p-4">
@@ -62,13 +68,14 @@ export function DashboardSidebar() {
             const active =
               pathname === item.href ||
               (item.href !== "/dashboard" && pathname.startsWith(item.href));
+            const label = t(item.labelKey);
 
             if (item.href === "/dashboard/monitors") {
               return (
                 <MonitorAlertsNavItem
                   key={item.href}
                   href={item.href}
-                  label={item.label}
+                  label={label}
                   icon={item.icon}
                   active={active}
                 />
@@ -87,7 +94,7 @@ export function DashboardSidebar() {
                 )}
               >
                 <item.icon className="h-4 w-4" />
-                {item.label}
+                {label}
               </Link>
             );
           })}
@@ -95,7 +102,7 @@ export function DashboardSidebar() {
 
         <div className="mt-6 border-t border-zinc-800 pt-6">
           <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">
-            Resources
+            {t("resources")}
           </p>
           <div className="space-y-1">
             {RESOURCE_NAV.map((item) => {
@@ -113,7 +120,7 @@ export function DashboardSidebar() {
                   )}
                 >
                   <item.icon className="h-4 w-4" />
-                  {item.label}
+                  {t(item.labelKey)}
                 </Link>
               );
             })}
@@ -127,7 +134,7 @@ export function DashboardSidebar() {
           className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-zinc-400 hover:text-red-400 transition-colors"
         >
           <LogOut className="h-4 w-4" />
-          Sign out
+          {t("signOut")}
         </button>
       </div>
     </aside>

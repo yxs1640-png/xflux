@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { Header } from "@/components/layout/header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +12,7 @@ import { AnalyticsEvents } from "@/lib/analytics/events";
 import { trackClientEvent } from "@/lib/analytics/client";
 
 export default function LoginPage() {
+  const t = useTranslations("auth");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -30,7 +32,7 @@ export default function LoginPage() {
     setLoading(false);
 
     if (result?.error) {
-      setError("Invalid email or password");
+      setError(t("invalidCredentials"));
       return;
     }
 
@@ -45,8 +47,8 @@ export default function LoginPage() {
       <main className="flex min-h-screen items-center justify-center pt-16 px-4">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
-            <CardTitle>Welcome back</CardTitle>
-            <CardDescription>Sign in to your XFlux account</CardDescription>
+            <CardTitle>{t("welcomeBack")}</CardTitle>
+            <CardDescription>{t("signInSubtitle")}</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -56,34 +58,33 @@ export default function LoginPage() {
                 </div>
               )}
               <div>
-                <label className="mb-1.5 block text-sm text-zinc-400">Email</label>
+                <label className="mb-1.5 block text-sm text-zinc-400">{t("email")}</label>
                 <Input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
+                  placeholder={t("emailPlaceholder")}
                   required
                 />
               </div>
               <div>
-                <label className="mb-1.5 block text-sm text-zinc-400">Password</label>
+                <label className="mb-1.5 block text-sm text-zinc-400">{t("password")}</label>
                 <Input
                   type="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)
-                  }
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
                 />
               </div>
               <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Signing in..." : "Sign in"}
+                {loading ? t("signingIn") : t("signIn")}
               </Button>
             </form>
             <p className="mt-6 text-center text-sm text-zinc-500">
-              Don&apos;t have an account?{" "}
+              {t("noAccount")}{" "}
               <Link href="/register" className="text-sky-400 hover:text-sky-300">
-                Sign up free
+                {t("register")}
               </Link>
             </p>
           </CardContent>
