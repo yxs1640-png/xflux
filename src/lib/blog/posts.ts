@@ -11,6 +11,106 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: "smart-money-discovery-mcp-claude",
+    title: "How I Built a Smart Money Discovery Workflow with XFlux MCP and Claude",
+    description:
+      "Use XFlux MCP tools with Claude to find X/Twitter accounts that make falsifiable market calls — then productize the workflow with Smart Money and Dashboard monitors.",
+    datePublished: "2026-09-27",
+    keywords: [
+      "smart money twitter",
+      "twitter mcp claude",
+      "crypto prediction accounts x",
+      "xflux mcp",
+      "twitter account discovery mcp",
+    ],
+    sections: [
+      {
+        heading: "Why “just search X” is not enough",
+        paragraphs: [
+          "XFlux is an X/Twitter data API focused on account monitoring with webhook push — so you do not have to write polling code. While building it, we kept seeing the same job-to-be-done: people do not only want another generic API; they want a way to find accounts that make specific, checkable calls before the market moves.",
+          "If you search X for keywords like CPI, FOMC, rate cut, or geopolitical, you get thousands of tweets. Most are noise. The hard part is not finding tweets — it is filtering for accounts with a recent track record: falsifiable predictions in the last 14 days, not just high volume.",
+          "That is a filtering problem, not a search problem. It is a good fit for an AI agent — if you give it the right tools.",
+        ],
+      },
+      {
+        heading: "Step 1: Give Claude read access via MCP",
+        paragraphs: [
+          "MCP (Model Context Protocol) lets Claude Desktop or Cursor call external tools. XFlux ships a small Node MCP server: @xflux/xflux-mcp-server (registry id io.github.yxs1640-png/xflux). Early exploration used low-level read tools so the model did the reasoning:",
+          "xflux_search_tweets — search recent posts by keyword (X operators supported). xflux_get_user_tweets — pull a user’s recent timeline. xflux_list_monitors — see which accounts you already track (read-only).",
+          "The design choice: do not bury “find smart money” inside one opaque tool at first. Expose data access, keep the server simple, and let the agent decide how to filter. That same server is reusable for research agents, RAG enrichment, and alert triage.",
+        ],
+        code: `export XFLUX_API_KEY=xflux_your_key_here
+npx -y @xflux/xflux-mcp-server
+
+# Cursor / Claude Desktop (claude_desktop_config.json)
+{
+  "mcpServers": {
+    "xflux": {
+      "command": "npx",
+      "args": ["-y", "@xflux/xflux-mcp-server"],
+      "env": { "XFLUX_API_KEY": "xflux_your_key_here" }
+    }
+  }
+}`,
+      },
+      {
+        heading: "Step 2: A four-stage discovery workflow",
+        paragraphs: [
+          "Stage 1 — Candidate discovery. Ask Claude to search macro or crypto keywords over a short window (for example the past 14 days). You get a pool of accounts; most are noise.",
+          "Stage 2 — Track record check. For each candidate, pull the timeline with xflux_get_user_tweets and ask: did this person make a specific, falsifiable prediction recently? Not “did they tweet about markets” — something like “I expect CPI below consensus” or a clear directional call with a catalyst.",
+          "Stage 3 — Deduplication. Compare candidates against accounts you already monitor (xflux_list_monitors, or an exclude list you maintain). A weak add pollutes the watchlist for weeks.",
+          "Stage 4 — Tight output. Cap the agent at a handful of candidates, each with the exact post that qualified them. You pick the best one manually, then create a monitor in the Dashboard (MCP stays read-only for monitor creation).",
+        ],
+      },
+      {
+        heading: "Step 3: What we productized next",
+        paragraphs: [
+          "After the Claude + MCP workflow proved useful, we productized the same job as Smart Money on /predictors: ranked accounts, recent calls, and niches (macro, trading, crypto, geopolitics). The MCP server now also exposes first-class tools: xflux_smart_money_list (with exclude), xflux_smart_money_profile, and xflux_smart_money_claims.",
+          "So today you can either (a) explore with search + timeline tools and your own prompt, or (b) jump straight to Smart Money tools and then open Dashboard → Monitors for webhooks. Install and tool list: /docs/integrations/mcp. Overview: /mcp.",
+          "Creating monitors and live webhook URLs still happens in the Dashboard. Free can create a monitor and send test pings; live hit delivery is on Starter+.",
+        ],
+      },
+      {
+        heading: "What I learned",
+        paragraphs: [
+          "Tool descriptions matter. Claude chooses tools from the description field. “Search recent X posts by keyword” beats vague labels like “Twitter API wrapper.”",
+          "Read-only is the right starting point. No posting, following, or DMs keeps the server easy to review and safer for MCP directory listing.",
+          "Deduplication is the hard part. Anyone can search keywords. Value is not adding noise to the tracking list — that is where agent filtering (or Smart Money exclude) earns its keep.",
+          "Install guide with more config detail: /blog/twitter-mcp-claude-cursor. Trading-oriented monitor keywords: /docs/guides/trading-keywords.",
+        ],
+      },
+      {
+        heading: "Try it",
+        paragraphs: [
+          "Register for a Free API key (1,000 calls/month, 1 monitor, no credit card), set XFLUX_API_KEY, and run npx @xflux/xflux-mcp-server. Browse ranked accounts at /predictors, then attach monitors when you find a handle worth watching.",
+          "If you build a trading signal bot, research agent, or something we have not thought of — feedback at /feedback is welcome.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is Smart Money the same as the Claude workflow?",
+        answer:
+          "The Claude + MCP workflow inspired the product. Smart Money is the productized ranking and claims surface (/predictors), also exposed via xflux_smart_money_* tools. You can still run custom discovery with search and timeline tools.",
+      },
+      {
+        question: "Can MCP create monitors for me?",
+        answer:
+          "No. MCP can list monitors and hits (read-only). Create monitors and webhook URLs in the Dashboard.",
+      },
+      {
+        question: "Which npm package should I install?",
+        answer:
+          "@xflux/xflux-mcp-server via npx. Not unrelated projects that also use the name “xflux.” Docs: /docs/integrations/mcp.",
+      },
+      {
+        question: "Does this work on the Free plan?",
+        answer:
+          "Yes, within Free API quota. Agent loops that call search/timeline repeatedly can burn quota quickly — watch Usage in the Dashboard.",
+      },
+    ],
+  },
+  {
     slug: "x-api-cost-2026",
     title: "What Does the X/Twitter API Cost in 2026?",
     description:
@@ -417,7 +517,7 @@ npx @xflux/xflux-mcp-server`,
         heading: "Useful agent patterns",
         paragraphs: [
           "Discover forward-looking accounts with xflux_smart_money_list (pass exclude for handles you already track), inspect timelines, then open Dashboard → Monitors to watch them with webhooks.",
-          "Marketing overview: /mcp. Full tool list: /docs/integrations/mcp. Smart Money hub: /predictors.",
+          "Walkthrough of the discovery workflow (search → verify calls → dedupe → monitor): /blog/smart-money-discovery-mcp-claude. Marketing overview: /mcp. Full tool list: /docs/integrations/mcp. Smart Money hub: /predictors.",
         ],
       },
     ],

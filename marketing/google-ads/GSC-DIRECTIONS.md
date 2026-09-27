@@ -63,6 +63,7 @@ https://www.xfluxapi.com/docs/guides/trading-keywords
 | `https://www.xfluxapi.com/blog/twitter-account-monitor-webhook` | Monitor/webhook intent |
 | `https://www.xfluxapi.com/blog/twitter-trading-alerts` | Trading alerts |
 | `https://www.xfluxapi.com/blog/twitter-mcp-claude-cursor` | MCP SERP |
+| `https://www.xfluxapi.com/blog/smart-money-discovery-mcp-claude` | Smart Money + MCP narrative |
 | `https://www.xfluxapi.com/blog/twitter-api-python-nodejs` | Language how-to |
 | `https://www.xfluxapi.com/mcp` | MCP marketing landing |
 | `https://www.xfluxapi.com/twitter-discord-alerts` | Discord monitor intent |
@@ -82,6 +83,7 @@ https://www.xfluxapi.com/blog/x-api-cost-2026
 https://www.xfluxapi.com/blog/twitter-account-monitor-webhook
 https://www.xfluxapi.com/blog/twitter-trading-alerts
 https://www.xfluxapi.com/blog/twitter-mcp-claude-cursor
+https://www.xfluxapi.com/blog/smart-money-discovery-mcp-claude
 https://www.xfluxapi.com/blog/twitter-api-python-nodejs
 https://www.xfluxapi.com/mcp
 https://www.xfluxapi.com/twitter-discord-alerts

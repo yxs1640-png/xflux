@@ -2,6 +2,106 @@ import type { BlogPost } from "./posts";
 
 export const BLOG_POSTS_ZH: BlogPost[] = [
   {
+    slug: "smart-money-discovery-mcp-claude",
+    title: "用 XFlux MCP 和 Claude 搭一套 Smart Money 发现流程",
+    description:
+      "用 XFlux MCP 工具配合 Claude，找出近期有可验证市场判断的 X/Twitter 账号，再落到 Smart Money 与 Dashboard 监控。",
+    datePublished: "2026-09-27",
+    keywords: [
+      "smart money twitter",
+      "twitter mcp claude",
+      "crypto prediction accounts x",
+      "xflux mcp",
+      "twitter account discovery mcp",
+    ],
+    sections: [
+      {
+        heading: "为什么「搜一下 X」不够",
+        paragraphs: [
+          "XFlux 是专注账号监控与 webhook 推送的 X/Twitter 数据 API——你不必自己写轮询。做产品时我们反复看到同一类需求：人们要的不只是又一个通用 API，而是找出那些在行情波动前做出具体、可核对判断的账号。",
+          "用 CPI、FOMC、降息、地缘等关键词搜 X，会得到成千上万条推文，大多是噪音。难点不在找到推文，而在过滤：过去 14 天内有可证伪预测的账号，而不是只发得多。",
+          "这是过滤问题，不是搜索问题。给 AI agent 配上合适的工具，它会做得很好。",
+        ],
+      },
+      {
+        heading: "第一步：通过 MCP 给 Claude 只读权限",
+        paragraphs: [
+          "MCP（Model Context Protocol）让 Claude Desktop 或 Cursor 调用外部工具。XFlux 提供精简的 Node MCP 服务：@xflux/xflux-mcp-server（registry id io.github.yxs1640-png/xflux）。早期探索用底层只读工具，推理交给模型：",
+          "xflux_search_tweets — 按关键词搜近期帖子（支持 X 搜索运算符）。xflux_get_user_tweets — 拉某用户时间线。xflux_list_monitors — 查看你已在监控的账号（只读）。",
+          "设计选择：一开始不要把「找 smart money」塞进一个黑盒工具。暴露数据访问、保持服务器简单，让 agent 决定如何过滤。同一套服务器也可复用于研究 agent、RAG enrichment 与告警分诊。",
+        ],
+        code: `export XFLUX_API_KEY=xflux_your_key_here
+npx -y @xflux/xflux-mcp-server
+
+# Cursor / Claude Desktop (claude_desktop_config.json)
+{
+  "mcpServers": {
+    "xflux": {
+      "command": "npx",
+      "args": ["-y", "@xflux/xflux-mcp-server"],
+      "env": { "XFLUX_API_KEY": "xflux_your_key_here" }
+    }
+  }
+}`,
+      },
+      {
+        heading: "第二步：四阶段发现流程",
+        paragraphs: [
+          "阶段 1 — 候选发现。让 Claude 在短窗口（例如近 14 天）搜索宏观或加密关键词。得到账号池，多数是噪音。",
+          "阶段 2 — 战绩核对。对每个候选用 xflux_get_user_tweets 拉时间线，并追问：此人最近是否做了具体、可证伪的预测？不是「聊了市场」，而是例如「我认为 CPI 会低于一致预期」或带催化剂的明确方向判断。",
+          "阶段 3 — 去重。与已在监控的账号对比（xflux_list_monitors，或你维护的 exclude 列表）。弱账号加进来会污染观察列表数周。",
+          "阶段 4 — 收紧输出。限制 agent 只返回少量候选，每条附上使其入选的原文。你人工挑最好的一个，再到 Dashboard 创建监控（MCP 不创建监控）。",
+        ],
+      },
+      {
+        heading: "第三步：我们如何产品化",
+        paragraphs: [
+          "Claude + MCP 流程验证有用后，我们把同一件事产品化为 /predictors 上的 Smart Money：排名账号、近期 calls、细分 niche（宏观、交易、加密、地缘）。MCP 也暴露一等工具：xflux_smart_money_list（支持 exclude）、xflux_smart_money_profile、xflux_smart_money_claims。",
+          "今天你可以 (a) 用搜索 + 时间线工具和自有 prompt 探索，或 (b) 直接用 Smart Money 工具，再到 Dashboard → Monitors 配 webhook。安装与工具列表：/docs/integrations/mcp。概览：/mcp。",
+          "创建监控与线上 webhook URL 仍在 Dashboard。免费档可建监控并发送测试 ping；命中实时投递需 Starter+。",
+        ],
+      },
+      {
+        heading: "学到的几点",
+        paragraphs: [
+          "工具描述比空泛 SEO 词重要。Claude 靠 description 选工具。「按关键词搜索近期 X 帖子」胜过「Twitter API wrapper」这类模糊标签。",
+          "只读是正确起点。不发帖、不关注、不私信，便于审查，也更符合 MCP 目录要求。",
+          "去重才是难点。谁都会搜关键词。价值在于不往观察列表里加噪音——这正是 agent 过滤（或 Smart Money exclude）的用武之地。",
+          "更细的安装配置：/blog/twitter-mcp-claude-cursor。交易向监控关键词：/docs/guides/trading-keywords。",
+        ],
+      },
+      {
+        heading: "开始试用",
+        paragraphs: [
+          "注册免费 API key（每月 1,000 次调用、1 个监控、无需信用卡），设置 XFLUX_API_KEY，运行 npx @xflux/xflux-mcp-server。在 /predictors 浏览排名账号，找到值得盯的 handle 后再挂监控。",
+          "若你做出交易信号机器人、研究 agent，或我们没想到的东西——欢迎到 /feedback 反馈。",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Smart Money 和 Claude 流程是一回事吗？",
+        answer:
+          "Claude + MCP 流程启发了产品。Smart Money 是产品化的排名与 calls 界面（/predictors），并通过 xflux_smart_money_* 暴露。你仍可用搜索与时间线工具做自定义发现。",
+      },
+      {
+        question: "MCP 能替我创建监控吗？",
+        answer:
+          "不能。MCP 可列出监控与命中（只读）。创建监控与 webhook URL 请在 Dashboard。",
+      },
+      {
+        question: "该装哪个 npm 包？",
+        answer:
+          "通过 npx 使用 @xflux/xflux-mcp-server。不要装其他也叫「xflux」的无关项目。文档：/docs/integrations/mcp。",
+      },
+      {
+        question: "免费计划能用吗？",
+        answer:
+          "可以，在免费 API 配额内。反复调用搜索/时间线的 agent 循环会很快耗尽配额——请看 Dashboard 的 Usage。",
+      },
+    ],
+  },
+  {
     slug: "x-api-cost-2026",
     title: "2026 年 X/Twitter API 要花多少钱？",
     description:
@@ -408,7 +508,7 @@ npx @xflux/xflux-mcp-server`,
         heading: "实用的 agent 模式",
         paragraphs: [
           "用 xflux_smart_money_list 发现前瞻性账号（对已在盯的 handle 传 exclude），查看时间线，再到 Dashboard → Monitors 用 webhook 盯住它们。",
-          "营销概览：/mcp。完整工具列表：/docs/integrations/mcp。Smart Money 中心：/predictors。",
+          "发现流程走读（搜索 → 核对判断 → 去重 → 监控）：/blog/smart-money-discovery-mcp-claude。营销概览：/mcp。完整工具列表：/docs/integrations/mcp。Smart Money 中心：/predictors。",
         ],
       },
     ],
