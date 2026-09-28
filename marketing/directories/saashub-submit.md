@@ -70,9 +70,29 @@ https://www.xfluxapi.com/register?utm_source=saashub&utm_medium=listing&utm_camp
 
 ---
 
+## Live listing
+
+- **URL**: https://www.saashub.com/xflux
+- **Submitted**: 2026-09-28 (Free queue)
+- **Status**: Pending approval (page is public with tagline; claim/verify speeds review)
+- **Competitors linked**: Apify, SocialData Tools, Twexapi, Sorsa API
+- **Categories**: APIs, Monitoring Tools, Social Media Tools, Data Integration, Tech, Web App, Web Service Automation (+ Developer Tools / API Tools from form)
+
+### Claim / polish (login required)
+
+Public listing page (`/xflux`) has **no Manage button**. Use these URLs while logged in:
+
+1. Claim hub: https://www.saashub.com/xflux/added
+2. Verify: https://www.saashub.com/verify/xflux
+3. Logo / images: https://www.saashub.com/manage/xflux/images
+4. Pricing: https://www.saashub.com/manage/xflux/pricing
+5. Description: https://www.saashub.com/manage/xflux
+
+---
+
 ## Checklist
 
-- [ ] Product listing created on SaaSHub
-- [ ] Logo + 3 screenshots uploaded
-- [ ] Listing verified / published
+- [x] Product listing created on SaaSHub — https://www.saashub.com/xflux
+- [ ] Logo + 3 screenshots uploaded (needs login/claim)
+- [ ] Listing verified / published (Pending approval; meta `saashub-verification` in root layout)
 - [ ] (Optional) Submit tab → select dev-relevant directories

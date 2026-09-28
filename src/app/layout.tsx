@@ -39,6 +39,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: SITE_URL,
   },
+  other: {
+    "saashub-verification": "2xo3o28ifaoc",
+  },
 };
 
 export default async function RootLayout({
