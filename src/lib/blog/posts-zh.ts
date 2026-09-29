@@ -1,6 +1,7 @@
 import type { BlogPost } from "./posts";
+import { BLOG_POSTS_WAVE_E_ZH } from "./posts-wave-e-zh";
 
-export const BLOG_POSTS_ZH: BlogPost[] = [
+const BLOG_POSTS_ZH_CORE: BlogPost[] = [
   {
     slug: "smart-money-discovery-mcp-claude",
     title: "用 XFlux MCP 和 Claude 搭一套 Smart Money 发现流程",
@@ -656,3 +657,5 @@ console.log((await search.json()).data.length, "results");`,
     ],
   },
 ];
+
+export const BLOG_POSTS_ZH: BlogPost[] = [...BLOG_POSTS_ZH_CORE, ...BLOG_POSTS_WAVE_E_ZH];

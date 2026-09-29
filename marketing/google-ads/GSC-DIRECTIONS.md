@@ -91,6 +91,26 @@ https://www.xfluxapi.com/docs/guides/python
 https://www.xfluxapi.com/docs/guides/nodejs
 ```
 
+### Wave E — blog expansion (Sep 28)
+
+| URL | Why |
+|-----|-----|
+| `https://www.xfluxapi.com/blog/twitter-api-search-operators` | Search operators SERP |
+| `https://www.xfluxapi.com/blog/webhook-vs-polling-twitter` | Webhook vs polling |
+| `https://www.xfluxapi.com/blog/twitter-api-free-tier` | Free tier commercial |
+| `https://www.xfluxapi.com/blog/twitter-to-discord-alerts` | Discord alerts |
+| `https://www.xfluxapi.com/blog/track-crypto-kols-twitter-api` | Crypto KOL monitoring |
+
+Wave E copy-paste:
+
+```
+https://www.xfluxapi.com/blog/twitter-api-search-operators
+https://www.xfluxapi.com/blog/webhook-vs-polling-twitter
+https://www.xfluxapi.com/blog/twitter-api-free-tier
+https://www.xfluxapi.com/blog/twitter-to-discord-alerts
+https://www.xfluxapi.com/blog/track-crypto-kols-twitter-api
+```
+
 ## PMax asset group additions
 
 Keep final URL: `/register?utm_campaign=pmax_v1`

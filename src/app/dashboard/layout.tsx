@@ -6,6 +6,7 @@ import { QuotaUpsellBannerSlot } from "@/components/billing/quota-upsell-banner-
 import { OnboardingChecklistSlot } from "@/components/dashboard/onboarding-checklist-slot";
 import { MonitorAlertsBannerSlot } from "@/components/dashboard/monitor-alerts-banner-slot";
 import { requireDashboardSession } from "@/lib/dashboard-session";
+import { isAdminEmail } from "@/lib/admin";
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
@@ -19,11 +20,11 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  await requireDashboardSession();
+  const session = await requireDashboardSession();
 
   return (
     <div className="flex min-h-screen bg-zinc-950">
-      <DashboardSidebar />
+      <DashboardSidebar isAdmin={isAdminEmail(session.user.email)} />
       <main className="flex-1 overflow-auto">
         <div className="p-8">
           <Suspense fallback={null}>

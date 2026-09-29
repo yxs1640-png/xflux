@@ -64,10 +64,10 @@ Free tier: 1,000 API calls/month and 1 monitor. Paid plans from $19/mo with webh
 
 | Channel | Status | Action |
 |---------|--------|--------|
-| [public-apis](https://github.com/public-apis/public-apis) | PR #6809 open | Wait for merge |
+| [public-apis](https://github.com/public-apis/public-apis/pull/6809) | Merged | https://github.com/public-apis/public-apis/pull/6809 |
 | [AlternativeTo](https://alternativeto.net/software/xfluxapi/) | Live | https://alternativeto.net/software/xfluxapi/ — optimize features/screenshots; continue cross-links |
-| [free-for.dev](https://github.com/ripienaar/free-for-dev) | PR #4733 open | Wait for merge |
-| [SaaSHub](https://www.saashub.com/xflux) | Submitted (pending approval) | https://www.saashub.com/xflux — claim/verify + logo; see `saashub-submit.md` |
+| [free-for.dev](https://github.com/ripienaar/free-for-dev/pull/4733) | Merged | https://github.com/ripienaar/free-for-dev/pull/4733 |
+| [SaaSHub](https://www.saashub.com/xflux) | Verified (pending approval) | https://www.saashub.com/xflux — logo/pricing/details done; wait for review |
 | [Dev.to](https://dev.to) | Published | https://dev.to/xfluxapi/get-started-with-xflux-xtwitter-api-in-60-seconds-e40 |
 | [Product Hunt](https://www.producthunt.com) | Scheduled | See `../product-hunt/SCHEDULE.md` (not same week as HN) |
 | [Hacker News Show HN](https://news.ycombinator.com/item?id=49295237) | Posted | Monitor comments |

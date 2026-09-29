@@ -18,6 +18,7 @@ import {
   BookOpen,
   Lightbulb,
   Radio,
+  MessageSquare,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { MonitorAlertsNavItem } from "@/components/dashboard/monitor-alerts-nav-item";
@@ -46,9 +47,10 @@ function isResourceNavActive(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export function DashboardSidebar() {
+export function DashboardSidebar({ isAdmin = false }: { isAdmin?: boolean }) {
   const pathname = usePathname();
   const t = useTranslations("dashboard");
+  const feedbackActive = pathname.startsWith("/dashboard/feedback");
 
   return (
     <aside className="flex h-screen w-64 flex-col border-r border-zinc-800 bg-zinc-950">
@@ -98,6 +100,20 @@ export function DashboardSidebar() {
               </Link>
             );
           })}
+          {isAdmin ? (
+            <Link
+              href="/dashboard/feedback"
+              className={cn(
+                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors",
+                feedbackActive
+                  ? "bg-sky-500/10 text-sky-400"
+                  : "text-zinc-400 hover:bg-zinc-800/50 hover:text-white"
+              )}
+            >
+              <MessageSquare className="h-4 w-4" />
+              {t("feedbackInbox")}
+            </Link>
+          ) : null}
         </div>
 
         <div className="mt-6 border-t border-zinc-800 pt-6">

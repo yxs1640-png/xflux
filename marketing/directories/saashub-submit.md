@@ -93,6 +93,6 @@ Public listing page (`/xflux`) has **no Manage button**. Use these URLs while lo
 ## Checklist
 
 - [x] Product listing created on SaaSHub — https://www.saashub.com/xflux
-- [ ] Logo + 3 screenshots uploaded (needs login/claim)
-- [ ] Listing verified / published (Pending approval; meta `saashub-verification` in root layout)
+- [x] Logo uploaded (+ optional screenshots later)
+- [x] Listing verified (Pending approval queue; meta `saashub-verification` in root layout)
 - [ ] (Optional) Submit tab → select dev-relevant directories

@@ -1,3 +1,5 @@
+import { BLOG_POSTS_WAVE_E } from "./posts-wave-e";
+
 export type BlogPost = {
   slug: string;
   title: string;
@@ -9,7 +11,7 @@ export type BlogPost = {
   faqs: { question: string; answer: string }[];
 };
 
-export const BLOG_POSTS: BlogPost[] = [
+const BLOG_POSTS_CORE: BlogPost[] = [
   {
     slug: "smart-money-discovery-mcp-claude",
     title: "How I Built a Smart Money Discovery Workflow with XFlux MCP and Claude",
@@ -665,6 +667,8 @@ console.log((await search.json()).data.length, "results");`,
     ],
   },
 ];
+
+export const BLOG_POSTS: BlogPost[] = [...BLOG_POSTS_CORE, ...BLOG_POSTS_WAVE_E];
 
 import { BLOG_POSTS_ZH } from "./posts-zh";
 
