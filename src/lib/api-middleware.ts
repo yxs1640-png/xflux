@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { extractApiKey, validateApiKey } from "@/lib/api-key";
 import { applyApiLimitHeaders, enforceApiRequestLimits } from "@/lib/api-limits";
-import { logApiCall } from "@/lib/quota";
+import { logApiCall, resolveApiClient } from "@/lib/quota";
 
 export async function withApiAuth(
   request: NextRequest,
@@ -25,13 +25,15 @@ export async function withApiAuth(
 
   const endpoint = new URL(request.url).pathname;
   const response = await handler(auth.userId);
+  const client = resolveApiClient(request);
 
   await logApiCall(
     auth.userId,
     endpoint,
     request.method,
     response.status,
-    Date.now() - start
+    Date.now() - start,
+    client
   );
 
   applyApiLimitHeaders(response, limits.quota, limits.rateLimit);

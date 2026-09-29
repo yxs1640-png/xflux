@@ -135,9 +135,30 @@ export async function logApiCall(
   endpoint: string,
   method: string,
   statusCode: number,
-  responseTime: number
+  responseTime: number,
+  client?: string | null
 ) {
   await prisma.apiLog.create({
-    data: { userId, endpoint, method, statusCode, responseTime },
+    data: {
+      userId,
+      endpoint,
+      method,
+      statusCode,
+      responseTime,
+      client: client?.slice(0, 64) || null,
+    },
   });
+}
+
+/** Normalize X-XFlux-Client / User-Agent into a short client tag for ApiLog. */
+export function resolveApiClient(request: {
+  headers: { get(name: string): string | null };
+}): string | null {
+  const explicit = request.headers.get("x-xflux-client")?.trim().toLowerCase();
+  if (explicit) return explicit.slice(0, 64);
+
+  const ua = request.headers.get("user-agent")?.trim() ?? "";
+  if (/^XFlux-MCP\b/i.test(ua)) return "mcp";
+  if (/xflux-mcp/i.test(ua)) return "mcp";
+  return null;
 }

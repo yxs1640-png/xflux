@@ -107,11 +107,14 @@ model ApiLog {
   method       String
   statusCode   Int
   responseTime Int
+  /** Client marker from X-XFlux-Client / User-Agent (e.g. mcp). */
+  client       String?
   createdAt    DateTime @default(now())
 
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, createdAt])
+  @@index([client, createdAt])
 }
 
 /** Fixed 1-minute window counters for per-plan API rate limits */

@@ -58,6 +58,7 @@ export default async function DashboardOpsPage() {
                 <th className="px-3 py-2 font-medium">API users</th>
                 <th className="px-3 py-2 font-medium">Monitor hits</th>
                 <th className="px-3 py-2 font-medium">Webhook OK</th>
+                <th className="px-3 py-2 font-medium">MCP</th>
                 <th className="px-3 py-2 font-medium">Feedback</th>
               </tr>
             </thead>
@@ -70,6 +71,7 @@ export default async function DashboardOpsPage() {
                   <td className="px-3 py-2 tabular-nums">{row.apiUsers}</td>
                   <td className="px-3 py-2 tabular-nums">{row.monitorHits}</td>
                   <td className="px-3 py-2 tabular-nums">{row.webhookOk}</td>
+                  <td className="px-3 py-2 tabular-nums">{row.mcpCalls}</td>
                   <td className="px-3 py-2 tabular-nums">{row.feedback}</td>
                 </tr>
               ))}

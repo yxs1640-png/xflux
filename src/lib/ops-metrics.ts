@@ -24,6 +24,7 @@ export type OpsDayRow = {
   monitorHits: number;
   webhookOk: number;
   feedback: number;
+  mcpCalls: number;
 };
 
 export type OpsMetrics = {
@@ -50,18 +51,20 @@ async function dayRow(dateStr: string): Promise<OpsDayRow> {
   const { start, end } = cstDayBounds(dateStr);
   const range = { gte: start, lt: end };
 
-  const [signups, apiCalls, apiUsers, monitorHits, webhookOk, feedback] = await Promise.all([
-    prisma.user.count({ where: { createdAt: range } }),
-    prisma.apiLog.count({ where: { createdAt: range } }),
-    prisma.apiLog
-      .groupBy({ by: ["userId"], where: { createdAt: range } })
-      .then((rows) => rows.length),
-    prisma.monitorHit.count({ where: { detectedAt: range } }),
-    prisma.monitorWebhookDelivery.count({
-      where: { createdAt: range, status: "SUCCESS" },
-    }),
-    prisma.userFeedback.count({ where: { createdAt: range } }),
-  ]);
+  const [signups, apiCalls, apiUsers, monitorHits, webhookOk, feedback, mcpCalls] =
+    await Promise.all([
+      prisma.user.count({ where: { createdAt: range } }),
+      prisma.apiLog.count({ where: { createdAt: range } }),
+      prisma.apiLog
+        .groupBy({ by: ["userId"], where: { createdAt: range } })
+        .then((rows) => rows.length),
+      prisma.monitorHit.count({ where: { detectedAt: range } }),
+      prisma.monitorWebhookDelivery.count({
+        where: { createdAt: range, status: "SUCCESS" },
+      }),
+      prisma.userFeedback.count({ where: { createdAt: range } }),
+      prisma.apiLog.count({ where: { createdAt: range, client: "mcp" } }),
+    ]);
 
   return {
     date: dateStr,
@@ -71,6 +74,7 @@ async function dayRow(dateStr: string): Promise<OpsDayRow> {
     monitorHits,
     webhookOk,
     feedback,
+    mcpCalls,
   };
 }
 

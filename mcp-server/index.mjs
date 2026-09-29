@@ -19,7 +19,7 @@ async function xfluxFetch(path, params = {}) {
   const res = await fetch(url, {
     headers: {
       Authorization: `Bearer ${API_KEY}`,
-      "User-Agent": "XFlux-MCP/1.2",
+      "User-Agent": "XFlux-MCP/1.2.1",
       "X-XFlux-Client": "mcp",
     },
   });
