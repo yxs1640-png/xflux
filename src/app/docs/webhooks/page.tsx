@@ -35,7 +35,7 @@ const WEBHOOK_FAQS = [
   {
     question: "How do I route webhooks to Discord?",
     answer:
-      "Point the monitor webhook at a Make.com Custom Webhook (or your bot), then post to Discord. See the Discord alerts landing and Make.com integration guide.",
+      "Paste a Discord Incoming Webhook URL (Channel → Integrations → Webhooks) into the monitor — XFlux auto-formats Discord embeds/content. You can also use Make.com or your own bot. See /twitter-discord-alerts.",
   },
 ];
 
@@ -65,7 +65,10 @@ export default function WebhooksDocsPage() {
       <ol className="list-decimal list-inside space-y-2 text-zinc-400 text-sm leading-relaxed">
         <li>Upgrade to Starter or higher</li>
         <li>Dashboard → Monitors → expand Webhook section on a monitor</li>
-        <li>Enter your HTTPS endpoint URL and save</li>
+        <li>
+          Enter your HTTPS endpoint URL and save — Discord or Slack incoming webhook URLs are
+          supported directly (we adapt the payload)
+        </li>
         <li>Copy the signing secret shown once — store it securely</li>
         <li>
           Click <strong className="text-white">Test webhook</strong> to verify connectivity

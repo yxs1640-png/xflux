@@ -122,9 +122,9 @@ export default async function TwitterDiscordAlertsPage() {
             </p>
             <CodeBlock>{`@handle posts (optional keyword match)
         ↓
-XFlux monitor.hit (signed POST)
+XFlux detects Discord webhook URL
         ↓
-Make.com Custom Webhook
+POST Discord-formatted embed / content
         ↓
 Discord channel message`}</CodeBlock>
           </section>

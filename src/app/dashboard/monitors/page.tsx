@@ -177,7 +177,7 @@ function MonitorWebhookPanel({
         <div className="mt-3 space-y-3">
           {!canDeliverWebhooks && (
             <p className="text-sm text-zinc-500">
-              Free plan: save a URL and send test pings (try{" "}
+              Free plan: save a URL and send test pings (Discord Incoming Webhook,{" "}
               <a
                 href="https://webhook.site"
                 target="_blank"
@@ -186,16 +186,23 @@ function MonitorWebhookPanel({
               >
                 webhook.site
               </a>
-              ). Live hit delivery requires{" "}
+              , or your HTTPS endpoint). Live hit delivery requires{" "}
               <Link href="/dashboard/billing" className="text-sky-400 hover:underline">
                 Starter
               </Link>
               .
             </p>
           )}
+          <p className="text-xs text-zinc-600">
+            Discord and Slack incoming webhook URLs work directly — we format the message for you.
+            Custom servers still receive signed XFlux JSON.{" "}
+            <Link href="/twitter-discord-alerts" className="text-sky-400 hover:underline">
+              Discord guide
+            </Link>
+          </p>
           <div className="flex flex-wrap gap-2">
                 <Input
-                  placeholder="https://your-server.com/webhooks/xflux"
+                  placeholder="https://discord.com/api/webhooks/… or your server"
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
                   className="flex-1 min-w-[200px]"
