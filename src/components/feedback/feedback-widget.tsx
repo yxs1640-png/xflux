@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { MessageSquarePlus, X, Loader2, CheckCircle2 } from "lucide-react";
+import { MessageCircle, X, Loader2, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -165,13 +165,20 @@ export function FeedbackWidget() {
           setError("");
         }}
         className={cn(
-          "flex h-12 w-12 items-center justify-center rounded-full",
-          "bg-sky-500 text-white shadow-lg shadow-sky-900/40",
+          "flex items-center gap-2 rounded-full px-4 py-3",
+          "bg-sky-500 text-sm font-medium text-white shadow-lg shadow-sky-900/40",
           "transition hover:bg-sky-400 focus-visible:outline focus-visible:outline-2",
           "focus-visible:outline-offset-2 focus-visible:outline-sky-300"
         )}
       >
-        {open ? <X className="h-5 w-5" /> : <MessageSquarePlus className="h-5 w-5" />}
+        {open ? (
+          <X className="h-4 w-4" />
+        ) : (
+          <>
+            <MessageCircle className="h-4 w-4" />
+            Feedback
+          </>
+        )}
       </button>
     </div>
   );
