@@ -111,6 +111,34 @@ https://www.xfluxapi.com/blog/twitter-to-discord-alerts
 https://www.xfluxapi.com/blog/track-crypto-kols-twitter-api
 ```
 
+### Wave F — webhook / AAA long-tail landings (Sep 29)
+
+One page → one primary keyword. Request indexing after deploy; re-check GSC in 2–3 weeks.
+
+| URL | Primary keyword |
+|-----|-----------------|
+| `https://www.xfluxapi.com/twitter-account-activity-api` | twitter account activity api |
+| `https://www.xfluxapi.com/account-activity-api-alternative` | account activity api alternative |
+| `https://www.xfluxapi.com/twitter-activity-api` | twitter activity api |
+| `https://www.xfluxapi.com/filtered-stream-alternative` | twitter filtered stream alternative |
+| `https://www.xfluxapi.com/twitter-slack-alerts` | twitter slack alerts |
+| `https://www.xfluxapi.com/twitter-n8n-webhook` | n8n twitter webhook |
+| `https://www.xfluxapi.com/twitter-webhook-nodejs` | twitter webhook nodejs |
+| `https://www.xfluxapi.com/monitor-twitter-account-webhook` | monitor twitter account webhook |
+
+Wave F copy-paste:
+
+```
+https://www.xfluxapi.com/twitter-account-activity-api
+https://www.xfluxapi.com/account-activity-api-alternative
+https://www.xfluxapi.com/twitter-activity-api
+https://www.xfluxapi.com/filtered-stream-alternative
+https://www.xfluxapi.com/twitter-slack-alerts
+https://www.xfluxapi.com/twitter-n8n-webhook
+https://www.xfluxapi.com/twitter-webhook-nodejs
+https://www.xfluxapi.com/monitor-twitter-account-webhook
+```
+
 ## PMax asset group additions
 
 Keep final URL: `/register?utm_campaign=pmax_v1`

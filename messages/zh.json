@@ -63,6 +63,10 @@
     "blog": "博客",
     "compareApis": "API 对比",
     "discordAlerts": "Discord 告警",
+    "slackAlerts": "Slack 告警",
+    "accountActivityApi": "Account Activity API",
+    "filteredStreamAlt": "Filtered stream 替代方案",
+    "monitorWebhook": "监控 → Webhook",
     "mcpLanding": "面向 Agent 的 MCP"
   },
   "dashboard": {

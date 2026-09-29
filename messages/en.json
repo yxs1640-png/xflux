@@ -63,6 +63,10 @@
     "blog": "Blog",
     "compareApis": "Compare APIs",
     "discordAlerts": "Discord alerts",
+    "slackAlerts": "Slack alerts",
+    "accountActivityApi": "Account Activity API",
+    "filteredStreamAlt": "Filtered stream alternative",
+    "monitorWebhook": "Monitor → webhook",
     "mcpLanding": "MCP for agents"
   },
   "dashboard": {

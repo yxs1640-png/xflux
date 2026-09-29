@@ -89,6 +89,26 @@ export default async function TwitterWebhookPage() {
                 </Button>
               </Link>
             </div>
+            <nav
+              aria-label="Related webhook guides"
+              className="mt-6 flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm"
+            >
+              <Link href="/twitter-account-activity-api" className="text-sky-400 hover:underline">
+                Account Activity API
+              </Link>
+              <Link href="/filtered-stream-alternative" className="text-sky-400 hover:underline">
+                Filtered stream alternative
+              </Link>
+              <Link href="/monitor-twitter-account-webhook" className="text-sky-400 hover:underline">
+                Monitor → webhook
+              </Link>
+              <Link href="/twitter-slack-alerts" className="text-sky-400 hover:underline">
+                Slack alerts
+              </Link>
+              <Link href="/twitter-webhook-nodejs" className="text-sky-400 hover:underline">
+                Node.js handler
+              </Link>
+            </nav>
           </div>
 
           <div className="grid gap-6 sm:grid-cols-3 mb-16">
