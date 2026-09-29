@@ -1,5 +1,5 @@
 # XFlux Monitor Worker — build from repository root:
-#   fly deploy --config worker/fly.toml --dockerfile Dockerfile.worker
+#   fly deploy . --config worker/fly.toml -a xflux-monitor-worker
 
 FROM node:22-alpine AS builder
 WORKDIR /app
@@ -19,8 +19,12 @@ ENV NODE_ENV=production
 
 COPY package.json package-lock.json ./
 COPY prisma ./prisma
-RUN npm ci --omit=dev && npx prisma generate
+# prisma CLI lives in devDependencies; skip lifecycle scripts and reuse
+# the generated client from the builder stage instead of generating here.
+RUN npm ci --omit=dev --ignore-scripts
 
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma/client ./node_modules/@prisma/client
 COPY --from=builder /app/dist ./dist
 
 CMD ["node", "dist/worker/run.js"]
