@@ -117,16 +117,20 @@ export function MonitorAlertsBanner({
               </Button>
             </div>
             {!canWebhook && (
-              <p className="mt-3 text-xs text-zinc-400 flex items-start gap-1.5">
-                <Zap className="h-3.5 w-3.5 text-amber-400 shrink-0 mt-0.5" />
-                <span>
-                  Free plan: test webhooks in Monitors.{" "}
-                  <Link href="/dashboard/billing" className="text-sky-400 hover:text-sky-300">
-                    Starter ($19/mo)
-                  </Link>{" "}
-                  adds live hit delivery and faster polling.
-                </span>
-              </p>
+              <div className="mt-3 rounded-lg border border-amber-500/25 bg-amber-500/5 px-3 py-2.5 space-y-2">
+                <p className="text-xs text-zinc-300 flex items-start gap-1.5">
+                  <Zap className="h-3.5 w-3.5 text-amber-400 shrink-0 mt-0.5" />
+                  <span>
+                    These hits stayed in Dashboard only. Starter adds live webhook delivery
+                    (Discord / Slack / your URL) and faster polling.
+                  </span>
+                </p>
+                <Link href="/dashboard/billing">
+                  <Button size="sm" variant="outline">
+                    Upgrade to Starter — $19/mo
+                  </Button>
+                </Link>
+              </div>
             )}
           </div>
         </div>

@@ -19,6 +19,7 @@ import {
   RefreshCw,
   Trash2,
   Webhook,
+  Zap,
 } from "lucide-react";
 import { AnalyticsEvents } from "@/lib/analytics/events";
 import { trackClientEvent } from "@/lib/analytics/client";
@@ -112,6 +113,11 @@ function MonitorWebhookPanel({
       if (data.webhookSecretPlain) setPlainSecret(data.webhookSecretPlain);
       if (url.trim()) {
         trackClientEvent(AnalyticsEvents.WEBHOOK_CONFIGURED, { monitor_id: monitor.id });
+        if (!canDeliverWebhooks) {
+          alert(
+            "Webhook URL saved. You can send Test pings on Free. Live hits require Starter ($19/mo)."
+          );
+        }
       }
     } else {
       alert(data.error || "Failed to save webhook");
@@ -148,11 +154,16 @@ function MonitorWebhookPanel({
         success: data.result.success,
         status_code: data.result.statusCode ?? null,
       });
-      alert(
-        data.result.success
-          ? `Test delivered (${data.result.statusCode}, ${data.result.responseTime}ms)`
-          : `Test failed: ${data.result.error}`
-      );
+      if (data.result.success) {
+        const base = `Test delivered (${data.result.statusCode}, ${data.result.responseTime}ms)`;
+        alert(
+          canDeliverWebhooks
+            ? base
+            : `${base}\n\nLive hits are not sent on Free — upgrade to Starter ($19/mo) for automatic delivery when tweets match.`
+        );
+      } else {
+        alert(`Test failed: ${data.result.error}`);
+      }
     } else {
       alert(data.error || "Test failed");
     }
@@ -170,28 +181,42 @@ function MonitorWebhookPanel({
         {monitor.hasWebhook && (
           <Badge variant="sky" className="text-[10px] py-0">Configured</Badge>
         )}
+        {monitor.hasWebhook && !canDeliverWebhooks && (
+          <Badge variant="warning" className="text-[10px] py-0">
+            Test only
+          </Badge>
+        )}
         {open ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
       </button>
 
       {open && (
         <div className="mt-3 space-y-3">
           {!canDeliverWebhooks && (
-            <p className="text-sm text-zinc-500">
-              Free plan: save a URL and send test pings (Discord Incoming Webhook,{" "}
-              <a
-                href="https://webhook.site"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sky-400 hover:underline"
-              >
-                webhook.site
-              </a>
-              , or your HTTPS endpoint). Live hit delivery requires{" "}
-              <Link href="/dashboard/billing" className="text-sky-400 hover:underline">
-                Starter
+            <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-3 space-y-2">
+              <p className="text-sm text-amber-100/90">
+                {monitor.hasWebhook
+                  ? "URL saved — test pings work. Real tweet matches stay in Dashboard only until you upgrade."
+                  : "Free can save a URL and send test pings. Live hit delivery starts on Starter."}
+              </p>
+              <p className="text-xs text-zinc-500">
+                Discord Incoming Webhook,{" "}
+                <a
+                  href="https://webhook.site"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sky-400 hover:underline"
+                >
+                  webhook.site
+                </a>
+                , or your HTTPS endpoint.
+              </p>
+              <Link href="/dashboard/billing">
+                <Button size="sm" className="mt-1">
+                  <Zap className="h-3.5 w-3.5" />
+                  Upgrade to Starter — $19/mo
+                </Button>
               </Link>
-              .
-            </p>
+            </div>
           )}
           <p className="text-xs text-zinc-600">
             Discord and Slack incoming webhook URLs work directly — we format the message for you.
@@ -377,7 +402,11 @@ export default function MonitorsPage() {
       } else if (r?.baselined) {
         alert("Baseline set. Future checks will alert on new tweets only.");
       } else if (r?.newHits > 0) {
-        alert(`Found ${r.newHits} new tweet(s).`);
+        alert(
+          canDeliverWebhooks
+            ? `Found ${r.newHits} new tweet(s).`
+            : `Found ${r.newHits} new tweet(s) in Dashboard.\n\nLive webhook delivery needs Starter ($19/mo) — Free only sends Test pings.`
+        );
       } else {
         alert("Check complete. No new tweets since last check.");
       }
@@ -386,6 +415,9 @@ export default function MonitorsPage() {
       alert(data.error || "Check failed");
     }
   }
+
+  const freeWithWebhook =
+    !canDeliverWebhooks && monitors.some((m) => m.hasWebhook);
 
   return (
     <div>
@@ -399,6 +431,23 @@ export default function MonitorsPage() {
           </Link>
         </p>
       </div>
+
+      {freeWithWebhook && (
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3">
+          <div className="min-w-0 flex items-start gap-2">
+            <Zap className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
+            <p className="text-sm text-zinc-200">
+              Webhook URL saved — <strong className="text-white">tests work</strong>, but live
+              hits won&apos;t POST until you upgrade. Hits still show in Dashboard.
+            </p>
+          </div>
+          <Link href="/dashboard/billing" className="shrink-0">
+            <Button size="sm">
+              Upgrade to Starter — $19/mo
+            </Button>
+          </Link>
+        </div>
+      )}
 
       <Card className="mb-6 border-sky-500/20 bg-sky-500/5">
         <CardContent className="pt-6">
