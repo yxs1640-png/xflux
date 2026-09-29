@@ -3,21 +3,14 @@ import "server-only";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth";
 
-function adminEmails(): Set<string> {
-  const raw = process.env.ADMIN_EMAILS ?? "";
-  return new Set(
-    raw
-      .split(",")
-      .map((e) => e.trim().toLowerCase())
-      .filter(Boolean)
-  );
-}
+/** Hardcoded admin allowlist — no env switch. */
+const ADMIN_EMAILS = ["test12132@qq.com"] as const;
+
+const adminSet = new Set(ADMIN_EMAILS.map((e) => e.toLowerCase()));
 
 export function isAdminEmail(email: string | null | undefined): boolean {
   if (!email) return false;
-  const admins = adminEmails();
-  if (admins.size === 0) return false;
-  return admins.has(email.toLowerCase());
+  return adminSet.has(email.toLowerCase());
 }
 
 export async function requireAdminSession() {

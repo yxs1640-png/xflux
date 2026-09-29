@@ -19,6 +19,7 @@ import {
   Lightbulb,
   Radio,
   MessageSquare,
+  LineChart,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { MonitorAlertsNavItem } from "@/components/dashboard/monitor-alerts-nav-item";
@@ -51,6 +52,7 @@ export function DashboardSidebar({ isAdmin = false }: { isAdmin?: boolean }) {
   const pathname = usePathname();
   const t = useTranslations("dashboard");
   const feedbackActive = pathname.startsWith("/dashboard/feedback");
+  const opsActive = pathname.startsWith("/dashboard/ops");
 
   return (
     <aside className="flex h-screen w-64 flex-col border-r border-zinc-800 bg-zinc-950">
@@ -101,18 +103,32 @@ export function DashboardSidebar({ isAdmin = false }: { isAdmin?: boolean }) {
             );
           })}
           {isAdmin ? (
-            <Link
-              href="/dashboard/feedback"
-              className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors",
-                feedbackActive
-                  ? "bg-sky-500/10 text-sky-400"
-                  : "text-zinc-400 hover:bg-zinc-800/50 hover:text-white"
-              )}
-            >
-              <MessageSquare className="h-4 w-4" />
-              {t("feedbackInbox")}
-            </Link>
+            <>
+              <Link
+                href="/dashboard/ops"
+                className={cn(
+                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors",
+                  opsActive
+                    ? "bg-sky-500/10 text-sky-400"
+                    : "text-zinc-400 hover:bg-zinc-800/50 hover:text-white"
+                )}
+              >
+                <LineChart className="h-4 w-4" />
+                {t("opsStats")}
+              </Link>
+              <Link
+                href="/dashboard/feedback"
+                className={cn(
+                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors",
+                  feedbackActive
+                    ? "bg-sky-500/10 text-sky-400"
+                    : "text-zinc-400 hover:bg-zinc-800/50 hover:text-white"
+                )}
+              >
+                <MessageSquare className="h-4 w-4" />
+                {t("feedbackInbox")}
+              </Link>
+            </>
           ) : null}
         </div>
 
