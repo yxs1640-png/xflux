@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AnalyticsEvents } from "@/lib/analytics/events";
 import { trackClientEvent } from "@/lib/analytics/client";
+import { isSafeMonitorNext } from "@/lib/signals/monitor-cta";
 
 export default function LoginPage() {
   const t = useTranslations("auth");
@@ -38,7 +39,9 @@ export default function LoginPage() {
 
     trackClientEvent(AnalyticsEvents.LOGIN_COMPLETED);
 
-    window.location.href = "/dashboard";
+    const params = new URLSearchParams(window.location.search);
+    const callbackUrl = params.get("callbackUrl");
+    window.location.href = isSafeMonitorNext(callbackUrl) ? callbackUrl : "/dashboard";
   }
 
   return (

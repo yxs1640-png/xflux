@@ -21,6 +21,7 @@ import {
   formatGoogleAdsClickIds,
   getStoredGoogleAdsClickIds,
 } from "@/lib/google-ads-attribution";
+import { isSafeMonitorNext } from "@/lib/signals/monitor-cta";
 
 const WELCOME_API_KEY_STORAGE = "xflux_welcome_api_key";
 
@@ -113,7 +114,8 @@ export function RegisterForm() {
     }
 
     fireGoogleAdsSignupConversion({ email: data.email });
-    window.location.href = "/dashboard?welcome=1";
+    const next = searchParams.get("next");
+    window.location.href = isSafeMonitorNext(next) ? next : "/dashboard?welcome=1";
   }
 
   return (

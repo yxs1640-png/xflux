@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { AnalyticsEvents } from "@/lib/analytics/events";
 import { trackClientEvent } from "@/lib/analytics/client";
+import { parseMonitorPrefillParams } from "@/lib/signals/monitor-cta";
 
 interface MonitorHit {
   id: string;
@@ -315,6 +316,7 @@ export default function MonitorsPage() {
   const [monitors, setMonitors] = useState<Monitor[]>([]);
   const [username, setUsername] = useState("");
   const [keywords, setKeywords] = useState("");
+  const [suggestedAccounts, setSuggestedAccounts] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [checkingId, setCheckingId] = useState<string | null>(null);
 
@@ -334,8 +336,9 @@ export default function MonitorsPage() {
   }, []);
 
   useEffect(() => {
-    const add = searchParams.get("add");
-    if (add) setUsername(add.replace(/^@/, ""));
+    const { add, accounts } = parseMonitorPrefillParams(searchParams);
+    if (add) setUsername(add);
+    if (accounts.length > 0) setSuggestedAccounts(accounts);
   }, [searchParams]);
 
   function updateMonitor(updated: Monitor) {
@@ -354,12 +357,17 @@ export default function MonitorsPage() {
     setLoading(false);
     if (res.ok) {
       const data = await res.json();
-      setUsername("");
+      const created = (data.monitor?.targetUsername as string | undefined) ?? username;
+      const nextSuggestion = suggestedAccounts.find(
+        (handle) => handle.toLowerCase() !== created.replace(/^@/, "").toLowerCase()
+      );
+      setUsername(nextSuggestion ?? "");
       setKeywords("");
       fetchMonitors();
       trackClientEvent(AnalyticsEvents.MONITOR_CREATED, {
         has_keywords: hadKeywords,
         check_interval: data.monitor?.checkInterval,
+        via: suggestedAccounts.length > 0 ? "signals_prefill" : undefined,
       });
     } else {
       const data = await res.json();
@@ -481,11 +489,12 @@ export default function MonitorsPage() {
         </CardContent>
       </Card>
 
-      <Card className="mb-6">
+      <Card className="mb-6" id="add-monitor">
         <CardHeader>
           <CardTitle>Add Monitor</CardTitle>
           <CardDescription>
-            Watch a user&apos;s new tweets.{" "}
+            Watch a user&apos;s new tweets. Hits show in Dashboard; attach Discord or Slack after
+            you create the monitor.{" "}
             <Link href="/docs/guides/trading-keywords" className="text-sky-400 hover:underline">
               Keyword templates
             </Link>{" "}
@@ -493,6 +502,39 @@ export default function MonitorsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {suggestedAccounts.length > 0 && (
+            <div className="mb-4">
+              <p className="text-xs text-zinc-500 mb-2">
+                From the signal digest — Free includes 1 monitor, so pick the handle you want
+                first.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {suggestedAccounts.map((handle) => {
+                  const selected = username.replace(/^@/, "").toLowerCase() === handle.toLowerCase();
+                  const alreadyWatching = monitors.some(
+                    (m) => m.targetUsername.toLowerCase() === handle.toLowerCase()
+                  );
+                  return (
+                    <button
+                      key={handle}
+                      type="button"
+                      onClick={() => setUsername(handle)}
+                      className={`rounded-full border px-2.5 py-1 text-xs transition-colors ${
+                        selected
+                          ? "border-sky-500 bg-sky-500/20 text-sky-200"
+                          : alreadyWatching
+                            ? "border-zinc-800 text-zinc-600"
+                            : "border-zinc-700 text-zinc-300 hover:border-sky-500/40 hover:text-white"
+                      }`}
+                    >
+                      @{handle}
+                      {alreadyWatching ? " · added" : ""}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
           <form onSubmit={createMonitor} className="flex flex-wrap gap-4">
             <Input
               placeholder="@username"

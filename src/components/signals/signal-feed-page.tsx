@@ -13,15 +13,20 @@ import {
   SIGNAL_FRESHNESS_PAGE_HINT,
 } from "@/lib/signals/freshness-copy";
 import { SeoGuideLinks } from "@/components/seo/seo-guide-links";
+import { SignalMonitorCta } from "@/components/signals/signal-monitor-cta";
+import { isSignalMonitorCtaSlug } from "@/lib/signals/monitor-cta";
+import { getCachedSession } from "@/lib/dashboard-session";
 
 type SignalFeedPageProps = {
   topic: SignalTopicConfig;
   children: React.ReactNode;
 };
 
-export function SignalFeedPage({ topic, children }: SignalFeedPageProps) {
+export async function SignalFeedPage({ topic, children }: SignalFeedPageProps) {
   const relatedTopics = getRelatedSignalTopics(topic, 5);
   const categoryLabel = getSignalCategoryLabel(topic.category);
+  const session = isSignalMonitorCtaSlug(topic.slug) ? await getCachedSession() : null;
+  const showMonitorCta = isSignalMonitorCtaSlug(topic.slug);
 
   return (
     <>
@@ -95,30 +100,46 @@ export function SignalFeedPage({ topic, children }: SignalFeedPageProps) {
             </section>
           )}
 
-          <Card className="border-sky-500/30 bg-sky-500/5">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Radar className="h-5 w-5 text-sky-400" />
-                Stop refreshing — monitor these accounts
-              </CardTitle>
-              <CardDescription>
-                We poll{" "}
-                {topic.watchAccounts.map((a) => `@${a}`).join(", ")} on a schedule. Get Dashboard
-                alerts or signed webhooks when they post.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-4">
-              <div className="flex flex-wrap gap-3">
-                <Link href={`/register?src=${topic.registerSrc}`}>
-                  <Button>Start free — add a monitor</Button>
-                </Link>
-                <Link href="/docs/monitors">
-                  <Button variant="outline">How monitors work</Button>
-                </Link>
-              </div>
+          {showMonitorCta ? (
+            <div className="space-y-4">
+              <SignalMonitorCta
+                slug={topic.slug}
+                accounts={topic.watchAccounts}
+                isLoggedIn={Boolean(session?.user?.id)}
+                registerSrc={topic.registerSrc}
+                location="page_footer"
+              />
+              <Link href="/docs/monitors" className="inline-block text-sm text-sky-400 hover:text-sky-300">
+                How monitors work →
+              </Link>
               <SeoGuideLinks heading="Related guides" />
-            </CardContent>
-          </Card>
+            </div>
+          ) : (
+            <Card className="border-sky-500/30 bg-sky-500/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Radar className="h-5 w-5 text-sky-400" />
+                  Stop refreshing — monitor these accounts
+                </CardTitle>
+                <CardDescription>
+                  We poll{" "}
+                  {topic.watchAccounts.map((a) => `@${a}`).join(", ")} on a schedule. Get Dashboard
+                  alerts or signed webhooks when they post.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-4">
+                <div className="flex flex-wrap gap-3">
+                  <Link href={`/register?src=${topic.registerSrc}`}>
+                    <Button>Start free — add a monitor</Button>
+                  </Link>
+                  <Link href="/docs/monitors">
+                    <Button variant="outline">How monitors work</Button>
+                  </Link>
+                </div>
+                <SeoGuideLinks heading="Related guides" />
+              </CardContent>
+            </Card>
+          )}
 
           <SignalFaqSection items={topic.faq} />
 
