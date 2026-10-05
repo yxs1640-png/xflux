@@ -30,6 +30,20 @@ export async function Footer() {
             <div className="mt-4">
               <LanguageSwitcher />
             </div>
+            <a
+              href="https://www.saashub.com/xflux?utm_source=badge&utm_campaign=badge&utm_content=xflux&badge_variant=color&badge_kind=approved"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-block opacity-80 transition-opacity hover:opacity-100"
+            >
+              <img
+                src="https://cdn-b.saashub.com/img/badges/approved-color.png?v=1"
+                alt="Approved on SaaSHub"
+                width={150}
+                height={54}
+                className="h-auto max-w-[150px]"
+              />
+            </a>
           </div>
           <div>
             <h4 className="mb-4 text-sm font-semibold text-white">{t("product")}</h4>
