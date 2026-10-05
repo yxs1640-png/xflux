@@ -104,9 +104,9 @@ npx -y @xflux/xflux-mcp-server
   },
   {
     slug: "x-api-cost-2026",
-    title: "2026 年 X/Twitter API 要花多少钱？",
+    title: "2026 年 X API 成本：免费档实际能做什么",
     description:
-      "对比官方 X API 按量计费与 Pro 推流（约 $5k/月）、第三方代理，以及 XFlux 从免费/$19 起的固定套餐——含账号监控与 webhook。",
+      "免费档：每月 1,000 次调用 + 1 个账号监控，无需信用卡。官方 filtered stream 仍约 $5,000/月。按量、Pro、$19 告警各自适合谁。",
     datePublished: "2026-09-20",
     keywords: [
       "x api pricing 2026",
@@ -367,9 +367,9 @@ function verify(secret, timestamp, rawBody, signatureHeader) {
   },
   {
     slug: "twitter-trading-alerts",
-    title: "不用 $5k 推流，也能从 X 做交易与宏观告警",
+    title: "从 X 做交易与宏观告警：先免费建一个监控",
     description:
-      "用账号监控、关键词过滤与签名 webhook 搭建 Twitter/X 交易告警——从 $19/月起，无需官方 Pro 推流。",
+      "免费盯宏观账号与 KOL：1 个监控、关键词过滤、Dashboard 命中。需要推送时再开 live webhook——不必上官方 Pro 推流。",
     datePublished: "2026-09-19",
     keywords: [
       "twitter trading alerts",

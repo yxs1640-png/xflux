@@ -9,9 +9,9 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
-  title: "Crypto & Memecoin Alerts from X/Twitter — Monitors & Webhooks",
+  title: "Free Twitter Crypto Monitor — KOL Alerts from X",
   description:
-    "Monitor crypto and memecoin KOLs on X/Twitter with keyword filters and signed webhooks. From $19/mo — pair with Smart Money and live crypto signals.",
+    "Watch crypto and memecoin KOLs on X for free: 1 monitor, keyword filters, Dashboard hits. Upgrade later for live webhooks — no $5,000 stream.",
   path: "/use-cases/crypto-alerts",
   keywords: [
     "memecoin twitter alerts",

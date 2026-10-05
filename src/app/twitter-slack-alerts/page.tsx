@@ -3,17 +3,17 @@ import { LongTailLandingPage } from "@/components/seo/long-tail-landing";
 import { getLongTailLanding } from "@/lib/seo-landings/long-tail";
 import { pageMetadata } from "@/lib/seo";
 
-const SLUG = "twitter-slack-alerts" as const;
+const landing = getLongTailLanding("twitter-slack-alerts");
+if (!landing) throw new Error("missing long-tail landing: twitter-slack-alerts");
 
 export const metadata = pageMetadata({
-  title: "Twitter → Slack Alerts via Webhooks",
-  description: "Send Twitter/X account alerts to Slack with XFlux monitors. Paste a Slack Incoming Webhook or route via Make — signed delivery from $19/mo.",
-  path: "/twitter-slack-alerts",
-  keywords: ["twitter slack alerts","twitter to slack webhook","x slack webhook","twitter slack integration"],
+  title: landing.title,
+  description: landing.description,
+  path: landing.path,
+  keywords: landing.keywords,
 });
 
 export default function Page() {
-  const landing = getLongTailLanding(SLUG);
   if (!landing) notFound();
   return <LongTailLandingPage page={landing} />;
 }

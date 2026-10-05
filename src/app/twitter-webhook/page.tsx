@@ -9,9 +9,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
-  title: "Twitter Webhook Integration — X/Twitter Account Monitors",
+  title: "Twitter Webhooks — Test Free, Alert When Accounts Post",
   description:
-    "Twitter webhook integration for X/Twitter account monitors. Receive signed HTTP POST alerts when tracked accounts publish new tweets. HMAC-SHA256 verified. Starter plan from $19/mo.",
+    "Save a Discord, Slack, or HTTPS webhook and send a test ping on the free plan. Live hit delivery when you’re ready. No $5,000 X stream required.",
   path: "/twitter-webhook",
 });
 

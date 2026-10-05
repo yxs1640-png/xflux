@@ -11,7 +11,7 @@ import { pageMetadata } from "@/lib/seo";
 export const metadata = pageMetadata({
   title: "Trading & Macro Alerts from X/Twitter — Account Monitors",
   description:
-    "Get X/Twitter trading alerts when macro voices, flow accounts, or KOLs post. Keyword filters, signed webhooks, Make.com routing. From $19/mo — no $5,000/mo streaming tier.",
+    "Get X/Twitter trading alerts on accounts you pick. Free: 1 monitor, keyword filters, Dashboard hits. Live webhooks when you need push — no official firehose required.",
   path: "/use-cases/trading-alerts",
   keywords: [
     "twitter trading alerts",

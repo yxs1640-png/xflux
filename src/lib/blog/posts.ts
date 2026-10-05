@@ -114,9 +114,9 @@ npx -y @xflux/xflux-mcp-server
   },
   {
     slug: "x-api-cost-2026",
-    title: "What Does the X/Twitter API Cost in 2026?",
+    title: "X API Cost 2026: What the Free Tier Actually Gets You",
     description:
-      "Compare official X API pay-per-use and Pro streaming (~$5k/mo) with third-party proxies and XFlux flat plans from free/$19 — including account monitors and webhooks.",
+      "Free X/Twitter reads: 1,000 calls/month and 1 account monitor, no card. Official filtered stream is still ~$5,000/mo. When pay-per-use, Pro, or $19 alerts fit.",
     datePublished: "2026-09-20",
     keywords: [
       "x api pricing 2026",
@@ -377,9 +377,9 @@ function verify(secret, timestamp, rawBody, signatureHeader) {
   },
   {
     slug: "twitter-trading-alerts",
-    title: "Trading & Macro Alerts from X Without a $5k Stream",
+    title: "Trading & Macro Alerts from X — Start with a Free Monitor",
     description:
-      "Build Twitter/X trading alerts with account monitors, keyword filters, and signed webhooks — from $19/mo instead of official Pro streaming.",
+      "Watch macro voices and KOLs on X for free: 1 monitor, keyword filters, Dashboard hits. Live webhooks when you need push — no official Pro stream required.",
     datePublished: "2026-09-19",
     keywords: [
       "twitter trading alerts",

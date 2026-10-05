@@ -12,7 +12,7 @@ import { pageMetadata } from "@/lib/seo";
 export const metadata = pageMetadata({
   title: "Twitter → Discord Alerts via Webhooks",
   description:
-    "Send X/Twitter account alerts to Discord with XFlux monitors: Make.com Custom Webhook → Discord, or your bot verifying HMAC-signed webhooks. From $19/mo.",
+    "Send X/Twitter account alerts to Discord. Paste a Discord webhook and test on the free plan, or route via Make.com — live delivery when you need it.",
   path: "/twitter-discord-alerts",
   keywords: [
     "twitter discord alerts",

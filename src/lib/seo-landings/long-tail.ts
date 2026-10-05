@@ -35,7 +35,7 @@ export const LONG_TAIL_LANDINGS: LongTailLanding[] = [
     primaryKeyword: "twitter account activity api",
     title: "Twitter Account Activity API — Practical Alternative",
     description:
-      "Need Twitter Account Activity API–style alerts without enterprise AAA? XFlux monitors watch public @handles and POST signed webhooks from $19/mo. Free tier to start.",
+      "Need Twitter Account Activity API–style alerts without enterprise AAA? Start free: monitor public @handles and see hits in the Dashboard. Live webhooks when you upgrade.",
     keywords: [
       "twitter account activity api",
       "account activity api twitter",
@@ -132,7 +132,7 @@ export const LONG_TAIL_LANDINGS: LongTailLanding[] = [
     primaryKeyword: "account activity api alternative",
     title: "Account Activity API Alternative — XFlux Monitors",
     description:
-      "Looking for an Account Activity API alternative? XFlux watches public X/Twitter accounts and delivers signed webhooks from $19/mo — self-serve, no enterprise AAA.",
+      "Looking for an Account Activity API alternative? Watch public X accounts on the free plan — Dashboard hits included, test webhooks, live delivery when you need it.",
     keywords: [
       "account activity api alternative",
       "twitter aaa alternative",
@@ -229,7 +229,7 @@ export const LONG_TAIL_LANDINGS: LongTailLanding[] = [
     primaryKeyword: "twitter activity api",
     title: "Twitter Activity API — What It Means & a Practical Path",
     description:
-      "Twitter Activity API usually refers to Account Activity (AAA). For account-level tweet alerts without enterprise AAA, use XFlux monitors and signed webhooks from $19/mo.",
+      "Twitter Activity API usually means Account Activity (AAA). Start free: monitor public accounts and read hits in the Dashboard — no enterprise contract.",
     keywords: [
       "twitter activity api",
       "x activity api",
@@ -300,7 +300,7 @@ export const LONG_TAIL_LANDINGS: LongTailLanding[] = [
     primaryKeyword: "twitter filtered stream alternative",
     title: "Twitter Filtered Stream Alternative — Account Monitors",
     description:
-      "Need a Twitter filtered stream alternative for watching accounts? XFlux monitors + signed webhooks from $19/mo — not the ~$5,000/mo official Pro stream.",
+      "Need a Twitter filtered stream alternative for watching accounts? Free: 1 monitor and hit history. No official Pro stream required.",
     keywords: [
       "twitter filtered stream alternative",
       "x api filtered stream alternative",
@@ -394,7 +394,7 @@ export const LONG_TAIL_LANDINGS: LongTailLanding[] = [
     primaryKeyword: "twitter slack alerts",
     title: "Twitter → Slack Alerts via Webhooks",
     description:
-      "Send Twitter/X account alerts to Slack with XFlux monitors. Paste a Slack Incoming Webhook or route via Make — signed delivery from $19/mo.",
+      "Send Twitter/X account alerts to Slack. Paste a Slack Incoming Webhook, test on the free plan, go live when you’re ready.",
     keywords: [
       "twitter slack alerts",
       "twitter to slack webhook",
@@ -472,7 +472,7 @@ Channel message in Slack`,
     primaryKeyword: "n8n twitter webhook",
     title: "n8n Twitter Webhook — XFlux Monitor Hits",
     description:
-      "Connect X/Twitter account monitors to n8n with XFlux webhooks. Receive monitor.hit events, verify HMAC, and automate Slack, email, or CRM — from $19/mo.",
+      "Connect X/Twitter account monitors to n8n. Test the Webhook node on the free plan; live monitor.hit events when you upgrade.",
     keywords: [
       "n8n twitter webhook",
       "n8n twitter alerts",
@@ -556,7 +556,7 @@ if (sig !== expected) throw new Error("bad signature");`,
     primaryKeyword: "twitter webhook nodejs",
     title: "Twitter Webhook in Node.js — Verify XFlux Signatures",
     description:
-      "Handle Twitter/X account monitor webhooks in Node.js. Express example verifying XFlux HMAC-SHA256 signatures for monitor.hit events. Starter from $19/mo.",
+      "Handle Twitter/X account monitor webhooks in Node.js. Test HMAC verification on the free plan — Express example included.",
     keywords: [
       "twitter webhook nodejs",
       "twitter webhook node.js",
@@ -657,7 +657,7 @@ app.post(
     primaryKeyword: "monitor twitter account webhook",
     title: "Monitor Twitter Account → Webhook Alerts",
     description:
-      "Monitor a Twitter/X account and get webhook alerts when they post. XFlux scheduled monitors + signed HTTP webhooks from $19/mo. Free tier includes Dashboard hits.",
+      "Monitor a Twitter/X account for free: 1 monitor and Dashboard hits. Save a webhook and test — live POSTs when you upgrade.",
     keywords: [
       "monitor twitter account webhook",
       "twitter account monitor webhook",
