@@ -6,6 +6,9 @@ import { Footer } from "@/components/layout/footer";
 import { CodeBlock } from "@/components/docs/doc-blocks";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { SignalMonitorCta } from "@/components/signals/signal-monitor-cta";
+import { getCachedSession } from "@/lib/dashboard-session";
+import { getLandingMonitorPrefill, monitorCtaHref } from "@/lib/signals/monitor-cta";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
@@ -57,6 +60,14 @@ const WORKFLOW = [
 
 export default async function TradingAlertsPage() {
   const t = await getTranslations("useCaseTrading");
+  const session = await getCachedSession();
+  const isLoggedIn = Boolean(session?.user?.id);
+  const prefill = getLandingMonitorPrefill("use-cases/trading-alerts")!;
+  const primaryHref = monitorCtaHref({
+    isLoggedIn,
+    registerSrc: prefill.registerSrc,
+    accounts: prefill.accounts,
+  });
 
   return (
     <>
@@ -77,7 +88,7 @@ export default async function TradingAlertsPage() {
               })}
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
-              <Link href="/register?src=trading_alerts">
+              <Link href={primaryHref}>
                 <Button size="lg">{t("ctaStart")}</Button>
               </Link>
               <Link href="/docs/guides/trading-keywords">
@@ -129,25 +140,39 @@ export default async function TradingAlertsPage() {
           <section className="mb-16">
             <h2 className="text-2xl font-bold text-white mb-6">Example monitor setups</h2>
             <div className="space-y-4">
-              {EXAMPLE_MONITORS.map((ex) => (
-                <div
-                  key={ex.account}
-                  className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4 flex flex-col sm:flex-row sm:items-center gap-3"
-                >
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-white">@{ex.account}</p>
-                    <p className="text-sm text-zinc-500 mt-0.5">
-                      Keywords: {ex.keywords || "(none — all tweets)"}
-                    </p>
-                    <p className="text-sm text-zinc-400 mt-1">{ex.why}</p>
+              {EXAMPLE_MONITORS.map((ex) => {
+                const href = monitorCtaHref({
+                  isLoggedIn,
+                  registerSrc: prefill.registerSrc,
+                  accounts: prefill.accounts,
+                  selected: ex.account,
+                  keywords: ex.keywords || undefined,
+                });
+                return (
+                  <div
+                    key={ex.account}
+                    className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4 flex flex-col sm:flex-row sm:items-center gap-3"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-white">@{ex.account}</p>
+                      <p className="text-sm text-zinc-500 mt-0.5">
+                        Keywords: {ex.keywords || "(none — all tweets)"}
+                      </p>
+                      <p className="text-sm text-zinc-400 mt-1">{ex.why}</p>
+                    </div>
+                    <div className="flex flex-wrap gap-2 shrink-0">
+                      <Link href={href}>
+                        <Button size="sm">Watch with a Monitor</Button>
+                      </Link>
+                      <Link href="/docs/guides/trading-keywords">
+                        <Button variant="outline" size="sm">
+                          More templates
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
-                  <Link href="/docs/guides/trading-keywords" className="shrink-0">
-                    <Button variant="outline" size="sm">
-                      More templates
-                    </Button>
-                  </Link>
-                </div>
-              ))}
+                );
+              })}
             </div>
             <p className="text-sm text-zinc-500 mt-4">
               Browse accounts posting now on our{" "}
@@ -234,6 +259,17 @@ export default async function TradingAlertsPage() {
             </div>
           </section>
 
+          <section className="mb-4">
+            <SignalMonitorCta
+              slug="trading-alerts"
+              accounts={prefill.accounts}
+              isLoggedIn={isLoggedIn}
+              registerSrc={prefill.registerSrc}
+              location="trading_alerts_landing"
+              title="Monitor market voices — push hits to Discord or Slack"
+              description="Free includes 1 monitor. Prefill unusual_whales, DeItaone, or elerianm; attach a webhook after you create the monitor."
+            />
+          </section>
           <section className="rounded-xl border border-zinc-800 bg-zinc-900/30 p-8 text-center">
             <Zap className="h-8 w-8 text-emerald-400 mx-auto mb-3" />
             <h2 className="text-xl font-bold text-white mb-2">Ready to monitor market voices?</h2>
@@ -241,8 +277,8 @@ export default async function TradingAlertsPage() {
               Free tier includes 1 monitor with Dashboard hit history. Upgrade to Starter for live
               webhook delivery and 1-second polling.
             </p>
-            <Link href="/register?src=trading_alerts_cta">
-              <Button size="lg">Create free account</Button>
+            <Link href={primaryHref}>
+              <Button size="lg">Watch with a Monitor</Button>
             </Link>
           </section>
         </div>

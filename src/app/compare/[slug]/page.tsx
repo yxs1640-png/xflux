@@ -5,6 +5,9 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { FaqJsonLd } from "@/components/seo/faq-json-ld";
+import { SignalMonitorCta } from "@/components/signals/signal-monitor-cta";
+import { getCachedSession } from "@/lib/dashboard-session";
+import { getLandingMonitorPrefill, monitorCtaHref } from "@/lib/signals/monitor-cta";
 import { pageMetadata } from "@/lib/seo";
 import {
   getAllCompareSlugs,
@@ -38,6 +41,16 @@ export default async function CompareSlugPage({ params }: Props) {
   if (!page) notFound();
 
   const others = getComparePages(locale).filter((p) => p.slug !== page.slug);
+  const session = await getCachedSession();
+  const isLoggedIn = Boolean(session?.user?.id);
+  const monitorPrefill = getLandingMonitorPrefill(`compare/${page.slug}`);
+  const primaryHref = monitorPrefill
+    ? monitorCtaHref({
+        isLoggedIn,
+        registerSrc: monitorPrefill.registerSrc,
+        accounts: monitorPrefill.accounts,
+      })
+    : "/register?src=compare_page";
 
   return (
     <>
@@ -133,12 +146,28 @@ export default async function CompareSlugPage({ params }: Props) {
             </ul>
           </section>
 
+          {monitorPrefill && (
+            <div className="mb-6">
+              <SignalMonitorCta
+                slug={page.slug}
+                accounts={monitorPrefill.accounts}
+                isLoggedIn={isLoggedIn}
+                registerSrc={monitorPrefill.registerSrc}
+                location="compare_page"
+                title="Try the monitor path — Discord/Slack after you create one"
+                description="Free includes 1 monitor. Prefill a developer or market handle, then attach a webhook when you need push."
+              />
+            </div>
+          )}
+
           <section className="rounded-xl border border-zinc-800 bg-zinc-900/30 p-8 text-center mb-14">
             <h2 className="text-xl font-bold text-white mb-2">{t("tryTitle")}</h2>
             <p className="text-zinc-400 text-sm mb-6 max-w-lg mx-auto">{t("tryDesc")}</p>
             <div className="flex flex-wrap justify-center gap-3">
-              <Link href="/register?src=compare_page">
-                <Button size="lg">{t("createAccount")}</Button>
+              <Link href={primaryHref}>
+                <Button size="lg">
+                  {monitorPrefill ? "Watch with a Monitor" : t("createAccount")}
+                </Button>
               </Link>
               <Link href="/pricing">
                 <Button variant="outline" size="lg">

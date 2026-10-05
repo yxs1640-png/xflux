@@ -6,6 +6,9 @@ import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { ArticleJsonLd } from "@/components/seo/article-json-ld";
 import { FaqJsonLd } from "@/components/seo/faq-json-ld";
+import { SignalMonitorCta } from "@/components/signals/signal-monitor-cta";
+import { getCachedSession } from "@/lib/dashboard-session";
+import { getLandingMonitorPrefill, monitorCtaHref } from "@/lib/signals/monitor-cta";
 import { pageMetadata } from "@/lib/seo";
 import { getAllSlugs, getBlogPost, getBlogPosts, getPost } from "@/lib/blog/posts";
 
@@ -35,6 +38,16 @@ export default async function BlogPostPage({ params }: Props) {
   if (!post) notFound();
 
   const others = getBlogPosts(locale).filter((p) => p.slug !== post.slug).slice(0, 4);
+  const session = await getCachedSession();
+  const isLoggedIn = Boolean(session?.user?.id);
+  const monitorPrefill = getLandingMonitorPrefill(`blog/${post.slug}`);
+  const primaryHref = monitorPrefill
+    ? monitorCtaHref({
+        isLoggedIn,
+        registerSrc: monitorPrefill.registerSrc,
+        accounts: monitorPrefill.accounts,
+      })
+    : "/register?src=blog_post";
 
   return (
     <>
@@ -92,12 +105,26 @@ export default async function BlogPostPage({ params }: Props) {
             </section>
           )}
 
+          {monitorPrefill && (
+            <div className="mb-6">
+              <SignalMonitorCta
+                slug={post.slug}
+                accounts={monitorPrefill.accounts}
+                isLoggedIn={isLoggedIn}
+                registerSrc={monitorPrefill.registerSrc}
+                location="blog_post"
+              />
+            </div>
+          )}
+
           <section className="rounded-xl border border-zinc-800 bg-zinc-900/30 p-8 text-center mb-14">
             <h2 className="text-xl font-bold text-white mb-2">{t("buildTitle")}</h2>
             <p className="text-zinc-400 text-sm mb-6 max-w-lg mx-auto">{t("buildDesc")}</p>
             <div className="flex flex-wrap justify-center gap-3">
-              <Link href="/register?src=blog_post">
-                <Button size="lg">{t("createAccount")}</Button>
+              <Link href={primaryHref}>
+                <Button size="lg">
+                  {monitorPrefill ? "Watch with a Monitor" : t("createAccount")}
+                </Button>
               </Link>
               <Link href="/pricing">
                 <Button variant="outline" size="lg">

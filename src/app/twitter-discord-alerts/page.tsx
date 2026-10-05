@@ -7,6 +7,9 @@ import { CodeBlock } from "@/components/docs/doc-blocks";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { FaqJsonLd } from "@/components/seo/faq-json-ld";
+import { SignalMonitorCta } from "@/components/signals/signal-monitor-cta";
+import { getCachedSession } from "@/lib/dashboard-session";
+import { getLandingMonitorPrefill, monitorCtaHref } from "@/lib/signals/monitor-cta";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
@@ -25,6 +28,14 @@ export const metadata = pageMetadata({
 
 export default async function TwitterDiscordAlertsPage() {
   const t = await getTranslations("discordLanding");
+  const session = await getCachedSession();
+  const isLoggedIn = Boolean(session?.user?.id);
+  const prefill = getLandingMonitorPrefill("twitter-discord-alerts")!;
+  const primaryHref = monitorCtaHref({
+    isLoggedIn,
+    registerSrc: prefill.registerSrc,
+    accounts: prefill.accounts,
+  });
 
   const faqs = [
     { question: t("faq1Q"), answer: t("faq1A") },
@@ -64,7 +75,7 @@ export default async function TwitterDiscordAlertsPage() {
               {t("subtitleAfter")}
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
-              <Link href="/register?src=discord_alerts">
+              <Link href={primaryHref}>
                 <Button size="lg">{t("ctaStart")}</Button>
               </Link>
               <Link href="/docs/integrations/make">
@@ -169,14 +180,25 @@ app.post("/webhooks/xflux", rawBodyMiddleware, (req, res) => {
             </dl>
           </section>
 
+          <section className="mb-4">
+            <SignalMonitorCta
+              slug="twitter-discord-alerts"
+              accounts={prefill.accounts}
+              isLoggedIn={isLoggedIn}
+              registerSrc={prefill.registerSrc}
+              location="discord_alerts_landing"
+              title="Create a Monitor first — then paste your Discord webhook"
+              description="Free includes 1 monitor and Test webhooks. Pick a handle below, create the monitor, then attach your Discord URL for live hits on Starter."
+            />
+          </section>
           <section className="rounded-xl border border-zinc-800 bg-zinc-900/30 p-8 text-center">
             <h2 className="text-xl font-bold text-white mb-2">{t("readyTitle")}</h2>
             <p className="text-zinc-400 text-sm mb-6 max-w-lg mx-auto">
               {t("readyDesc")}
             </p>
             <div className="flex flex-wrap justify-center gap-3">
-              <Link href="/register?src=discord_alerts_cta">
-                <Button size="lg">{t("createAccount")}</Button>
+              <Link href={primaryHref}>
+                <Button size="lg">Watch with a Monitor</Button>
               </Link>
               <Link href="/pricing">
                 <Button variant="outline" size="lg">

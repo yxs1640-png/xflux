@@ -5,6 +5,8 @@ import { Footer } from "@/components/layout/footer";
 import { PredictorClaimsList } from "@/components/predictors/predictor-claims-list";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { getCachedSession } from "@/lib/dashboard-session";
+import { monitorCtaHref } from "@/lib/signals/monitor-cta";
 import { pageMetadata } from "@/lib/seo";
 import { SMART_MONEY } from "@/lib/predictor-discovery/copy";
 import { getPredictorByUsername } from "@/lib/predictor-discovery/queries";
@@ -44,6 +46,12 @@ export default async function PredictorProfilePage({ params }: PageProps) {
   if (!predictor) notFound();
 
   const nicheMeta = NICHE_META[predictor.niche];
+  const session = await getCachedSession();
+  const monitorHref = monitorCtaHref({
+    isLoggedIn: Boolean(session?.user?.id),
+    registerSrc: "predictors",
+    accounts: [predictor.username],
+  });
 
   return (
     <>
@@ -91,7 +99,7 @@ export default async function PredictorProfilePage({ params }: PageProps) {
             ))}
           </div>
 
-          <Link href={`/dashboard/monitors?add=${predictor.username}`}>
+          <Link href={monitorHref}>
             <Button className="mb-8">{SMART_MONEY.monitorCta(predictor.username)}</Button>
           </Link>
 

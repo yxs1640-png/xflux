@@ -336,9 +336,10 @@ export default function MonitorsPage() {
   }, []);
 
   useEffect(() => {
-    const { add, accounts } = parseMonitorPrefillParams(searchParams);
+    const { add, accounts, keywords: prefillKeywords } = parseMonitorPrefillParams(searchParams);
     if (add) setUsername(add);
     if (accounts.length > 0) setSuggestedAccounts(accounts);
+    if (prefillKeywords) setKeywords(prefillKeywords);
   }, [searchParams]);
 
   function updateMonitor(updated: Monitor) {

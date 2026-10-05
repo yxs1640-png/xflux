@@ -6,6 +6,9 @@ import { Footer } from "@/components/layout/footer";
 import { CodeBlock } from "@/components/docs/doc-blocks";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { SignalMonitorCta } from "@/components/signals/signal-monitor-cta";
+import { getCachedSession } from "@/lib/dashboard-session";
+import { getLandingMonitorPrefill, monitorCtaHref } from "@/lib/signals/monitor-cta";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
@@ -57,6 +60,14 @@ const WORKFLOW = [
 
 export default async function CryptoAlertsPage() {
   const t = await getTranslations("useCaseCrypto");
+  const session = await getCachedSession();
+  const isLoggedIn = Boolean(session?.user?.id);
+  const prefill = getLandingMonitorPrefill("use-cases/crypto-alerts")!;
+  const primaryHref = monitorCtaHref({
+    isLoggedIn,
+    registerSrc: prefill.registerSrc,
+    accounts: prefill.accounts,
+  });
 
   return (
     <>
@@ -77,7 +88,7 @@ export default async function CryptoAlertsPage() {
               })}
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
-              <Link href="/register?src=crypto_alerts">
+              <Link href={primaryHref}>
                 <Button size="lg">{t("ctaStart")}</Button>
               </Link>
               <Link href="/docs/guides/trading-keywords">
@@ -129,18 +140,29 @@ export default async function CryptoAlertsPage() {
           <section className="mb-16">
             <h2 className="text-2xl font-bold text-white mb-6">Example monitor setups</h2>
             <div className="space-y-4">
-              {EXAMPLE_MONITORS.map((ex) => (
-                <div
-                  key={ex.account}
-                  className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4"
-                >
-                  <p className="font-medium text-white">@{ex.account}</p>
-                  <p className="text-sm text-zinc-500 mt-0.5">
-                    Keywords: {ex.keywords || "(none — all tweets)"}
-                  </p>
-                  <p className="text-sm text-zinc-400 mt-1">{ex.why}</p>
-                </div>
-              ))}
+              {EXAMPLE_MONITORS.map((ex) => {
+                const href = monitorCtaHref({
+                  isLoggedIn,
+                  registerSrc: prefill.registerSrc,
+                  accounts: prefill.accounts,
+                  selected: ex.account,
+                  keywords: ex.keywords || undefined,
+                });
+                return (
+                  <Link
+                    key={ex.account}
+                    href={href}
+                    className="block rounded-xl border border-zinc-800 bg-zinc-900/40 p-4 transition-colors hover:border-sky-500/40"
+                  >
+                    <p className="font-medium text-white">@{ex.account}</p>
+                    <p className="text-sm text-zinc-500 mt-0.5">
+                      Keywords: {ex.keywords || "(none — all tweets)"}
+                    </p>
+                    <p className="text-sm text-zinc-400 mt-1">{ex.why}</p>
+                    <p className="text-xs text-sky-400 mt-2">Watch with a Monitor →</p>
+                  </Link>
+                );
+              })}
             </div>
             <p className="text-sm text-zinc-500 mt-4">
               See live posts on{" "}
@@ -189,6 +211,17 @@ export default async function CryptoAlertsPage() {
 }`}</CodeBlock>
           </section>
 
+          <section className="mb-4">
+            <SignalMonitorCta
+              slug="crypto-alerts"
+              accounts={prefill.accounts}
+              isLoggedIn={isLoggedIn}
+              registerSrc={prefill.registerSrc}
+              location="crypto_alerts_landing"
+              title="Pick a KOL — Monitor hits can go to Discord or Slack"
+              description="Free includes 1 monitor. Start with the handle that moves your book; attach a Discord or Slack webhook after you create it."
+            />
+          </section>
           <section className="rounded-xl border border-zinc-800 bg-zinc-900/30 p-8 text-center">
             <Zap className="h-8 w-8 text-amber-400 mx-auto mb-3" />
             <h2 className="text-xl font-bold text-white mb-2">Ready for crypto KOL alerts?</h2>
@@ -196,8 +229,8 @@ export default async function CryptoAlertsPage() {
               Free tier includes 1 monitor with Dashboard history. Upgrade to Starter for live
               webhook delivery and faster polling.
             </p>
-            <Link href="/register?src=crypto_alerts_cta">
-              <Button size="lg">Create free account</Button>
+            <Link href={primaryHref}>
+              <Button size="lg">Watch with a Monitor</Button>
             </Link>
           </section>
         </div>
