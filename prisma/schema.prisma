@@ -218,6 +218,12 @@ model SubscriptionPlan {
   createdAt   DateTime @default(now())
 }
 
+enum FeedbackReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model UserFeedback {
   id              String    @id @default(cuid())
   userId          String?
@@ -232,6 +238,12 @@ model UserFeedback {
   pageUrl         String?
   emailSent       Boolean   @default(false)
   emailError      String?
+  /** Manual review for quota reward. */
+  reviewStatus    FeedbackReviewStatus @default(PENDING)
+  reviewedAt      DateTime?
+  reviewNote      String?
+  rewardCalls     Int?
+  rewardGrantedAt DateTime?
   createdAt       DateTime  @default(now())
 
   user            User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
@@ -239,6 +251,7 @@ model UserFeedback {
   @@index([email, createdAt])
   @@index([userId, createdAt])
   @@index([userSource])
+  @@index([reviewStatus, createdAt])
 }
 
 /** Daily rollups for pageviews (pv/uv) and event counts — kept small via retention. */

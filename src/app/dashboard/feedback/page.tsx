@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { requireDashboardSession } from "@/lib/dashboard-session";
 import { isAdminEmail } from "@/lib/admin";
 import { prisma } from "@/lib/db";
+import { FeedbackReviewActions } from "@/components/feedback/feedback-review-actions";
+import { FEEDBACK_REWARD_CALLS } from "@/lib/feedback-reward";
 
 export const dynamic = "force-dynamic";
 
@@ -24,17 +26,24 @@ export default async function DashboardFeedbackPage() {
       coreNeeds: true,
       adoptionDrivers: true,
       emailSent: true,
+      reviewStatus: true,
+      rewardCalls: true,
+      rewardGrantedAt: true,
+      reviewedAt: true,
+      reviewNote: true,
       createdAt: true,
     },
   });
+
+  const pending = rows.filter((r) => r.reviewStatus === "PENDING").length;
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
       <div>
         <h1 className="text-2xl font-semibold text-white">Feedback inbox</h1>
         <p className="mt-1 text-sm text-zinc-500">
-          Latest {rows.length} rows from <code className="text-zinc-400">UserFeedback</code>.
-          Admin only.
+          Latest {rows.length} rows · {pending} pending review. Approve grants +
+          {FEEDBACK_REWARD_CALLS.toLocaleString()} API calls (once per account).
         </p>
       </div>
 
@@ -58,6 +67,20 @@ export default async function DashboardFeedbackPage() {
                       {row.planTier}
                     </span>
                   ) : null}
+                  <span
+                    className={
+                      row.reviewStatus === "APPROVED"
+                        ? "ml-2 text-xs font-normal text-emerald-400"
+                        : row.reviewStatus === "REJECTED"
+                          ? "ml-2 text-xs font-normal text-zinc-500"
+                          : "ml-2 text-xs font-normal text-amber-400"
+                    }
+                  >
+                    {row.reviewStatus}
+                    {row.rewardCalls
+                      ? ` · +${row.rewardCalls.toLocaleString()} calls`
+                      : ""}
+                  </span>
                 </p>
                 <time className="text-xs text-zinc-500" dateTime={row.createdAt.toISOString()}>
                   {row.createdAt.toISOString().replace("T", " ").slice(0, 19)} UTC
@@ -88,6 +111,12 @@ export default async function DashboardFeedbackPage() {
                 ) : null}
                 <span>{row.emailSent ? "notify ok" : "notify pending/fail"}</span>
               </div>
+              {row.reviewStatus === "PENDING" ? (
+                <FeedbackReviewActions
+                  feedbackId={row.id}
+                  rewardCalls={FEEDBACK_REWARD_CALLS}
+                />
+              ) : null}
             </li>
           ))}
         </ul>

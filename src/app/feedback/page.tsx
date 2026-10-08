@@ -6,10 +6,11 @@ import { FeedbackForm } from "@/components/feedback/feedback-form";
 import { prisma } from "@/lib/db";
 import { isValidUserSource } from "@/lib/user-source-config";
 import { pageMetadata } from "@/lib/seo";
+import { FEEDBACK_REWARD_CALLS_DISPLAY } from "@/lib/feedback-config";
 
 export const metadata = pageMetadata({
   title: "Feedback",
-  description: "Tell us what you need from XFlux and what would make you use it more.",
+  description: `Share useful product feedback on XFlux. Approved evaluations earn +${FEEDBACK_REWARD_CALLS_DISPLAY.toLocaleString()} free API calls.`,
   path: "/feedback",
 });
 
@@ -38,8 +39,12 @@ export default async function FeedbackPage() {
           <div className="text-center mb-10">
             <h1 className="text-3xl font-bold text-white sm:text-4xl">Help shape XFlux</h1>
             <p className="mt-4 text-zinc-400 max-w-xl mx-auto">
-              We&apos;re building in public. Tell us what you need and what would earn your business
-              — every submission is read by the team.
+              Tell us your use case, what worked, what blocked you, and one improvement you&apos;d
+              prioritize. Useful evaluations are reviewed manually — approved submissions earn{" "}
+              <strong className="text-white">
+                +{FEEDBACK_REWARD_CALLS_DISPLAY.toLocaleString()} free API calls
+              </strong>{" "}
+              (one reward per account; must be a registered user).
             </p>
           </div>
           <FeedbackForm

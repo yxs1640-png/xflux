@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import {
   ADOPTION_DRIVER_OPTIONS,
   CORE_NEED_OPTIONS,
+  FEEDBACK_REWARD_CALLS_DISPLAY,
   type AdoptionDriverId,
   type CoreNeedId,
 } from "@/lib/feedback-config";
@@ -132,7 +133,9 @@ export function FeedbackForm({
           <CheckCircle2 className="mx-auto h-12 w-12 text-sky-400 mb-4" />
           <h2 className="text-xl font-semibold text-white mb-2">Thanks for your feedback</h2>
           <p className="text-sm text-zinc-400">
-            We received your message and will use it to prioritize what we build next.
+            We&apos;ll review useful evaluations manually. If approved, we add +
+            {FEEDBACK_REWARD_CALLS_DISPLAY.toLocaleString()} API calls to your registered account
+            and notify you by email.
           </p>
           <p className="mt-4 text-xs text-zinc-600 font-mono">Reference: {submittedId}</p>
         </CardContent>
@@ -145,8 +148,8 @@ export function FeedbackForm({
       <CardHeader>
         <CardTitle>Share your feedback</CardTitle>
         <CardDescription>
-          Tell us what you need from XFlux and what would make you use it more. Your input goes
-          directly to the product roadmap.
+          Concrete feedback ranks higher for the +{FEEDBACK_REWARD_CALLS_DISPLAY.toLocaleString()}{" "}
+          call reward. Checkbox-only replies usually won&apos;t qualify.
         </CardDescription>
       </CardHeader>
       <CardContent>

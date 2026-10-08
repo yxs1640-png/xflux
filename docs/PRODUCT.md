@@ -118,6 +118,7 @@
 - Monitor 超额（任务数或 interval 不达标）→ 创建/更新时拒绝
 - Monitor 轮询 **不计入** API 配额（成本在 XFlux 侧用套餐价覆盖）
 - 账单：Production 走 Stripe Checkout + Webhook；**限时** Starter 试用由 `STARTER_TRIAL_OFFER_ACTIVE`（`src/lib/starter-trial-offer.ts`）控制，关闭后不再送 trial；开启时对未用过试用的 Free 用户附带 `trial_period_days: 30`（`User.starterTrialUsedAt` 防重复）；本地无 Stripe 时可用 mock 升级
+- 反馈奖励：`/feedback` 征集评测；Admin 在 Dashboard → Feedback 点 Approve 即给注册用户 `quotaLimit +3000`（每账号一次），见 `src/lib/feedback-reward.ts`。**邮件不走 Vercel**：邀请用 `scripts/send-feedback-reward-invites.mjs`（上线后可先 `--send --limit=10` 发用量 Top10）；奖励通知用 `scripts/send-feedback-reward-notice.mjs <feedbackId>`，发件 `support@xfluxapi.com`
 
 **对外话术：** 同时展示「API 调用量」和「Monitor 槽位」，避免用户误以为监控会吃掉 API 额度。
 
