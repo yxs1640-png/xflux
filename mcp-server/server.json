@@ -1,24 +1,24 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.yxs1640-png/xflux",
-  "description": "Search X/Twitter tweets, profiles, timelines, and Smart Money predictor accounts via the XFlux read API.",
+  "description": "X/Twitter read API for agents: search, timelines, Smart Money. Claude/Cursor MCP. Not for posting.",
   "repository": {
     "url": "https://github.com/yxs1640-png/xflux",
     "source": "github"
   },
-  "version": "1.2.0",
+  "version": "1.2.1",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "@xflux/xflux-mcp-server",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "transport": {
         "type": "stdio"
       },
       "environmentVariables": [
         {
           "name": "XFLUX_API_KEY",
-          "description": "API key from https://www.xfluxapi.com/dashboard/api-keys",
+          "description": "API key from https://www.xfluxapi.com/dashboard/api-keys (free tier available)",
           "isRequired": true,
           "format": "string",
           "isSecret": true

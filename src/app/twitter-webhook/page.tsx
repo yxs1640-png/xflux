@@ -7,12 +7,38 @@ import { CodeBlock } from "@/components/docs/doc-blocks";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { pageMetadata } from "@/lib/seo";
+import { FaqJsonLd } from "@/components/seo/faq-json-ld";
+
+const WEBHOOK_HUB_FAQS = [
+  {
+    question: "Does X/Twitter offer a public webhook for new tweets?",
+    answer:
+      "No. Official X does not ship a simple public Twitter webhook for “notify me when this account posts.” Teams either poll timelines, buy enterprise stream/AAA products, or use a monitor service like XFlux that POSTs signed HTTP webhooks when watched accounts tweet.",
+  },
+  {
+    question: "What is Twitter webhook integration with XFlux?",
+    answer:
+      "You add a public @handle as a monitor, paste Discord, Slack, Make, n8n, or your HTTPS URL, and XFlux delivers monitor.hit events. Free includes test pings and Dashboard history; live hit delivery starts on Starter.",
+  },
+  {
+    question: "Is this the same as Twitter Account Activity API?",
+    answer:
+      "No. Account Activity API (AAA) is an enterprise X product. XFlux is an independent alternative for public account alerts plus a read API — see /twitter-account-activity-api.",
+  },
+];
 
 export const metadata = pageMetadata({
-  title: "Twitter Webhooks — Test Free, Alert When Accounts Post",
+  title: "Twitter Webhook — Account Alerts Without Official Stream",
   description:
-    "Save a Discord, Slack, or HTTPS webhook and send a test ping on the free plan. Live hit delivery when you’re ready. No $5,000 X stream required.",
+    "Twitter webhook integration for public accounts: test Discord, Slack, or HTTPS on Free; live signed delivery on Starter. Practical alternative to enterprise AAA and $5,000 filtered stream.",
   path: "/twitter-webhook",
+  keywords: [
+    "twitter webhook",
+    "webhooks twitter integration",
+    "twitter webhook integration",
+    "twitter webhook api",
+    "x webhook alerts",
+  ],
 });
 
 export default async function TwitterWebhookPage() {
@@ -48,6 +74,7 @@ export default async function TwitterWebhookPage() {
 
   return (
     <>
+      <FaqJsonLd items={WEBHOOK_HUB_FAQS} />
       <Header />
       <main className="pt-24 pb-16">
         <div className="mx-auto max-w-4xl px-4 sm:px-6">
@@ -96,6 +123,9 @@ export default async function TwitterWebhookPage() {
               <Link href="/twitter-account-activity-api" className="text-sky-400 hover:underline">
                 Account Activity API
               </Link>
+              <Link href="/account-activity-api-alternative" className="text-sky-400 hover:underline">
+                AAA alternative
+              </Link>
               <Link href="/filtered-stream-alternative" className="text-sky-400 hover:underline">
                 Filtered stream alternative
               </Link>
@@ -103,10 +133,19 @@ export default async function TwitterWebhookPage() {
                 Monitor → webhook
               </Link>
               <Link href="/twitter-slack-alerts" className="text-sky-400 hover:underline">
-                Slack alerts
+                Slack integration
+              </Link>
+              <Link href="/twitter-discord-alerts" className="text-sky-400 hover:underline">
+                Discord alerts
+              </Link>
+              <Link href="/blog/twitter-to-discord-alerts" className="text-sky-400 hover:underline">
+                Discord guide (blog)
               </Link>
               <Link href="/twitter-webhook-nodejs" className="text-sky-400 hover:underline">
                 Node.js handler
+              </Link>
+              <Link href="/blog/twitter-webhooks-account-alerts" className="text-sky-400 hover:underline">
+                Setup guide (blog)
               </Link>
             </nav>
           </div>
@@ -227,6 +266,29 @@ X-XFlux-Signature: sha256=...
               <Link href="/docs/guides/trading-keywords" className="text-sky-400 hover:underline">
                 {t("keywordTemplatesLink")}
               </Link>
+            </p>
+          </section>
+
+          <section className="mb-16">
+            <h2 className="text-2xl font-bold text-white mb-6">FAQ</h2>
+            <dl className="space-y-6">
+              {WEBHOOK_HUB_FAQS.map((item) => (
+                <div key={item.question}>
+                  <dt className="font-semibold text-white">{item.question}</dt>
+                  <dd className="mt-2 text-sm text-zinc-400 leading-relaxed">{item.answer}</dd>
+                </div>
+              ))}
+            </dl>
+            <p className="mt-6 text-sm text-zinc-500">
+              Longer walkthrough:{" "}
+              <Link href="/blog/twitter-webhooks-account-alerts" className="text-sky-400 hover:underline">
+                Twitter webhooks for account alerts
+              </Link>
+              . Slack path:{" "}
+              <Link href="/twitter-slack-alerts" className="text-sky-400 hover:underline">
+                Twitter Slack integration
+              </Link>
+              .
             </p>
           </section>
 

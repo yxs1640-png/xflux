@@ -294,7 +294,7 @@ npx -y @xflux/xflux-mcp-server
         heading: "Setup (Dashboard)",
         paragraphs: [
           "1. Create an account and open Dashboard → Monitors. 2. Add a target @username and optional comma-separated keywords. 3. Expand Webhook, paste an HTTPS endpoint, save. 4. Copy the signing secret shown once. 5. Click Test webhook.",
-          "Product overview: /twitter-webhook. Make.com step-by-step: /docs/integrations/make. Full field reference: /docs/webhooks.",
+          "Product overview: /twitter-webhook. Narrative (discover → promote → hygiene → budget): /blog/twitter-webhooks-account-alerts. Make.com: /docs/integrations/make. Field reference: /docs/webhooks.",
         ],
       },
       {

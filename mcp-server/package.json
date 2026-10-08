@@ -1,7 +1,7 @@
 {
   "name": "@xflux/xflux-mcp-server",
   "version": "1.2.1",
-  "description": "MCP server for the XFlux X/Twitter read API — search, profiles, timelines, and Smart Money discovery for Claude Desktop and Cursor",
+  "description": "MCP server for XFlux: search tweets, profiles, timelines, monitor hits, and Smart Money discovery on X/Twitter for Claude Desktop and Cursor agents. Read-only public data — not for posting.",
   "type": "module",
   "license": "MIT",
   "author": "XFlux",
@@ -18,10 +18,15 @@
     "mcp",
     "model-context-protocol",
     "twitter",
+    "twitter-api",
     "x",
+    "x-api",
     "xflux",
     "claude",
-    "cursor"
+    "cursor",
+    "ai-agent",
+    "tweet-search",
+    "smart-money"
   ],
   "mcpName": "io.github.yxs1640-png/xflux",
   "bin": {

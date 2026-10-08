@@ -61,6 +61,11 @@ export async function Footer() {
               <li><Link href="/twitter-account-activity-api" className="hover:text-white transition-colors">{t("accountActivityApi")}</Link></li>
               <li><Link href="/filtered-stream-alternative" className="hover:text-white transition-colors">{t("filteredStreamAlt")}</Link></li>
               <li><Link href="/monitor-twitter-account-webhook" className="hover:text-white transition-colors">{t("monitorWebhook")}</Link></li>
+              <li><Link href="/monitor-twitter-account" className="hover:text-white transition-colors">{t("monitorAccount")}</Link></li>
+              <li><Link href="/twitter-crypto-signals" className="hover:text-white transition-colors">{t("cryptoSignalsPage")}</Link></li>
+              <li><Link href="/discord-twitter-bot" className="hover:text-white transition-colors">{t("discordTwitterBot")}</Link></li>
+              <li><Link href="/twitter-search-api" className="hover:text-white transition-colors">{t("twitterSearchApi")}</Link></li>
+              <li><Link href="/twitter-webhook-python" className="hover:text-white transition-colors">{t("webhookPython")}</Link></li>
               <li><Link href="/docs/integrations/make" className="hover:text-white transition-colors">{t("makeIntegration")}</Link></li>
               <li><Link href="/mcp" className="hover:text-white transition-colors">{t("mcpLanding")}</Link></li>
               <li><Link href="/compare" className="hover:text-white transition-colors">{t("compareApis")}</Link></li>

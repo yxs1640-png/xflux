@@ -9,7 +9,10 @@ import {
   type AdoptionDriverId,
   type CoreNeedId,
 } from "@/lib/feedback-config";
-import { sendFeedbackNotification } from "@/lib/email";
+import {
+  sendFeedbackCapabilityAck,
+  sendFeedbackNotification,
+} from "@/lib/email";
 import { normalizeUserSourceFields, userSourceSchema } from "@/lib/user-source-schema";
 import { AnalyticsEvents } from "@/lib/analytics/events";
 import { trackServerEvent } from "@/lib/analytics/server";
@@ -21,6 +24,8 @@ const schema = z
   .object({
     email: z.string().email().optional(),
     name: z.string().max(100).optional(),
+    capabilityRequest: z.string().max(5000).optional(),
+    notifyOnShip: z.boolean().optional().default(true),
     coreNeeds: z.array(z.enum(CORE_NEED_IDS as [CoreNeedId, ...CoreNeedId[]])).default([]),
     adoptionDrivers: z
       .array(z.enum(ADOPTION_DRIVER_IDS as [AdoptionDriverId, ...AdoptionDriverId[]]))
@@ -33,6 +38,7 @@ const schema = z
 
 function hasMeaningfulInput(data: z.infer<typeof schema>): boolean {
   return (
+    Boolean(data.capabilityRequest?.trim()) ||
     data.coreNeeds.length > 0 ||
     data.adoptionDrivers.length > 0 ||
     Boolean(data.message?.trim())
@@ -50,7 +56,15 @@ export async function POST(request: NextRequest) {
 
     if (!hasMeaningfulInput(data)) {
       return NextResponse.json(
-        { error: "Select at least one option or leave a message" },
+        { error: "Describe what you need, or select at least one option" },
+        { status: 400 }
+      );
+    }
+
+    const capabilityRequest = data.capabilityRequest?.trim() || null;
+    if (capabilityRequest && capabilityRequest.length < 12) {
+      return NextResponse.json(
+        { error: "Please describe your request in a bit more detail" },
         { status: 400 }
       );
     }
@@ -88,12 +102,16 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    const notifyOnShip = data.notifyOnShip !== false;
+
     const feedback = await prisma.userFeedback.create({
       data: {
         userId: session?.user?.id ?? null,
         email,
         name,
         planTier,
+        capabilityRequest,
+        notifyOnShip,
         coreNeeds: data.coreNeeds,
         adoptionDrivers: data.adoptionDrivers,
         message: data.message?.trim() || null,
@@ -111,6 +129,8 @@ export async function POST(request: NextRequest) {
       planTier: feedback.planTier,
       userSource: feedback.userSource,
       userSourceDetail: feedback.userSourceDetail,
+      capabilityRequest: feedback.capabilityRequest,
+      notifyOnShip: feedback.notifyOnShip,
       coreNeeds: data.coreNeeds,
       adoptionDrivers: data.adoptionDrivers,
       message: feedback.message,
@@ -131,10 +151,23 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    if (notifyOnShip && capabilityRequest) {
+      const ack = await sendFeedbackCapabilityAck({
+        to: email,
+        name,
+        capabilityRequest,
+      });
+      if (!ack.sent) {
+        console.error("[feedback] capability ack failed:", ack.error);
+      }
+    }
+
     await trackServerEvent(session?.user?.id ?? email, AnalyticsEvents.FEEDBACK_SUBMITTED, {
       feedback_id: feedback.id,
       user_source: source.userSource,
       user_source_detail: source.userSourceDetail,
+      has_capability_request: Boolean(capabilityRequest),
+      notify_on_ship: notifyOnShip,
       core_needs: data.coreNeeds,
       adoption_drivers: data.adoptionDrivers,
       has_message: Boolean(feedback.message),

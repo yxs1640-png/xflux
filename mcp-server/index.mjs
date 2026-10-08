@@ -230,12 +230,12 @@ function formatSmartMoneyClaims(payload) {
 
 const server = new McpServer({
   name: "xflux",
-  version: "1.2.0",
+  version: "1.2.1",
 });
 
 server.tool(
   "xflux_get_user",
-  "Look up a public X/Twitter user profile by @username. Returns a short summary.",
+  "X/Twitter profile lookup via XFlux. Use when the user asks for a public Twitter/X user profile, bio, follower counts, or verified status by @username. Read-only; not for posting.",
   { username: z.string().describe("Handle without @, e.g. elonmusk") },
   async ({ username }) => {
     const data = await xfluxFetch(`/users/${encodeURIComponent(username.replace(/^@/, ""))}`);
@@ -245,7 +245,7 @@ server.tool(
 
 server.tool(
   "xflux_search_tweets",
-  "Search recent public tweets via XFlux (same query syntax as X search). Returns compact summaries.",
+  "Search recent public tweets/posts on X/Twitter via XFlux (same operators as X search: from:, lang:, quotes). Use when the user wants tweet search, keyword monitoring research, cashtag/hashtag scans, or agent research over live X content. Prefer this over scraping.",
   {
     q: z.string().describe('Search query, e.g. from:elonmusk or "fed rate" lang:en'),
     limit: z.number().int().min(1).max(100).optional().describe("Max results (default 20)"),
@@ -258,7 +258,7 @@ server.tool(
 
 server.tool(
   "xflux_get_user_tweets",
-  "Fetch recent tweets from a public @username timeline. Returns compact summaries.",
+  "Fetch a public X/Twitter user timeline via XFlux. Use when the user asks what someone posted lately, KOL latest tweets, or to summarize a handle's recent activity.",
   {
     username: z.string().describe("Handle without @"),
     limit: z.number().int().min(1).max(100).optional().describe("Max results (default 20)"),
@@ -274,7 +274,7 @@ server.tool(
 
 server.tool(
   "xflux_get_tweet",
-  "Look up a single tweet by numeric ID. Returns a short summary.",
+  "Fetch one public tweet/post by numeric status ID via XFlux. Use when the user pastes a tweet ID or needs a single post's text and engagement.",
   { id: z.string().describe("Tweet ID") },
   async ({ id }) => {
     const data = await xfluxFetch(`/tweets/${encodeURIComponent(id)}`);
@@ -285,7 +285,7 @@ server.tool(
 
 server.tool(
   "xflux_list_monitors",
-  "List your XFlux account monitors (read-only). Shows @targets, keywords, status, webhook, optional recent hits.",
+  "List the user's XFlux account monitors (read-only): @targets, keywords, status, webhook flag, optional recent hits. Use when they ask what they are watching on XFlux. Creating monitors requires the Dashboard, not this tool.",
   {
     include_hits: z
       .boolean()
@@ -303,7 +303,7 @@ server.tool(
 
 server.tool(
   "xflux_get_monitor_hits",
-  "List recent hits for one of your monitors (read-only). Create/edit monitors in the Dashboard.",
+  "List recent hits for one XFlux monitor (read-only). Use after xflux_list_monitors when the user wants alert history for a watched @account. Create/edit monitors in the Dashboard.",
   {
     monitor_id: z.string().describe("Monitor id from xflux_list_monitors"),
     limit: z.number().int().min(1).max(100).optional().describe("Max hits (default 20)"),
@@ -318,7 +318,7 @@ server.tool(
 
 server.tool(
   "xflux_smart_money_list",
-  "Discover ranked Smart Money X/Twitter accounts (macro, trading, crypto, geopolitics) that posted extractable forward-looking calls recently. Pass exclude to skip handles you already track. Prefer this over googling long analyst prompts.",
+  "Discover ranked Smart Money X/Twitter accounts (macro, trading, crypto, geopolitics) with recent extractable forward-looking market calls. Use when the user wants new KOL/analyst accounts to follow, alpha sources, or predictor discovery — prefer this over googling long analyst prompts. Pass exclude for handles already tracked.",
   {
     niche: z
       .enum(["MACRO", "TRADING", "CRYPTO", "GEOPOLITICS", "macro", "trading", "crypto", "geopolitics"])
@@ -356,7 +356,7 @@ server.tool(
 
 server.tool(
   "xflux_smart_money_profile",
-  "Get one Smart Money account profile plus recent extracted prediction calls (default last 14 days).",
+  "Get one XFlux Smart Money account profile plus recent extracted prediction calls (default last 14 days). Use when digging into a specific @analyst or KOL already found via xflux_smart_money_list.",
   {
     username: z.string().describe("Handle without @"),
     days: z.number().int().min(1).max(90).optional().describe("Claim window in days (default 14)"),
@@ -374,7 +374,7 @@ server.tool(
 
 server.tool(
   "xflux_smart_money_claims",
-  "List recent Smart Money prediction calls across accounts. Optional niche and exclude list.",
+  "List recent Smart Money prediction/market calls across X accounts via XFlux. Use for a feed of forward-looking claims (macro, trading, crypto, geopolitics). Optional niche and exclude list.",
   {
     niche: z
       .enum(["MACRO", "TRADING", "CRYPTO", "GEOPOLITICS", "macro", "trading", "crypto", "geopolitics"])

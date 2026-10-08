@@ -16,7 +16,7 @@ export function FeedbackWidget() {
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
+  const [capabilityRequest, setCapabilityRequest] = useState("");
   const [website, setWebsite] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -41,6 +41,13 @@ export function FeedbackWidget() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+
+    const wish = capabilityRequest.trim();
+    if (wish.length < 12) {
+      setError("Please describe what you need in a bit more detail.");
+      return;
+    }
+
     setLoading(true);
 
     const res = await fetch("/api/feedback", {
@@ -48,7 +55,8 @@ export function FeedbackWidget() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         email: session?.user?.email ? undefined : email.trim(),
-        message: message.trim() || undefined,
+        capabilityRequest: wish,
+        notifyOnShip: true,
         pageUrl: typeof window !== "undefined" ? window.location.href : undefined,
         website,
       }),
@@ -63,7 +71,7 @@ export function FeedbackWidget() {
     }
 
     setDone(true);
-    setMessage("");
+    setCapabilityRequest("");
   }
 
   return (
@@ -76,7 +84,7 @@ export function FeedbackWidget() {
           )}
         >
           <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-3">
-            <p className="text-sm font-medium text-zinc-100">Send feedback</p>
+            <p className="text-sm font-medium text-zinc-100">What do you need?</p>
             <button
               type="button"
               aria-label="Close"
@@ -90,7 +98,7 @@ export function FeedbackWidget() {
           {done ? (
             <div className="flex flex-col items-center gap-2 px-4 py-8 text-center">
               <CheckCircle2 className="h-8 w-8 text-sky-400" />
-              <p className="text-sm text-zinc-200">Thanks — we got it.</p>
+              <p className="text-sm text-zinc-200">Got it — we&apos;ll email you when it&apos;s ready.</p>
               <button
                 type="button"
                 className="text-xs text-sky-400 hover:text-sky-300"
@@ -104,11 +112,14 @@ export function FeedbackWidget() {
             </div>
           ) : (
             <form onSubmit={submit} className="space-y-3 px-4 py-4">
+              <p className="text-xs text-zinc-500">
+                X/Twitter-related wishes welcome — even if the feature is not on the site yet.
+              </p>
               {!session?.user?.email && (
                 <Input
                   type="email"
                   required
-                  placeholder="Email"
+                  placeholder="Email (we notify you when it ships)"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="bg-zinc-900 border-zinc-700"
@@ -118,9 +129,9 @@ export function FeedbackWidget() {
                 required
                 rows={4}
                 maxLength={5000}
-                placeholder="Bug, idea, or question…"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
+                placeholder="I need to…"
+                value={capabilityRequest}
+                onChange={(e) => setCapabilityRequest(e.target.value)}
                 className="bg-zinc-900 border-zinc-700 resize-none"
               />
               {/* honeypot */}
@@ -141,11 +152,11 @@ export function FeedbackWidget() {
                     Sending…
                   </>
                 ) : (
-                  "Send"
+                  "Submit request"
                 )}
               </Button>
               <p className="text-[11px] text-zinc-500">
-                Or use the full form at{" "}
+                Full form at{" "}
                 <a href="/feedback" className="text-sky-400 hover:underline">
                   /feedback
                 </a>
@@ -158,7 +169,7 @@ export function FeedbackWidget() {
 
       <button
         type="button"
-        aria-label={open ? "Close feedback" : "Open feedback"}
+        aria-label={open ? "Close request form" : "Open request form"}
         onClick={() => {
           setOpen((v) => !v);
           setDone(false);
@@ -176,7 +187,7 @@ export function FeedbackWidget() {
         ) : (
           <>
             <MessageCircle className="h-4 w-4" />
-            Feedback
+            Request
           </>
         )}
       </button>

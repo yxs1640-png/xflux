@@ -1,8 +1,10 @@
 # XFlux MCP Server
 
-Thin [Model Context Protocol](https://modelcontextprotocol.io) server that exposes the XFlux **read API** to Claude Desktop, Cursor, and other MCP clients — including **Smart Money** account discovery.
+Thin [Model Context Protocol](https://modelcontextprotocol.io) server that exposes the XFlux **read API** to Claude Desktop, Cursor, and other MCP clients — search tweets, profiles, timelines, monitor hits (read-only), and **Smart Money** KOL discovery.
 
-**Registry name:** `io.github.yxs1640-png/xflux`
+**Use when:** a user (or agent) needs public X/Twitter data inside Claude/Cursor without scraping or the official X write/enterprise APIs.
+
+**Registry name:** `io.github.yxs1640-png/xflux` · **Site:** [xfluxapi.com/mcp](https://www.xfluxapi.com/mcp) · **Agents:** [llms.txt](https://www.xfluxapi.com/llms.txt)
 
 Monitors and webhooks are configured in the [Dashboard](https://www.xfluxapi.com/dashboard/monitors) — this server does not create monitors via API.
 
@@ -71,8 +73,11 @@ If `npm login` opens a **CNPM / npmmirror** page, your global `~/.npmrc` uses a 
 ```bash
 cd mcp-server
 
-# 1. Publish npm package (official registry only)
+# 1. Publish npm as the org owner (must be npm user `xflux`)
+#    If publish returns E404, you are logged in as the wrong user or have an empty token.
+npm logout --registry=https://registry.npmjs.org 2>/dev/null || true
 npm login --registry=https://registry.npmjs.org
+npm whoami --registry=https://registry.npmjs.org   # expect: xflux
 npm publish --access public
 
 # 2. Install publisher CLI (macOS)
@@ -83,6 +88,7 @@ mcp-publisher login github
 mcp-publisher publish
 
 # 4. Verify
+npm view @xflux/xflux-mcp-server version
 curl "https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.yxs1640-png/xflux"
 ```
 

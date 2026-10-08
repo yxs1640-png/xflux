@@ -13,15 +13,16 @@ import { getLandingMonitorPrefill, monitorCtaHref } from "@/lib/signals/monitor-
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
-  title: "Twitter → Discord Alerts via Webhooks",
+  title: "Discord Twitter Integration — Account Alerts via Webhooks",
   description:
-    "Send X/Twitter account alerts to Discord. Paste a Discord webhook and test on the free plan, or route via Make.com — live delivery when you need it.",
+    "Discord Twitter integration: paste a Discord webhook, test on Free, go live on Starter. Same Twitter webhook pipeline as Slack and custom HTTPS — see /twitter-webhook.",
   path: "/twitter-discord-alerts",
   keywords: [
+    "discord twitter",
+    "discord twitter integration",
     "twitter discord alerts",
-    "x discord webhook",
-    "twitter to discord bot",
-    "make.com discord twitter",
+    "twitter to discord",
+    "twitter discord webhook",
     "xflux discord",
   ],
 });
@@ -74,6 +75,23 @@ export default async function TwitterDiscordAlertsPage() {
               <strong className="text-zinc-200">{t("subtitleStrong")}</strong>{" "}
               {t("subtitleAfter")}
             </p>
+            <nav
+              aria-label="Related guides"
+              className="mt-6 flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm"
+            >
+              <Link href="/twitter-webhook" className="text-sky-400 hover:underline">
+                Twitter webhook hub
+              </Link>
+              <Link href="/blog/twitter-to-discord-alerts" className="text-sky-400 hover:underline">
+                Discord setup guide
+              </Link>
+              <Link href="/twitter-slack-alerts" className="text-sky-400 hover:underline">
+                Slack integration
+              </Link>
+              <Link href="/blog/twitter-webhooks-account-alerts" className="text-sky-400 hover:underline">
+                Webhooks playbook
+              </Link>
+            </nav>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Link href={primaryHref}>
                 <Button size="lg">{t("ctaStart")}</Button>

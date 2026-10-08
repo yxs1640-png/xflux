@@ -19,6 +19,9 @@ export default async function DashboardFeedbackPage() {
       email: true,
       name: true,
       planTier: true,
+      capabilityRequest: true,
+      notifyOnShip: true,
+      capabilityNotifySentAt: true,
       message: true,
       pageUrl: true,
       userSource: true,
@@ -36,14 +39,19 @@ export default async function DashboardFeedbackPage() {
   });
 
   const pending = rows.filter((r) => r.reviewStatus === "PENDING").length;
+  const notifyPending = rows.filter(
+    (r) => r.notifyOnShip && r.capabilityRequest && !r.capabilityNotifySentAt
+  ).length;
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
       <div>
         <h1 className="text-2xl font-semibold text-white">Feedback inbox</h1>
         <p className="mt-1 text-sm text-zinc-500">
-          Latest {rows.length} rows · {pending} pending review. Approve grants +
-          {FEEDBACK_REWARD_CALLS.toLocaleString()} API calls (once per account).
+          Latest {rows.length} rows · {pending} pending review · {notifyPending} wait for
+          ship-notify. Approve grants +{FEEDBACK_REWARD_CALLS.toLocaleString()} API calls (once
+          per account). When a capability ships, run{" "}
+          <code className="text-zinc-400">scripts/send-feedback-capability-ready.mjs</code>.
         </p>
       </div>
 
@@ -81,17 +89,38 @@ export default async function DashboardFeedbackPage() {
                       ? ` · +${row.rewardCalls.toLocaleString()} calls`
                       : ""}
                   </span>
+                  {row.notifyOnShip ? (
+                    <span
+                      className={
+                        row.capabilityNotifySentAt
+                          ? "ml-2 text-xs font-normal text-emerald-500"
+                          : "ml-2 text-xs font-normal text-sky-400"
+                      }
+                    >
+                      {row.capabilityNotifySentAt
+                        ? "ship-notified"
+                        : "notify-on-ship"}
+                    </span>
+                  ) : (
+                    <span className="ml-2 text-xs font-normal text-zinc-600">no ship notify</span>
+                  )}
                 </p>
                 <time className="text-xs text-zinc-500" dateTime={row.createdAt.toISOString()}>
                   {row.createdAt.toISOString().replace("T", " ").slice(0, 19)} UTC
                 </time>
               </div>
+              {row.capabilityRequest ? (
+                <p className="mt-2 whitespace-pre-wrap rounded-md border border-sky-500/20 bg-sky-500/5 px-3 py-2 text-sm text-zinc-100">
+                  {row.capabilityRequest}
+                </p>
+              ) : null}
               {row.message ? (
-                <p className="mt-2 whitespace-pre-wrap text-sm text-zinc-300">{row.message}</p>
-              ) : (
-                <p className="mt-2 text-sm italic text-zinc-600">No free-text message</p>
-              )}
+                <p className="mt-2 whitespace-pre-wrap text-sm text-zinc-400">{row.message}</p>
+              ) : !row.capabilityRequest ? (
+                <p className="mt-2 text-sm italic text-zinc-600">No free-text request</p>
+              ) : null}
               <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-zinc-500">
+                <span className="font-mono text-zinc-600">{row.id}</span>
                 {row.pageUrl ? (
                   <a
                     href={row.pageUrl}
@@ -109,7 +138,7 @@ export default async function DashboardFeedbackPage() {
                 {Array.isArray(row.adoptionDrivers) && row.adoptionDrivers.length > 0 ? (
                   <span>drivers: {(row.adoptionDrivers as string[]).join(", ")}</span>
                 ) : null}
-                <span>{row.emailSent ? "notify ok" : "notify pending/fail"}</span>
+                <span>{row.emailSent ? "admin notify ok" : "admin notify pending/fail"}</span>
               </div>
               {row.reviewStatus === "PENDING" ? (
                 <FeedbackReviewActions

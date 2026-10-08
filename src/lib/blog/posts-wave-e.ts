@@ -202,54 +202,56 @@ print(len(r.json()["data"]))`,
   },
   {
     slug: "twitter-to-discord-alerts",
-    title: "Send X/Twitter Account Alerts to Discord",
+    title: "Discord Twitter Alerts Without Polling Timelines",
     description:
-      "Pipe X account posts into Discord: XFlux monitors → signed webhooks → Discord webhook or bot — without polling timelines yourself.",
-    datePublished: "2026-09-28",
+      "Discord Twitter integration for account alerts: discover handles, promote them to monitors, push signed webhooks into Discord — Free to test, Starter for live hits. Hub: /twitter-webhook.",
+    datePublished: "2026-10-08",
     keywords: [
+      "discord twitter",
+      "discord twitter integration",
       "twitter to discord",
       "twitter discord webhook",
-      "x account discord alerts",
-      "twitter bot discord",
+      "twitter discord integration",
       "monitor twitter discord",
     ],
     sections: [
       {
-        heading: "The goal",
+        heading: "Polling Discord alerts does not scale",
         paragraphs: [
-          "Teams want a Discord channel that lights up when a founder, exchange, or macro account posts. Building that with raw polling means hosting a worker, storing cursors, and handling outages.",
-          "A cleaner path: monitor the @handle in XFlux, receive a signed HTTP webhook, and forward a short embed to Discord’s incoming webhook URL.",
+          "Searches like “discord twitter” or “discord twitter integration” usually mean one job: when these public accounts post, the Discord channel lights up. DIY cron + timeline fetch works for one handle — then you own workers, cursors, rate limits, and silent misses.",
+          "X does not ship a public new-tweet webhook. Treat Discord delivery as the last hop of a Twitter webhook pipeline: monitors detect posts, signed HTTP POSTs hit your stack, Discord Incoming Webhooks (or a bot) render the message. Product hub: /twitter-webhook. Landing: /twitter-discord-alerts.",
         ],
       },
       {
-        heading: "Minimal architecture",
+        heading: "Architecture: discover then promote",
         paragraphs: [
-          "1) Create a Discord channel webhook (Channel settings → Integrations). 2) Deploy a tiny HTTPS receiver (Cloudflare Worker, Vercel route, or Make.com). 3) Create an XFlux monitor for the account and point it at your receiver. 4) On POST, verify signature, format content, POST to Discord.",
-          "Make.com users can skip custom code: see /docs/integrations/make. Product landing: /twitter-discord-alerts.",
+          "Discover candidates with search (from:user, cashtags, lang:) the same way you would for crypto KOLs. Keep accounts that produce actionable posts — not pure engagement bait.",
+          "Promote keepers to XFlux monitors. Paste a Discord Incoming Webhook URL on the monitor (XFlux formats Discord payloads) or point at Make/n8n/your HTTPS receiver and forward yourself. Make path: /docs/integrations/make. Custom Node HMAC: /twitter-webhook-nodejs.",
         ],
-      },
-      {
-        heading: "Receiver sketch (Node)",
-        paragraphs: [
-          "Illustrative handler — verify HMAC in production before trusting the body.",
-        ],
-        code: `// After verifying XFlux signature...
+        code: `// After verifying X-XFlux-Signature on the raw body...
 const discordWebhook = process.env.DISCORD_WEBHOOK_URL;
-const tweet = payload.tweet; // shape depends on monitor event
+const { tweet, monitor } = payload; // monitor.hit shape
 
 await fetch(discordWebhook, {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
-    content: \`**@\${payload.username}** posted:\\n\${tweet.text}\\n\${tweet.url}\`,
+    content: \`**@\${monitor.targetUsername}** posted:\\n\${tweet.text}\`,
   }),
 });`,
       },
       {
-        heading: "Ops tips",
+        heading: "Alert hygiene",
         paragraphs: [
-          "Rate-limit Discord posts if an account threads aggressively. Deduplicate by tweet id. Use separate Discord channels per risk tier (macro vs memecoins) so traders can mute noise.",
-          "More on monitors: /blog/twitter-account-monitor-webhook. Trading keywords: /docs/guides/trading-keywords.",
+          "Split Discord channels by risk: macro vs crypto KOLs vs brand watches so traders can mute noise. Add keyword filters on noisy monitors. Deduplicate by tweet id; rate-limit if an account threads aggressively.",
+          "Same hygiene playbook as the general webhook guide: /blog/twitter-webhooks-account-alerts. Keyword templates: /docs/guides/trading-keywords.",
+        ],
+      },
+      {
+        heading: "Budgeting API calls",
+        paragraphs: [
+          "Exploration burns search/timeline quota. Steady-state should be monitor-heavy so you are not polling every account for Discord. Free: 1 monitor, Dashboard hits, Test webhook pings to prove Discord wiring. Starter: live monitor.hit delivery and faster polling.",
+          "If you also need Slack or a custom server, start from /twitter-webhook and branch to /twitter-slack-alerts — same monitor events, different destinations.",
         ],
       },
     ],
@@ -257,7 +259,7 @@ await fetch(discordWebhook, {
       {
         question: "Can Discord call XFlux directly?",
         answer:
-          "Discord incoming webhooks only receive POSTs. You need a middle layer (your server or Make) that XFlux calls first.",
+          "Discord Incoming Webhooks only receive POSTs. Either paste the Discord URL into XFlux (we format the payload) or use a middle layer (Make/n8n/your server) that XFlux calls first.",
       },
       {
         question: "Is a Discord bot token required?",
@@ -265,9 +267,70 @@ await fetch(discordWebhook, {
           "Not for channel webhooks. Bot tokens are for richer bots (slash commands, roles). Webhooks cover most “post appeared” alerts.",
       },
       {
-        question: "Which plan do I need?",
+        question: "Where do I start?",
         answer:
-          "Live monitor delivery requires a paid plan. Free is enough to wire test pings while you build the Discord forwarder.",
+          "Register → add one monitor → paste Discord webhook → Test → upgrade when you need live hits. Hub: /twitter-webhook. Product page: /twitter-discord-alerts.",
+      },
+    ],
+  },
+  {
+    slug: "twitter-webhooks-account-alerts",
+    title: "Twitter Webhooks for Account Alerts (Not Cron or Spreadsheets)",
+    description:
+      "X has no public Twitter webhook for new tweets. Use account monitors + signed HTTP webhooks for Discord, Slack, or your server — discover handles, promote keepers, budget Free vs Starter.",
+    datePublished: "2026-10-08",
+    keywords: [
+      "twitter webhook",
+      "webhooks twitter integration",
+      "twitter webhook integration",
+      "twitter webhook api",
+      "twitter account webhook",
+    ],
+    sections: [
+      {
+        heading: "Cron and spreadsheets do not scale",
+        paragraphs: [
+          "Most teams searching for a Twitter webhook want one job: when these public accounts post, notify Slack, Discord, or our bot. Official X does not expose a simple public webhook for that. DIY means cron + timeline fetch + dedupe + secrets — fine for one handle, painful for a desk.",
+          "Treat alerts as engineering: discover candidates with search, promote high-signal accounts to monitors, push hits to your stack. Hub overview: /twitter-webhook.",
+        ],
+      },
+      {
+        heading: "Discovery then promote",
+        paragraphs: [
+          "Use search operators (from:user, cashtags, lang:) to build a candidate list — same pattern as crypto KOL tracking. Pull a few timelines; keep accounts that produce actionable posts, not engagement bait.",
+          "Promote keepers to XFlux monitors (Free: 1 monitor + Dashboard history). Pair Slack (/twitter-slack-alerts) or Discord (/twitter-discord-alerts, walkthrough /blog/twitter-to-discord-alerts) when you want channel delivery without writing a bot first.",
+        ],
+      },
+      {
+        heading: "Alert hygiene",
+        paragraphs: [
+          "Separate channels for macro vs crypto vs brand watches. Add keyword filters on noisy monitors. Cap how many accounts you enable on day one — each monitor is an ops commitment.",
+          "For custom servers, verify HMAC on the raw body (/twitter-webhook-nodejs, /docs/webhooks). For no-code, use Make or n8n (/twitter-n8n-webhook).",
+        ],
+      },
+      {
+        heading: "Budgeting API calls",
+        paragraphs: [
+          "Exploration burns search/timeline calls. Steady-state should be monitor-heavy so you are not polling every account yourself. Free validates wiring and Test webhooks; Starter unlocks live monitor.hit POSTs and faster polling.",
+          "If you were comparing enterprise AAA or filtered stream, start at /twitter-account-activity-api and /filtered-stream-alternative — then come back here for the webhook path.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is XFlux an official Twitter webhook product?",
+        answer:
+          "No. XFlux is an independent read API and account monitor service. We deliver signed HTTP webhooks when monitors detect new public tweets — not official AAA or filtered stream.",
+      },
+      {
+        question: "Can Free plans receive live webhooks?",
+        answer:
+          "Free can save a URL and send Test pings. Live monitor.hit delivery requires Starter or above. Hits always show in the Dashboard.",
+      },
+      {
+        question: "Where do I start?",
+        answer:
+          "Register → add one monitor → paste Discord/Slack/HTTPS → Test → upgrade when you need live delivery. Hub: /twitter-webhook. Discord deep-dive: /blog/twitter-to-discord-alerts.",
       },
     ],
   },
@@ -303,13 +366,13 @@ await fetch(discordWebhook, {
         heading: "Alert hygiene",
         paragraphs: [
           "Separate channels for L1/L2 news vs memecoin KOLs. Filter keywords on your receiver if a monitor is noisy. Cap how many accounts you watch on day one — each monitor is an ops commitment.",
-          "Use-case page: /use-cases/crypto-alerts. Related: /blog/twitter-trading-alerts.",
+          "Use-case page: /use-cases/crypto-alerts. Related: /blog/twitter-trading-alerts. Webhook hub: /twitter-webhook.",
         ],
       },
       {
         heading: "Budgeting API calls",
         paragraphs: [
-          "Exploration burns search/timeline calls. Steady-state should be monitor-heavy so you are not polling every KOL every minute. Start on Free to validate wiring, then Starter+ for live webhooks and higher quotas.",
+          "Exploration burns search/timeline calls. Steady-state should be monitor-heavy so you are not polling every KOL every minute. Start on Free to validate wiring, then Starter+ for live webhooks and higher quotas. Same playbook as /blog/twitter-webhooks-account-alerts.",
         ],
       },
     ],
@@ -327,7 +390,7 @@ await fetch(discordWebhook, {
       {
         question: "Where do I start?",
         answer:
-          "Register → create a key → search a cashtag → add one monitor → wire Discord. Guides: /docs/guides/search and /twitter-discord-alerts.",
+          "Register → create a key → search a cashtag → add one monitor → wire Discord. Guides: /docs/guides/search, /twitter-discord-alerts, and /twitter-webhook.",
       },
     ],
   },

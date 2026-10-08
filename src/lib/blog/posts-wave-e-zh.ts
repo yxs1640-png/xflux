@@ -191,67 +191,134 @@ print(len(r.json()["data"]))`,
   },
   {
     slug: "twitter-to-discord-alerts",
-    title: "把 X/Twitter 账号告警推到 Discord",
+    title: "Discord Twitter 告警：别再轮询时间线",
     description:
-      "XFlux monitors → 签名 webhook → Discord webhook/机器人，把账号发帖灌进频道——不必自己轮询时间线。",
-    datePublished: "2026-09-28",
+      "Discord Twitter 集成做账号告警：先发现 handle，再升级 monitor，用签名 webhook 推进 Discord——Free 可测，Starter 收 live。总览：/twitter-webhook。",
+    datePublished: "2026-10-08",
     keywords: [
+      "discord twitter",
+      "discord twitter integration",
       "twitter to discord",
       "twitter discord webhook",
-      "x account discord alerts",
-      "twitter bot discord",
+      "twitter discord integration",
       "monitor twitter discord",
     ],
     sections: [
       {
-        heading: "目标",
+        heading: "轮询 Discord 告警撑不住",
         paragraphs: [
-          "团队希望创始人、交易所或宏观账号一发帖，Discord 频道就亮。自己轮询等于养 worker、存游标、扛故障。",
-          "更干净：在 XFlux 监控 @，收签名 HTTP webhook，再转发短消息到 Discord Incoming Webhook。",
+          "搜 “discord twitter” / “discord twitter integration” 的人，多半只想：公开账号一发帖，Discord 频道就亮。自己 cron + 拉时间线盯一个号还行——之后你得养 worker、游标、限流和静默漏报。",
+          "X 没有公开的新推文 webhook。把 Discord 当成 Twitter webhook 链路的最后一跳：monitor 发现新帖 → 签名 HTTP POST → Discord Incoming Webhook（或 bot）渲染。产品总览：/twitter-webhook。落地页：/twitter-discord-alerts。",
         ],
       },
       {
-        heading: "最小架构",
+        heading: "架构：先发现，再升级",
         paragraphs: [
-          "1) 建 Discord 频道 webhook。2) 部署 HTTPS 接收端（Worker / Vercel / Make）。3) 建 XFlux monitor 指向接收端。4) 校验签名、格式化、POST 到 Discord。",
-          "Make 用户可少写代码：/docs/integrations/make。落地页：/twitter-discord-alerts。",
+          "用搜索（from:、cashtag、lang:）建候选列表——和加密 KOL 追踪同一套路。留下能行动的账号，别只留互动诱饵。",
+          "把保留账号升级为 XFlux monitor。可直接粘贴 Discord Incoming Webhook（我们会格式化），或接到 Make/n8n/自建 HTTPS 再转发。Make：/docs/integrations/make。自建 Node HMAC：/twitter-webhook-nodejs。",
         ],
-      },
-      {
-        heading: "接收端示意（Node）",
-        paragraphs: ["示意代码——生产环境务必先校验 HMAC。"],
-        code: `// After verifying XFlux signature...
+        code: `// After verifying X-XFlux-Signature on the raw body...
 const discordWebhook = process.env.DISCORD_WEBHOOK_URL;
-const tweet = payload.tweet; // shape depends on monitor event
+const { tweet, monitor } = payload; // monitor.hit shape
 
 await fetch(discordWebhook, {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
-    content: \`**@\${payload.username}** posted:\\n\${tweet.text}\\n\${tweet.url}\`,
+    content: \`**@\${monitor.targetUsername}** posted:\\n\${tweet.text}\`,
   }),
 });`,
       },
       {
-        heading: "运维建议",
+        heading: "告警卫生",
         paragraphs: [
-          "账号狂刷线程时限制 Discord 频率。按 tweet id 去重。宏观与 meme 分频道，方便静音。",
-          "更多：/blog/twitter-account-monitor-webhook。关键词：/docs/guides/trading-keywords。",
+          "按风险分频道：宏观 / 加密 KOL / 品牌，方便静音。嘈杂 monitor 加关键词。按 tweet id 去重；账号狂刷线程时限流。",
+          "通用 webhook 卫生同一套：/blog/twitter-webhooks-account-alerts。关键词模板：/docs/guides/trading-keywords。",
+        ],
+      },
+      {
+        heading: "配额怎么花",
+        paragraphs: [
+          "探索期会烧掉搜索/时间线配额。稳态应以 monitor 为主，别为了 Discord 自己轮询每个号。Free：1 个监控、Dashboard 命中、Test webhook 验证 Discord 接线。Starter：live monitor.hit 与更快轮询。",
+          "还要 Slack 或自建服务时，从 /twitter-webhook 分支到 /twitter-slack-alerts——同一套 monitor 事件，不同目的地。",
         ],
       },
     ],
     faqs: [
       {
         question: "Discord 能直接调 XFlux 吗？",
-        answer: "Incoming webhook 只收 POST。需要中间层（自建或 Make）先接 XFlux。",
+        answer:
+          "Incoming webhook 只收 POST。可以把 Discord URL 直接贴进 XFlux（我们格式化），或用 Make/n8n/自建中间层先接 XFlux。",
       },
       {
         question: "一定要 Bot Token 吗？",
         answer: "频道 webhook 通常够用。Bot 适合斜杠命令等更复杂场景。",
       },
       {
-        question: "需要什么套餐？",
-        answer: "正式 monitor 投递需付费。Free 可先测通 Discord 转发。",
+        question: "从哪开始？",
+        answer:
+          "注册 → 加一个 monitor → 粘贴 Discord webhook → Test → 需要 live 再升级。总览：/twitter-webhook。产品页：/twitter-discord-alerts。",
+      },
+    ],
+  },
+  {
+    slug: "twitter-webhooks-account-alerts",
+    title: "Twitter Webhook 做账号告警（别靠 Cron 或表格）",
+    description:
+      "X 没有公开的新推文 Twitter webhook。用账号监控 + 签名 HTTP webhook 接到 Discord/Slack/自建服务——先发现账号，再升级 monitor，并分清 Free 与 Starter 预算。",
+    datePublished: "2026-10-08",
+    keywords: [
+      "twitter webhook",
+      "webhooks twitter integration",
+      "twitter webhook integration",
+      "twitter webhook api",
+      "twitter account webhook",
+    ],
+    sections: [
+      {
+        heading: "Cron 与表格撑不住",
+        paragraphs: [
+          "搜 Twitter webhook 的人，多半只想一件事：这些公开账号一发帖，就通知 Slack、Discord 或机器人。官方 X 没有简单的公开 webhook。自己做 = cron + 拉时间线 + 去重 + 密钥——盯一个号还行，交易台规模就痛苦。",
+          "把告警当工程：搜索发现候选 → 高信号账号升级 monitor → 命中推到你的栈。总览：/twitter-webhook。",
+        ],
+      },
+      {
+        heading: "先发现，再升级",
+        paragraphs: [
+          "用搜索操作符（from:、cashtag、lang:）建候选列表——和加密 KOL 追踪同一套路。拉几条时间线，留下能行动的账号，别只留互动诱饵。",
+          "把保留账号升级为 XFlux monitor（Free：1 个监控 + Dashboard 历史）。需要频道推送又不想先写 bot：Slack（/twitter-slack-alerts）或 Discord（/twitter-discord-alerts）。",
+        ],
+      },
+      {
+        heading: "告警卫生",
+        paragraphs: [
+          "宏观 / 加密 / 品牌分频道。嘈杂 monitor 加关键词。第一天别开太多号——每个监控都是运维承诺。",
+          "自建服务请校验 HMAC 原始 body（/twitter-webhook-nodejs、/docs/webhooks）。无代码可用 Make 或 n8n（/twitter-n8n-webhook）。",
+        ],
+      },
+      {
+        heading: "配额怎么花",
+        paragraphs: [
+          "探索期会烧掉搜索/时间线调用。稳态应以 monitor 为主，别自己轮询每个号。Free 验证接线与 Test webhook；Starter 解锁 live monitor.hit 与更快轮询。",
+          "若在对比企业 AAA 或 filtered stream，先看 /twitter-account-activity-api 与 /filtered-stream-alternative，再回到 webhook 路径。",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "XFlux 是官方 Twitter webhook 产品吗？",
+        answer:
+          "不是。XFlux 是独立的读 API + 账号监控服务：monitor 发现新公开推文后投递签名 HTTP webhook——不是官方 AAA 或 filtered stream。",
+      },
+      {
+        question: "Free 能收 live webhook 吗？",
+        answer:
+          "Free 可保存 URL 并发送 Test ping。live monitor.hit 需 Starter 及以上。命中始终出现在 Dashboard。",
+      },
+      {
+        question: "从哪开始？",
+        answer:
+          "注册 → 加一个 monitor → 粘贴 Discord/Slack/HTTPS → Test → 需要 live 再升级。总览：/twitter-webhook。HMAC 长文：/blog/twitter-account-monitor-webhook。",
       },
     ],
   },

@@ -1,7 +1,8 @@
 # AlternativeTo — XFlux Playbook
 
 **Site:** https://alternativeto.net  
-**Product URL (after approval):** https://alternativeto.net/software/xflux/ *(slug may vary)*  
+**Product URL (live):** https://alternativeto.net/software/xfluxapi/  
+**About:** https://alternativeto.net/software/xfluxapi/about/  
 **Register tracking:** `https://www.xfluxapi.com/register?utm_source=alternativeto&utm_medium=listing&utm_campaign=dir_v1`
 
 ---
@@ -10,9 +11,9 @@
 
 1. Log in at https://alternativeto.net (same account used for submission).
 2. Profile → **Contributions** / **Your apps** — see if **XFlux** is pending or live.
-3. Search: https://alternativeto.net/browse/search/?q=xflux  
-   - **Not found** → still in review, or submission incomplete → go to §2.  
-   - **Found** → go to §3 (optimize) and §4 (cross-link).
+3. Open https://alternativeto.net/software/xfluxapi/ (or search `xfluxapi` / `xflux`).  
+   - **404 / not found** → still in review, or submission incomplete → go to §2.  
+   - **Live** → go to §3 (optimize) and §4 (cross-link).
 
 Moderation often takes **3–14 days**. No email = check the site directly.
 
@@ -163,10 +164,11 @@ Also search: `TweetAPI`, `Apify`, `snscrape`, `Nitter`.
 - Google Search Console: impressions for `xflux alternativeto` / brand queries
 - Checklist:
 
-- [ ] Listing live on AlternativeTo
+- [x] Listing live on AlternativeTo (`/software/xfluxapi/`)
+- [ ] Features section filled (currently empty on About)
 - [ ] 3 screenshots + logo uploaded
-- [ ] XFlux added as alternative on ≥5 competitor pages
-- [ ] Description mentions monitors + webhooks + free tier
+- [ ] XFlux added as alternative on ≥5 competitor pages (partial — TWINT / TwitterAPI.IO etc. already done ~2 months ago)
+- [x] Description mentions monitors + webhooks + free tier
 
 ---
 

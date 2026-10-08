@@ -120,9 +120,13 @@ export const LONG_TAIL_LANDINGS: LongTailLanding[] = [
       },
     ],
     related: [
+      { href: "/twitter-webhook", label: "Twitter webhook hub" },
       { href: "/account-activity-api-alternative", label: "Account Activity API alternative" },
-      { href: "/filtered-stream-alternative", label: "Filtered stream alternative" },
-      { href: "/twitter-webhook", label: "Twitter webhook integration" },
+      { href: "/twitter-slack-alerts", label: "Twitter → Slack alerts" },
+      { href: "/twitter-discord-alerts", label: "Twitter → Discord alerts" },
+      { href: "/blog/twitter-to-discord-alerts", label: "Discord Twitter guide (blog)" },
+      { href: "/monitor-twitter-account-webhook", label: "Monitor → webhook" },
+      { href: "/blog/twitter-webhooks-account-alerts", label: "Webhook setup guide (blog)" },
       { href: "/docs/webhooks", label: "Webhook docs" },
     ],
   },
@@ -217,8 +221,10 @@ export const LONG_TAIL_LANDINGS: LongTailLanding[] = [
       },
     ],
     related: [
+      { href: "/twitter-webhook", label: "Twitter webhook hub" },
       { href: "/twitter-account-activity-api", label: "Twitter Account Activity API guide" },
       { href: "/twitter-activity-api", label: "Twitter Activity API" },
+      { href: "/twitter-slack-alerts", label: "Slack alerts" },
       { href: "/twitter-discord-alerts", label: "Discord alerts" },
       { href: "/docs/compare/pricing", label: "Pricing vs official X API" },
     ],
@@ -288,9 +294,10 @@ export const LONG_TAIL_LANDINGS: LongTailLanding[] = [
       },
     ],
     related: [
+      { href: "/twitter-webhook", label: "Twitter webhook hub" },
       { href: "/twitter-account-activity-api", label: "Account Activity API page" },
       { href: "/account-activity-api-alternative", label: "AAA alternative" },
-      { href: "/filtered-stream-alternative", label: "Filtered stream alternative" },
+      { href: "/twitter-slack-alerts", label: "Slack alerts" },
       { href: "/blog/webhook-vs-polling-twitter", label: "Webhook vs polling" },
     ],
   },
@@ -391,20 +398,22 @@ export const LONG_TAIL_LANDINGS: LongTailLanding[] = [
   {
     slug: "twitter-slack-alerts",
     path: "/twitter-slack-alerts",
-    primaryKeyword: "twitter slack alerts",
-    title: "Twitter → Slack Alerts via Webhooks",
+    primaryKeyword: "twitter slack integration",
+    title: "Twitter Slack Integration — Alerts via Webhooks",
     description:
-      "Send Twitter/X account alerts to Slack. Paste a Slack Incoming Webhook, test on the free plan, go live when you’re ready.",
+      "Twitter Slack integration for account alerts: paste a Slack Incoming Webhook, test on Free, go live on Starter. Same path as Discord and custom HTTPS.",
     keywords: [
-      "twitter slack alerts",
-      "twitter to slack webhook",
-      "x slack webhook",
       "twitter slack integration",
+      "twitter slack alerts",
+      "slack to twitter",
+      "twitter to slack webhook",
+      "connect slack to twitter",
+      "x slack webhook",
     ],
     badge: "Slack alerts",
-    h1: "Twitter Slack alerts from account monitors",
+    h1: "Twitter Slack integration: account monitors → channel alerts",
     subtitle:
-      "Watch public @handles and push matches into Slack. XFlux formats Slack Incoming Webhook payloads for you — or send signed JSON to your own Slack bot.",
+      "Searchers looking for Twitter Slack integration usually want: watch public @handles, post into a Slack channel. XFlux formats Slack Incoming Webhook payloads — or send signed JSON to your own bot.",
     registerSrc: "seo_slack_alerts",
     cards: [
       {
@@ -460,10 +469,14 @@ Channel message in Slack`,
       },
     ],
     related: [
+      { href: "/twitter-webhook", label: "Twitter webhook hub" },
       { href: "/twitter-discord-alerts", label: "Discord alerts" },
+      { href: "/blog/twitter-to-discord-alerts", label: "Discord Twitter guide (blog)" },
+      { href: "/twitter-account-activity-api", label: "Account Activity API alternative" },
+      { href: "/monitor-twitter-account-webhook", label: "Monitor → webhook" },
       { href: "/twitter-n8n-webhook", label: "n8n twitter webhook" },
+      { href: "/blog/twitter-webhooks-account-alerts", label: "Webhook setup guide (blog)" },
       { href: "/docs/integrations/make", label: "Make.com guide" },
-      { href: "/twitter-webhook", label: "Webhook overview" },
     ],
   },
   {
@@ -544,10 +557,12 @@ if (sig !== expected) throw new Error("bad signature");`,
       },
     ],
     related: [
+      { href: "/twitter-webhook", label: "Twitter webhook hub" },
       { href: "/docs/integrations/make", label: "Make.com (similar flow)" },
       { href: "/docs/webhooks", label: "Webhook signature docs" },
       { href: "/twitter-slack-alerts", label: "Slack alerts" },
       { href: "/twitter-webhook-nodejs", label: "Node.js webhook handler" },
+      { href: "/blog/twitter-webhooks-account-alerts", label: "Webhook setup guide (blog)" },
     ],
   },
   {
@@ -645,10 +660,12 @@ app.post(
       },
     ],
     related: [
+      { href: "/twitter-webhook", label: "Twitter webhook hub" },
       { href: "/docs/webhooks", label: "Full webhook docs" },
       { href: "/docs/guides/nodejs", label: "Node.js API guide" },
       { href: "/twitter-n8n-webhook", label: "n8n path" },
       { href: "/monitor-twitter-account-webhook", label: "Monitor + webhook guide" },
+      { href: "/blog/twitter-webhooks-account-alerts", label: "Webhook setup guide (blog)" },
     ],
   },
   {
@@ -741,9 +758,400 @@ app.post(
     ],
     related: [
       { href: "/twitter-webhook", label: "Twitter webhook hub" },
+      { href: "/twitter-account-activity-api", label: "Account Activity API alternative" },
       { href: "/twitter-slack-alerts", label: "Slack" },
       { href: "/twitter-discord-alerts", label: "Discord" },
-      { href: "/blog/twitter-account-monitor-webhook", label: "Blog walkthrough" },
+      { href: "/blog/twitter-to-discord-alerts", label: "Discord Twitter guide (blog)" },
+      { href: "/blog/twitter-webhooks-account-alerts", label: "Webhook setup guide (blog)" },
+      { href: "/blog/twitter-account-monitor-webhook", label: "HMAC walkthrough" },
+    ],
+  },
+  {
+    slug: "twitter-crypto-signals",
+    path: "/twitter-crypto-signals",
+    primaryKeyword: "twitter crypto trading signals",
+    title: "Twitter Crypto Trading Signals — Monitors & Alerts",
+    description:
+      "Twitter crypto trading signals without spreadsheet stalking: monitor KOLs and project accounts free, push Discord/Slack webhooks when you need live alerts.",
+    keywords: [
+      "twitter crypto trading signals",
+      "free crypto signals twitter",
+      "twitter crypto signals",
+      "crypto trading signals twitter",
+      "crypto kol twitter alerts",
+    ],
+    badge: "Crypto signals on X",
+    h1: "Twitter crypto trading signals from account monitors",
+    subtitle:
+      "Most “free crypto signals Twitter” searches want timely posts from KOLs and projects — not a paid signal group. Watch public @handles, filter cashtags, alert Discord/Slack via Twitter webhooks.",
+    registerSrc: "seo_crypto_signals",
+    cards: [
+      {
+        title: "Watch named KOLs and projects",
+        text: "Add monitors for influencers, deployers, and official project accounts — optional keyword filters for tickers.",
+      },
+      {
+        title: "Free to validate",
+        text: "1 monitor + Dashboard hit history on Free. Test webhooks before you pay for live delivery.",
+      },
+      {
+        title: "Same key for search",
+        text: "Discover candidates with search operators, then promote keepers to monitors — see /blog/track-crypto-kols-twitter-api.",
+      },
+    ],
+    howTitle: "From signal hunt to alerts",
+    steps: [
+      {
+        title: "Build a candidate list",
+        text: "Search cashtags and narratives; shortlist accounts with falsifiable calls — not only engagement bait.",
+      },
+      {
+        title: "Promote keepers to monitors",
+        text: "One monitor per @handle. Cap how many you enable on day one.",
+      },
+      {
+        title: "Route hits to Discord or Slack",
+        text: "Paste a channel webhook or use Make/n8n. Hub: /twitter-webhook. Crypto use case: /use-cases/crypto-alerts.",
+      },
+    ],
+    faqs: [
+      {
+        question: "Is this a free crypto signals Telegram group?",
+        answer:
+          "No. XFlux is a developer API and account monitor product. You choose which public X accounts to watch and where alerts go.",
+      },
+      {
+        question: "Do monitors use API quota?",
+        answer:
+          "Background polling does not consume monthly API call quota. Search/timeline calls during discovery do.",
+      },
+      {
+        question: "Where is the longer crypto KOL guide?",
+        answer: "See /blog/track-crypto-kols-twitter-api and /signals/crypto.",
+      },
+    ],
+    related: [
+      { href: "/use-cases/crypto-alerts", label: "Crypto alerts use case" },
+      { href: "/blog/track-crypto-kols-twitter-api", label: "Track crypto KOLs (blog)" },
+      { href: "/twitter-discord-alerts", label: "Discord alerts" },
+      { href: "/twitter-webhook", label: "Twitter webhook hub" },
+      { href: "/signals/crypto", label: "Live crypto signals digest" },
+    ],
+  },
+  {
+    slug: "twitter-webhook-python",
+    path: "/twitter-webhook-python",
+    primaryKeyword: "twitter webhook python",
+    title: "Twitter Webhook in Python — Verify XFlux Signatures",
+    description:
+      "Handle Twitter/X account monitor webhooks in Python. Test HMAC verification on the free plan — Flask/FastAPI-friendly examples.",
+    keywords: [
+      "twitter webhook python",
+      "python twitter webhook",
+      "python twitter api v2",
+      "verify twitter webhook hmac python",
+      "x webhook flask",
+    ],
+    badge: "Python tutorial",
+    h1: "Twitter webhook Python handler (signed monitor.hit POSTs)",
+    subtitle:
+      "Receive account-monitor alerts in Flask, FastAPI, or any WSGI/ASGI app. Verify X-XFlux-Signature over the raw body, then route to Discord, Slack, or your trading logic.",
+    registerSrc: "seo_webhook_python",
+    cards: [
+      {
+        title: "Raw body for HMAC",
+        text: "Sign over `{timestamp}.{raw_body}`. Read request bytes before JSON parse — re-serializing breaks verification.",
+      },
+      {
+        title: "compare_digest",
+        text: "Use hmac.compare_digest for timing-safe signature checks.",
+      },
+      {
+        title: "Pair with the read API",
+        text: "Same key for /api/v1/search and timelines — Python guide: /docs/guides/python.",
+      },
+    ],
+    howTitle: "Python setup",
+    steps: [
+      {
+        title: "Expose HTTPS and create a monitor webhook",
+        text: "ngrok for local tests. Copy the signing secret from Dashboard → Monitors.",
+      },
+      {
+        title: "Verify headers then parse JSON",
+        text: "Check X-XFlux-Timestamp skew (~5 minutes) and X-XFlux-Signature before trusting the body.",
+      },
+      {
+        title: "Handle monitor.test and monitor.hit",
+        text: "Test events validate wiring on Free; live hits need Starter+. Node users: /twitter-webhook-nodejs.",
+      },
+    ],
+    codeTitle: "Flask verification sketch",
+    codeBlurb: "Load the secret from env. Prefer a production ASGI stack when you scale.",
+    code: `import hmac, hashlib, os, time
+from flask import Flask, request, abort
+
+app = Flask(__name__)
+SECRET = os.environ["XFLUX_WEBHOOK_SECRET"].encode()
+
+@app.post("/webhooks/xflux")
+def xflux_webhook():
+    ts = request.headers.get("X-XFlux-Timestamp", "")
+    sig = request.headers.get("X-XFlux-Signature", "")
+    raw = request.get_data()  # bytes
+    if abs(time.time() - int(ts or "0")) > 300:
+        abort(401)
+    expected = "sha256=" + hmac.new(
+        SECRET, f"{ts}.".encode() + raw, hashlib.sha256
+    ).hexdigest()
+    if not hmac.compare_digest(expected, sig):
+        abort(401)
+    event = request.get_json(force=True)
+    if event.get("event") == "monitor.hit":
+        print(event["tweet"]["authorUsername"], event["tweet"]["text"])
+    return "ok", 200`,
+    faqs: [
+      {
+        question: "Is this official Twitter API v2?",
+        answer:
+          "No. XFlux is an independent read API + monitors. Python examples for REST reads are at /docs/guides/python; this page is webhook verification.",
+      },
+      {
+        question: "Discord without Python?",
+        answer:
+          "Paste a Discord Incoming Webhook into the monitor — see /twitter-discord-alerts.",
+      },
+      {
+        question: "Full header reference?",
+        answer: "See /docs/webhooks and the hub at /twitter-webhook.",
+      },
+    ],
+    related: [
+      { href: "/twitter-webhook", label: "Twitter webhook hub" },
+      { href: "/twitter-webhook-nodejs", label: "Node.js handler" },
+      { href: "/docs/guides/python", label: "Python API guide" },
+      { href: "/docs/webhooks", label: "Webhook docs" },
+      { href: "/blog/twitter-webhooks-account-alerts", label: "Webhooks playbook" },
+    ],
+  },
+  {
+    slug: "discord-twitter-bot",
+    path: "/discord-twitter-bot",
+    primaryKeyword: "discord twitter bot",
+    title: "Discord Twitter Bot — Account Alerts Without DIY Polling",
+    description:
+      "Build a Discord Twitter bot workflow: monitor public @handles, push hits to Discord. Free test pings; live delivery on Starter — no timeline poller to host.",
+    keywords: [
+      "discord twitter bot",
+      "twitter tracker discord bot",
+      "discord twitter tracker bot",
+      "twitter to discord bot",
+      "discord twitter integration",
+    ],
+    badge: "Discord Twitter bot path",
+    h1: "Discord Twitter bot alerts via account monitors",
+    subtitle:
+      "“Discord Twitter bot” usually means: track accounts → post into a channel. You can paste a Discord webhook into XFlux, or run a thin bot that verifies signed monitor.hit events — no DIY timeline cron.",
+    registerSrc: "seo_discord_bot",
+    cards: [
+      {
+        title: "Webhook-first (simplest)",
+        text: "Discord Incoming Webhooks cover most “post appeared” alerts without a bot token.",
+      },
+      {
+        title: "Bot when you need UX",
+        text: "Use a bot token for slash commands, roles, or threads — still feed it from XFlux webhooks.",
+      },
+      {
+        title: "Same monitors as Slack",
+        text: "One monitor event can fan out to Discord and Slack. Hub: /twitter-webhook.",
+      },
+    ],
+    howTitle: "Bot-style setup",
+    steps: [
+      {
+        title: "Pick accounts to track",
+        text: "Founders, exchanges, macro voices — promote from search if needed.",
+      },
+      {
+        title: "Choose Incoming Webhook or custom bot",
+        text: "Webhook URL on the monitor is enough for channel posts. Custom bot: verify HMAC then call Discord API.",
+      },
+      {
+        title: "Test on Free, go live on Starter",
+        text: "Walkthrough: /blog/twitter-to-discord-alerts. Product page: /twitter-discord-alerts.",
+      },
+    ],
+    faqs: [
+      {
+        question: "Do I need to scrape Twitter for a Discord bot?",
+        answer:
+          "Not with XFlux monitors. We detect new public tweets on a schedule and POST to your webhook or server.",
+      },
+      {
+        question: "Is this an official Discord Twitter integration?",
+        answer:
+          "No — it is your Discord server plus XFlux monitors. Discord and X remain separate products.",
+      },
+      {
+        question: "Tracker bot vs channel webhook?",
+        answer:
+          "Channel webhooks are enough for alerts. Full “tracker bots” add UX; the data path is still monitor → HTTP.",
+      },
+    ],
+    related: [
+      { href: "/twitter-discord-alerts", label: "Discord alerts landing" },
+      { href: "/blog/twitter-to-discord-alerts", label: "Discord Twitter guide (blog)" },
+      { href: "/twitter-webhook", label: "Twitter webhook hub" },
+      { href: "/monitor-twitter-account", label: "Monitor a Twitter account" },
+      { href: "/twitter-crypto-signals", label: "Crypto signals path" },
+    ],
+  },
+  {
+    slug: "twitter-search-api",
+    path: "/twitter-search-api",
+    primaryKeyword: "twitter search api",
+    title: "Twitter Search API — Operators, Quotas & Monitors",
+    description:
+      "How to use a Twitter search API without enterprise approval: from:/since:/lang: operators, monthly quotas, and when to promote results to account monitors.",
+    keywords: [
+      "twitter search api",
+      "how to use twitter search api",
+      "twitter api search",
+      "x api search",
+      "twitter search operators",
+    ],
+    badge: "Search API",
+    h1: "Twitter Search API for public posts (self-serve)",
+    subtitle:
+      "Need a Twitter search API for research or agents? XFlux /api/v1/search accepts advanced operators. Pair search for discovery with monitors + webhooks for always-on alerts.",
+    registerSrc: "seo_search_api",
+    cards: [
+      {
+        title: "Operators that matter",
+        text: "from:user, since:/until:, lang:, filter:replies — same ideas as advanced search. Guide: /blog/twitter-api-search-operators.",
+      },
+      {
+        title: "Quota-aware",
+        text: "Each search counts against monthly API calls. Free includes 1,000/mo — see /docs/limits.",
+      },
+      {
+        title: "Promote to monitors",
+        text: "When a handle keeps producing signal, stop polling search — add a monitor and webhook.",
+      },
+    ],
+    howTitle: "How to use Twitter search with XFlux",
+    steps: [
+      {
+        title: "Create a key and call /api/v1/search",
+        text: "Bearer auth. URL-encode q. Docs: /docs/guides/search and /docs/guides/python.",
+      },
+      {
+        title: "Tighten the query",
+        text: "Prefer from: + lang: + short windows over keyword soup.",
+      },
+      {
+        title: "Graduate alerts off search",
+        text: "Always-on account watches belong on monitors — /monitor-twitter-account and /twitter-webhook.",
+      },
+    ],
+    codeTitle: "Minimal search call",
+    code: `curl -G "https://www.xfluxapi.com/api/v1/search" \\
+  -H "Authorization: Bearer xflux_YOUR_KEY" \\
+  --data-urlencode "q=from:FederalReserve lang:en" \\
+  --data-urlencode "limit=10"`,
+    faqs: [
+      {
+        question: "Is this official X API search?",
+        answer:
+          "No. XFlux is an independent read API. Official access and packaging differ — see /docs/compare/pricing.",
+      },
+      {
+        question: "MCP for agents?",
+        answer: "Yes — xflux_search_tweets via /mcp and /docs/integrations/mcp.",
+      },
+      {
+        question: "Private accounts?",
+        answer: "Public data only.",
+      },
+    ],
+    related: [
+      { href: "/blog/twitter-api-search-operators", label: "Search operators (blog)" },
+      { href: "/docs/guides/search", label: "Search docs" },
+      { href: "/monitor-twitter-account", label: "Monitor accounts" },
+      { href: "/twitter-webhook", label: "Twitter webhook hub" },
+      { href: "/docs/guides/python", label: "Python guide" },
+    ],
+  },
+  {
+    slug: "monitor-twitter-account",
+    path: "/monitor-twitter-account",
+    primaryKeyword: "monitor twitter account",
+    title: "Monitor a Twitter Account — Free Dashboard Hits",
+    description:
+      "Monitor a Twitter/X account on the free plan: 1 monitor, keyword filters, Dashboard history. Add webhooks when you need Discord, Slack, or HTTPS push.",
+    keywords: [
+      "monitor twitter account",
+      "monitor twitter",
+      "watch twitter account",
+      "twitter account monitor",
+      "track twitter account",
+    ],
+    badge: "Account monitor",
+    h1: "Monitor a Twitter account without building a poller",
+    subtitle:
+      "Add a public @handle, optional keywords, and see new posts in the Dashboard. Free includes 1 monitor. Webhooks for Discord/Slack/HTTPS when you upgrade — details at /monitor-twitter-account-webhook.",
+    registerSrc: "seo_monitor_account",
+    cards: [
+      {
+        title: "Self-serve in minutes",
+        text: "No enterprise AAA or filtered stream for a short account list.",
+      },
+      {
+        title: "Keywords cut noise",
+        text: "Only create hits when posts match tickers or phrases you care about.",
+      },
+      {
+        title: "Push when ready",
+        text: "Test webhooks on Free; live POSTs on Starter+. Hub: /twitter-webhook.",
+      },
+    ],
+    howTitle: "Monitor setup",
+    steps: [
+      {
+        title: "Create a free account",
+        text: "Open Dashboard → Monitors and add @username.",
+      },
+      {
+        title: "Run Check now once",
+        text: "Baselines history so only newer tweets become hits.",
+      },
+      {
+        title: "Attach a webhook if you need push",
+        text: "Discord, Slack, Make, n8n, or Python/Node — see related guides below.",
+      },
+    ],
+    faqs: [
+      {
+        question: "How is this different from search?",
+        answer:
+          "Search is on-demand. Monitors are always-on watches for specific accounts. See /twitter-search-api.",
+      },
+      {
+        question: "How many monitors on Free?",
+        answer: "One active monitor. Paid plans add more slots and faster intervals.",
+      },
+      {
+        question: "Webhook deep-dive?",
+        answer: "Use /monitor-twitter-account-webhook and /docs/monitors.",
+      },
+    ],
+    related: [
+      { href: "/monitor-twitter-account-webhook", label: "Monitor → webhook" },
+      { href: "/twitter-webhook", label: "Twitter webhook hub" },
+      { href: "/twitter-crypto-signals", label: "Crypto signals path" },
+      { href: "/discord-twitter-bot", label: "Discord Twitter bot" },
+      { href: "/docs/monitors", label: "Monitor docs" },
     ],
   },
 ];

@@ -21,9 +21,17 @@ export const LANDING_MONITOR_PRESETS: Record<string, MonitorPrefill> = {
     accounts: ["blknoiz06", "WatcherGuru", "lookonchain"],
     registerSrc: "blog_post",
   },
+  "blog/twitter-webhooks-account-alerts": {
+    accounts: ["unusual_whales", "DeItaone", "elonmusk"],
+    registerSrc: "blog_post",
+  },
   "blog/twitter-to-discord-alerts": {
     accounts: ["unusual_whales", "DeItaone", "elonmusk"],
     registerSrc: "blog_post",
+  },
+  "twitter-webhook": {
+    accounts: ["unusual_whales", "DeItaone", "elonmusk"],
+    registerSrc: "twitter_webhook_landing",
   },
   "twitter-discord-alerts": {
     accounts: ["unusual_whales", "DeItaone", "elonmusk"],

@@ -232,6 +232,12 @@ model UserFeedback {
   planTier        PlanTier?
   coreNeeds       Json      @default("[]")
   adoptionDrivers Json      @default("[]")
+  /** Free-text wish: Twitter/X-related capability, may not exist yet. */
+  capabilityRequest String?
+  /** User wants email when we ship this (or a close match). */
+  notifyOnShip    Boolean   @default(true)
+  /** Set when we emailed the user that a matching capability is ready. */
+  capabilityNotifySentAt DateTime?
   message         String?
   userSource      String?
   userSourceDetail String?
@@ -252,6 +258,7 @@ model UserFeedback {
   @@index([userId, createdAt])
   @@index([userSource])
   @@index([reviewStatus, createdAt])
+  @@index([notifyOnShip, capabilityNotifySentAt])
 }
 
 /** Daily rollups for pageviews (pv/uv) and event counts — kept small via retention. */

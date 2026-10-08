@@ -128,19 +128,25 @@ export default function McpIntegrationPage() {
         </p>
       </Callout>
 
-      <DocHeading id="install">Install & run</DocHeading>
+      <DocHeading id="install">Install & run (one-shot)</DocHeading>
       <p className="text-zinc-400 text-sm mb-4">
-        Install via npm as{" "}
-        <code className="text-zinc-300">@xflux/xflux-mcp-server</code> (Registry name{" "}
-        <code className="text-zinc-300">io.github.yxs1640-png/xflux</code>). You need Node 18+ and
-        an API key from the Dashboard.
+        1) Get a free key at{" "}
+        <Link href="/register?src=mcp_docs" className="text-sky-400 hover:underline">
+          /register
+        </Link>{" "}
+        → Dashboard → API Keys. 2) Paste the JSON below into Cursor or Claude Desktop. 3) Restart,
+        then say <em className="text-zinc-300">“Using XFlux…”</em>. Package:{" "}
+        <code className="text-zinc-300">@xflux/xflux-mcp-server</code> · Registry:{" "}
+        <code className="text-zinc-300">io.github.yxs1640-png/xflux</code> · Node 18+.
       </p>
       <CodeBlock>{`export XFLUX_API_KEY=xflux_your_key_here
-npx @xflux/xflux-mcp-server`}</CodeBlock>
+npx -y @xflux/xflux-mcp-server`}</CodeBlock>
 
-      <DocHeading id="cursor">Cursor configuration</DocHeading>
+      <DocHeading id="cursor">Cursor / Claude Desktop config</DocHeading>
       <p className="text-zinc-400 text-sm mb-4">
-        Add to Cursor MCP settings (Settings → MCP → Edit config):
+        Cursor: Settings → MCP → Edit config. Claude Desktop:{" "}
+        <code className="text-zinc-300">claude_desktop_config.json</code>. Same block; restart after
+        saving.
       </p>
       <CodeBlock>{`{
   "mcpServers": {
@@ -154,11 +160,31 @@ npx @xflux/xflux-mcp-server`}</CodeBlock>
   }
 }`}</CodeBlock>
 
-      <DocHeading id="claude">Claude Desktop</DocHeading>
-      <p className="text-zinc-400 text-sm mb-4">
-        Same JSON block in Claude Desktop config (
-        <code className="text-zinc-300">claude_desktop_config.json</code>). Restart the app after
-        saving.
+      <DocHeading id="example-prompts">Example prompts</DocHeading>
+      <ul className="list-disc list-inside space-y-2 text-zinc-400 text-sm mb-6">
+        <li>
+          Using XFlux, search recent English tweets about federal reserve rate cuts and summarize.
+        </li>
+        <li>Using XFlux, pull @elonmusk&apos;s profile and latest tweets.</li>
+        <li>Using XFlux Smart Money, list 4 MACRO accounts from the last 14 days.</li>
+        <li>Using XFlux, list my monitors and show recent hits.</li>
+      </ul>
+
+      <DocHeading id="agent-discovery">Agent discovery (no Google required)</DocHeading>
+      <p className="text-zinc-400 text-sm mb-4 leading-relaxed">
+        Browsing agents can fetch a machine-readable map at{" "}
+        <Link href="/llms.txt" className="text-sky-400 hover:underline">
+          /llms.txt
+        </Link>{" "}
+        (and{" "}
+        <Link href="/llms-full.txt" className="text-sky-400 hover:underline">
+          /llms-full.txt
+        </Link>
+        ). Once this MCP is installed, tools are callable directly — product overview also lives at{" "}
+        <Link href="/mcp" className="text-sky-400 hover:underline">
+          /mcp
+        </Link>
+        .
       </p>
 
       <DocHeading id="monitors">Monitors + MCP together</DocHeading>

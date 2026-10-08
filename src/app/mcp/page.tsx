@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Bot, Check, Terminal } from "lucide-react";
+import { Bot, Check, KeyRound, MessageSquareText, Terminal } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -12,7 +12,7 @@ import { pageMetadata } from "@/lib/seo";
 export const metadata = pageMetadata({
   title: "XFlux MCP — X/Twitter Data for Claude & Cursor",
   description:
-    "Connect Claude Desktop or Cursor to XFlux with npx @xflux/xflux-mcp-server. Profiles, search, timelines, Smart Money — not the Figma xflux MCP.",
+    "Connect Claude Desktop or Cursor to XFlux with npx @xflux/xflux-mcp-server. Profiles, search, timelines, Smart Money — not the Figma xflux MCP. Agents: see /llms.txt.",
   path: "/mcp",
   keywords: [
     "xflux mcp",
@@ -20,8 +20,21 @@ export const metadata = pageMetadata({
     "claude twitter mcp",
     "cursor mcp x api",
     "xflux mcp server",
+    "twitter api for ai agents",
   ],
 });
+
+const MCP_CONFIG = `{
+  "mcpServers": {
+    "xflux": {
+      "command": "npx",
+      "args": ["-y", "@xflux/xflux-mcp-server"],
+      "env": {
+        "XFLUX_API_KEY": "xflux_your_key_here"
+      }
+    }
+  }
+}`;
 
 export default async function McpMarketingPage() {
   const t = await getTranslations("mcpLanding");
@@ -30,6 +43,7 @@ export default async function McpMarketingPage() {
     { question: t("faq1Q"), answer: t("faq1A") },
     { question: t("faq2Q"), answer: t("faq2A") },
     { question: t("faq3Q"), answer: t("faq3A") },
+    { question: t("faq4Q"), answer: t("faq4A") },
   ];
 
   const cards = [
@@ -37,6 +51,14 @@ export default async function McpMarketingPage() {
     { icon: Bot, title: t("card2Title"), text: t("card2Text") },
     { icon: Check, title: t("card3Title"), text: t("card3Text") },
   ];
+
+  const steps = [
+    { icon: KeyRound, title: t("step1Title"), text: t("step1Text") },
+    { icon: Terminal, title: t("step2Title"), text: t("step2Text") },
+    { icon: MessageSquareText, title: t("step3Title"), text: t("step3Text") },
+  ];
+
+  const prompts = [t("prompt1"), t("prompt2"), t("prompt3"), t("prompt4")];
 
   return (
     <>
@@ -81,6 +103,27 @@ export default async function McpMarketingPage() {
             {t("disambiguationAfter")}
           </div>
 
+          <section className="mb-16">
+            <h2 className="text-2xl font-bold text-white mb-6">{t("stepsTitle")}</h2>
+            <ol className="grid gap-4 sm:grid-cols-3">
+              {steps.map(({ icon: Icon, title, text }, i) => (
+                <li
+                  key={title}
+                  className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4"
+                >
+                  <div className="mb-3 flex items-center gap-2 text-sm text-zinc-500">
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-sky-500/15 text-xs font-semibold text-sky-300">
+                      {i + 1}
+                    </span>
+                    <Icon className="h-4 w-4 text-sky-400" />
+                  </div>
+                  <p className="font-semibold text-white">{title}</p>
+                  <p className="mt-1 text-sm text-zinc-400 leading-relaxed">{text}</p>
+                </li>
+              ))}
+            </ol>
+          </section>
+
           <div className="grid gap-6 sm:grid-cols-3 mb-16">
             {cards.map(({ icon: Icon, title, text }) => (
               <Card key={title}>
@@ -94,8 +137,10 @@ export default async function McpMarketingPage() {
           </div>
 
           <section className="mb-16">
-            <h2 className="text-2xl font-bold text-white mb-4">{t("installTitle")}</h2>
-            <p className="text-zinc-400 text-sm mb-4">
+            <h2 className="text-2xl font-bold text-white mb-4">{t("configTitle")}</h2>
+            <p className="text-zinc-400 text-sm mb-4">{t("configBlurb")}</p>
+            <CodeBlock>{MCP_CONFIG}</CodeBlock>
+            <p className="mt-4 text-zinc-400 text-sm">
               {t("installPackage")}{" "}
               <a
                 href="https://www.npmjs.com/package/@xflux/xflux-mcp-server"
@@ -109,23 +154,41 @@ export default async function McpMarketingPage() {
               <code className="text-zinc-300">io.github.yxs1640-png/xflux</code>.
             </p>
             <CodeBlock>{`export XFLUX_API_KEY=xflux_your_key_here
-npx @xflux/xflux-mcp-server`}</CodeBlock>
+npx -y @xflux/xflux-mcp-server`}</CodeBlock>
           </section>
 
           <section className="mb-16">
-            <h2 className="text-2xl font-bold text-white mb-4">{t("configTitle")}</h2>
-            <p className="text-zinc-400 text-sm mb-4">{t("configBlurb")}</p>
-            <CodeBlock>{`{
-  "mcpServers": {
-    "xflux": {
-      "command": "npx",
-      "args": ["-y", "@xflux/xflux-mcp-server"],
-      "env": {
-        "XFLUX_API_KEY": "xflux_your_key_here"
-      }
-    }
-  }
-}`}</CodeBlock>
+            <h2 className="text-2xl font-bold text-white mb-4">{t("promptsTitle")}</h2>
+            <p className="text-zinc-400 text-sm mb-4">{t("promptsBlurb")}</p>
+            <ul className="space-y-3">
+              {prompts.map((prompt) => (
+                <li
+                  key={prompt}
+                  className="rounded-lg border border-zinc-800 bg-zinc-950/60 px-4 py-3 text-sm text-zinc-200 leading-relaxed"
+                >
+                  {prompt}
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section className="mb-16 rounded-xl border border-sky-500/25 bg-sky-500/5 p-6">
+            <h2 className="text-xl font-bold text-white mb-2">{t("llmsTitle")}</h2>
+            <p className="text-sm text-zinc-400 mb-4 leading-relaxed">{t("llmsBlurb")}</p>
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/llms.txt"
+                className="rounded-lg border border-sky-500/40 bg-zinc-950/50 px-3 py-2 text-sm text-sky-300 hover:border-sky-400"
+              >
+                {t("llmsLink")}
+              </Link>
+              <Link
+                href="/llms-full.txt"
+                className="rounded-lg border border-zinc-700 bg-zinc-950/50 px-3 py-2 text-sm text-zinc-300 hover:border-zinc-500"
+              >
+                {t("llmsFullLink")}
+              </Link>
+            </div>
           </section>
 
           <section className="mb-16">
