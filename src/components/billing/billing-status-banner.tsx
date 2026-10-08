@@ -47,8 +47,10 @@ export function BillingStatusBanner() {
 
         if (res.ok && data.synced) {
           setSyncState("synced");
+          // Don't fire purchase conversion for $0 Starter trials.
           if (
             data.planTier &&
+            data.subscriptionStatus === "active" &&
             isPaidPlanTierForAds(data.planTier) &&
             typeof data.transactionId === "string"
           ) {
@@ -78,12 +80,12 @@ export function BillingStatusBanner() {
   if (checkout === "success") {
     const message =
       syncState === "syncing"
-        ? "Payment received — activating your plan…"
+        ? "Checkout complete — activating your plan…"
         : syncState === "synced"
-          ? "Plan activated. Your quota and features are updated."
+          ? "Plan activated. Your quota and features are updated. Starter trials charge after the trial ends unless you cancel."
           : syncState === "failed"
-            ? "Payment received, but we couldn't confirm your plan yet. Refresh in a moment or contact support."
-            : "Payment successful. Your plan will update shortly once Stripe confirms the subscription.";
+            ? "Checkout completed, but we couldn't confirm your plan yet. Refresh in a moment or contact support."
+            : "Checkout completed. Your plan will update shortly once Stripe confirms the subscription.";
 
     return (
       <div

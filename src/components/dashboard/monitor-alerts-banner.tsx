@@ -127,7 +127,7 @@ export function MonitorAlertsBanner({
                 </p>
                 <Link href="/dashboard/billing">
                   <Button size="sm" variant="outline">
-                    Upgrade to Starter — $19/mo
+                    Start free Starter trial
                   </Button>
                 </Link>
               </div>

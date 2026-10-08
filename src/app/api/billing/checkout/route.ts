@@ -21,6 +21,10 @@ import {
 import { PLAN_LIMITS } from "@/lib/quota";
 import { AnalyticsEvents } from "@/lib/analytics/events";
 import { trackServerEvent } from "@/lib/analytics/server";
+import {
+  isStarterTrialEligible,
+  STARTER_TRIAL_DAYS,
+} from "@/lib/billing-trial";
 
 function checkoutErrorMessage(err: unknown): string {
   if (err && typeof err === "object" && "type" in err && (err as { type?: string }).type?.startsWith("Stripe")) {
@@ -276,16 +280,38 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const offerStarterTrial =
+      planId === "BASIC" &&
+      isStarterTrialEligible({
+        planTier: user.planTier,
+        subscriptionStatus: user.subscriptionStatus,
+        starterTrialUsedAt: user.starterTrialUsedAt,
+      });
+
     const checkout = await stripe.checkout.sessions.create({
       customer: customerId,
       mode: "subscription",
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${baseUrl}/dashboard/billing?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/dashboard/billing?checkout=canceled`,
-      subscription_data: {
-        metadata: { userId: user.id, planTier: planId },
+      ...(offerStarterTrial
+        ? {
+            payment_method_collection: "always" as const,
+            subscription_data: {
+              trial_period_days: STARTER_TRIAL_DAYS,
+              metadata: { userId: user.id, planTier: planId, starter_trial: "1" },
+            },
+          }
+        : {
+            subscription_data: {
+              metadata: { userId: user.id, planTier: planId },
+            },
+          }),
+      metadata: {
+        userId: user.id,
+        planTier: planId,
+        ...(offerStarterTrial ? { starter_trial: "1" } : {}),
       },
-      metadata: { userId: user.id, planTier: planId },
     });
 
     if (!checkout.url) {
@@ -295,6 +321,7 @@ export async function POST(request: NextRequest) {
     await trackServerEvent(user.id, AnalyticsEvents.CHECKOUT_STARTED, {
       plan_id: planId,
       checkout_session_id: checkout.id,
+      starter_trial: offerStarterTrial,
     });
 
     return NextResponse.json({ url: checkout.url });

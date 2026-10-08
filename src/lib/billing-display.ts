@@ -27,6 +27,10 @@ export function getBillingPeriodDisplay(
     return { label: "Access until", date: end };
   }
 
+  if (user.subscriptionStatus === "trialing") {
+    return { label: "Trial ends", date: end };
+  }
+
   return { label: "Renews on", date: end };
 }
 

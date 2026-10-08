@@ -37,8 +37,8 @@ export function QuotaUpsellBanner({ quotaUsed, quotaLimit }: QuotaUpsellBannerPr
       : tier === "warn"
         ? {
             title: `${percent}% of monthly quota used`,
-            body: `Only ${formatNumber(remaining)} calls left on Free. Starter gives you 150K calls/mo plus webhooks from $19/mo.`,
-            cta: "View plans",
+            body: `Only ${formatNumber(remaining)} calls left on Free. Start a free 30-day Starter trial for 150K calls/mo plus webhooks.`,
+            cta: "Start free Starter trial",
             className: "border-amber-500/30 bg-amber-500/10 text-amber-100",
             ctaClass: "bg-amber-500 hover:bg-amber-400 text-zinc-950",
           }

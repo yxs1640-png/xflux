@@ -101,7 +101,7 @@ Prepare in English:
 - [ ] EIN received → upload to Mercury + Atlas + Stripe
 - [ ] Mercury approved → link bank in Stripe for payouts
 - [ ] Vercel Production: Live `STRIPE_*` + `BILLING_CHECKOUT_ENABLED=true` + Redeploy
-- [ ] End-to-end Live test ($19 Starter + webhook 200)
+- [ ] End-to-end Live test (Starter 30-day trial → trialing + webhook 200; cancel before charge or let convert to $19)
 - [ ] 83(b) proof filed and archived
 
 ### Reference (full launch)

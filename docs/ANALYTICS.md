@@ -110,7 +110,7 @@ Properties: `core_needs`, `adoption_drivers`, `user_source`.
 | Event | Trigger | Side | Key properties |
 |-------|---------|------|----------------|
 | `plan_selected` | Billing plan button click | Client | `plan_id`, `plan_name`, `action` |
-| `checkout_started` | Stripe Checkout session created | Server | `plan_id` |
+| `checkout_started` | Stripe Checkout session created | Server | `plan_id`, `starter_trial` (bool) |
 | `checkout_completed` | Return URL `?checkout=success` | Client | — |
 | `checkout_canceled` | Return URL `?checkout=canceled` | Client | — |
 | `subscription_updated` | Stripe webhook plan change | Server | `plan_id`, `subscription_status` |

@@ -66,11 +66,11 @@ NEXTAUTH_URL=https://xfluxapi.com
 ### 1.3 上线验证
 
 1. https://xfluxapi.com/pricing — 付费按钮可点，无 Coming soon
-2. 登录 → **Dashboard → Billing** → **Starter $19** → 真实卡支付
-3. Stripe Live → Payments / Subscriptions 有记录
-4. Webhooks → 事件交付 **200**
-5. `/dashboard/billing` 显示 **Starter**，配额已更新
-6. **Manage billing** 可打开 Customer Portal
+2. 登录 → **Dashboard → Billing** → **Start free Starter trial** → Checkout（绑卡，`trial_period_days: 30`，首月不扣款）
+3. Stripe Live → Subscriptions 状态为 **trialing**；Payments 可能暂无 charge
+4. Webhooks → 事件交付 **200**（`checkout.session.completed` / `customer.subscription.*`）
+5. `/dashboard/billing` 显示 **Starter** + Trial，配额已更新；文案含 trial 结束日
+6. **Manage billing** 可打开 Customer Portal（试用期内可取消，避免试用结束后扣款）
 
 ### 1.4 资金与合规（Live 运营注意）
 
@@ -131,11 +131,14 @@ npm run dev
 | Production 未设 `BILLING_CHECKOUT_ENABLED=true` | 付费按钮 Coming soon；API checkout 返回 503 |
 | 未配置 Stripe（本地） | 可用 mock 升级（仅 dev，无 `sk_` 时） |
 | Production + Stripe 已配置 | mock 升级拒绝，必须走 Checkout |
-| 首次订阅 | Stripe Checkout |
+| 首次 Starter（BASIC）且未用过试用 | Checkout `subscription_data.trial_period_days: 30` + `payment_method_collection: always`（代码常量，**无需**额外 Stripe/Vercel 环境变量） |
+| 每用户仅一次试用 | `User.starterTrialUsedAt` 在首次 `active`/`trialing` 同步时写入；之后再订 Starter 无 trial |
+| 首次订阅（Growth/Pro/Scale，或已用过试用） | Stripe Checkout，立即计费 |
 | 已有订阅升级 | `subscriptions.update`（按比例计费） |
 | 已有订阅降级 | 周期末生效（pending plan） |
 | 降级到 Free | Customer Portal 取消订阅 |
-| 订阅取消 / 删除 | Webhook 重置为 `FREE`，enforce monitor 限制 |
+| 订阅取消 / 删除 | Webhook 重置为 `FREE`，enforce monitor 限制；`starterTrialUsedAt` 保留（不可再领 trial） |
+| Checkout 成功同步 | `payment_status` 为 `paid` **或** `no_payment_required`（trial 场景）均会 sync 套餐 |
 
 ---
 

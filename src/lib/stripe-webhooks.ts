@@ -13,6 +13,7 @@ import {
   schedulePlanDowngrade,
 } from "./billing";
 import { planTierFromPriceId } from "./stripe-plans";
+import { markStarterTrialUsed } from "./billing-trial";
 import { AnalyticsEvents } from "./analytics/events";
 import { identifyServerUser, trackServerEvent } from "./analytics/server";
 import { prisma } from "./db";
@@ -123,11 +124,15 @@ async function syncSubscription(
 
   if (isPlanUpgrade(user.planTier, newPlanTier)) {
     await applyPlanImmediately(userId, newPlanTier, snapshot);
+    if (status === "active" || status === "trialing") {
+      await markStarterTrialUsed(userId);
+    }
     await identifyServerUser(userId, { plan_tier: newPlanTier });
     await trackServerEvent(userId, AnalyticsEvents.SUBSCRIPTION_UPDATED, {
       plan_id: newPlanTier,
       subscription_status: status,
       via: "stripe_webhook",
+      starter_trial: status === "trialing",
     });
     return;
   }
@@ -136,6 +141,9 @@ async function syncSubscription(
     where: { id: userId },
     data: snapshot,
   });
+  if (status === "active" || status === "trialing") {
+    await markStarterTrialUsed(userId);
+  }
   await maybeApplyPendingPlanChange(userId);
   await trackServerEvent(userId, AnalyticsEvents.SUBSCRIPTION_UPDATED, {
     plan_id: newPlanTier,
@@ -191,7 +199,11 @@ export async function syncUserBillingFromStripe(
       });
     }
 
-    if (session.mode === "subscription" && session.payment_status === "paid") {
+    // Trials complete Checkout with payment_status "no_payment_required" until first charge.
+    const checkoutPaid =
+      session.payment_status === "paid" || session.payment_status === "no_payment_required";
+
+    if (session.mode === "subscription" && checkoutPaid) {
       const subscriptionId =
         typeof session.subscription === "string"
           ? session.subscription

@@ -16,7 +16,7 @@ import { Check } from "lucide-react";
 export const metadata = pageMetadata({
   title: "Pricing",
   description:
-    "Transparent X/Twitter API and monitor pricing. Free tier with 1,000 calls/month. Paid plans from $19/mo with webhooks, faster polling, and higher quotas.",
+    "Transparent X/Twitter API and monitor pricing. Free tier with 1,000 calls/month. Start a free 30-day Starter trial (then $19/mo) for webhooks, faster polling, and higher quotas.",
   path: "/pricing",
 });
 

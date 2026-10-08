@@ -214,7 +214,7 @@ function MonitorWebhookPanel({
               <Link href="/dashboard/billing">
                 <Button size="sm" className="mt-1">
                   <Zap className="h-3.5 w-3.5" />
-                  Upgrade to Starter — $19/mo
+                  Start free Starter trial
                 </Button>
               </Link>
             </div>
@@ -452,7 +452,7 @@ export default function MonitorsPage() {
           </div>
           <Link href="/dashboard/billing" className="shrink-0">
             <Button size="sm">
-              Upgrade to Starter — $19/mo
+              Start free Starter trial
             </Button>
           </Link>
         </div>

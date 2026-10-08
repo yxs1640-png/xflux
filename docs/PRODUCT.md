@@ -108,16 +108,16 @@
 | 套餐 | 月费 | API 调用/月 | Monitor 任务数 | 最快检查间隔 |
 |------|------|-------------|----------------|--------------|
 | Free | $0 | 1,000 | 1 | 5 min |
-| Basic | $19 | 50,000 | 5 | 1 min |
-| Pro | $99 | 500,000 | 20 | 30 sec |
-| Enterprise | $499+ | 定制 | 定制 | 10 sec |
+| Starter (BASIC) | $19（首次可 30 天 trial） | 150,000 | 3 | 1s |
+| Growth | $49 | 见 `PLANS` | 见 `PLANS` | 见产品 |
+| Pro / Scale | 见 `PLANS` | 见 `PLANS` | 见 `PLANS` | 见产品 |
 
 **原则：**
 
 - API 超额 → 429，提示升级
 - Monitor 超额（任务数或 interval 不达标）→ 创建/更新时拒绝
 - Monitor 轮询 **不计入** API 配额（成本在 XFlux 侧用套餐价覆盖）
-- 账单：Production 走 Stripe Checkout + Webhook；本地无 Stripe 时可用 mock 升级
+- 账单：Production 走 Stripe Checkout + Webhook；Starter 首次订阅对未用过试用的用户附带 `trial_period_days: 30`（`User.starterTrialUsedAt` 防重复）；本地无 Stripe 时可用 mock 升级
 
 **对外话术：** 同时展示「API 调用量」和「Monitor 槽位」，避免用户误以为监控会吃掉 API 额度。
 

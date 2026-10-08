@@ -55,9 +55,10 @@ export default function MakeIntegrationPage() {
           Free tier: configure a webhook URL and send <strong className="text-white">test pings</strong>.
           Live delivery on new monitor hits requires{" "}
           <Link href="/pricing" className="text-sky-400 hover:underline">
-            Starter ($19/mo)
+            Starter
           </Link>{" "}
-          or above (1s minimum poll interval, 3 monitors).
+          or above (30-day free trial available, then $19/mo; 1s minimum poll interval, 3
+          monitors).
         </p>
       </Callout>
 

@@ -32,6 +32,8 @@ interface PlanSelectorProps {
   stripeConfigured: boolean;
   hasActiveSubscription: boolean;
   cancelScheduled?: boolean;
+  /** Free users who have never used a Starter trial / paid sub */
+  starterTrialEligible?: boolean;
 }
 
 export function PlanSelector({
@@ -42,6 +44,7 @@ export function PlanSelector({
   stripeConfigured,
   hasActiveSubscription,
   cancelScheduled = false,
+  starterTrialEligible = false,
 }: PlanSelectorProps) {
   const router = useRouter();
   const { data: session } = useSession();
@@ -197,6 +200,9 @@ export function PlanSelector({
       return cancelScheduled ? "Downgrade scheduled" : "Cancel via portal";
     }
     if (index < currentIndex) return `Switch to ${plan.name}`;
+    if (stripeEnabled && plan.id === "BASIC") {
+      return starterTrialEligible ? "Start free Starter trial" : "Start Starter";
+    }
     return stripeEnabled ? plan.cta : `Switch to ${plan.name}`;
   }
 

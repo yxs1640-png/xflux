@@ -18,6 +18,7 @@ import { isBillingCheckoutEnabled, isPaidBillingAvailable } from "@/lib/billing-
 import { isStripeConfigured } from "@/lib/stripe";
 import { formatNumber, formatDateOnly } from "@/lib/utils";
 import { getDashboardUserRecord } from "@/lib/dashboard-session";
+import { isStarterTrialEligible } from "@/lib/billing-trial";
 
 export default async function BillingPage() {
   const user = await getDashboardUserRecord();
@@ -31,6 +32,7 @@ export default async function BillingPage() {
   const cancelScheduled = isCancelAtPeriodEnd(user);
   const subscriptionBadge = getSubscriptionBadgeDisplay(user);
   const billingPeriod = getBillingPeriodDisplay(user);
+  const starterTrialEligible = isStarterTrialEligible(user);
 
   return (
     <div>
@@ -97,6 +99,7 @@ export default async function BillingPage() {
         stripeConfigured={isStripeConfigured()}
         hasActiveSubscription={hasActiveSubscription}
         cancelScheduled={cancelScheduled}
+        starterTrialEligible={starterTrialEligible}
       />
     </div>
   );

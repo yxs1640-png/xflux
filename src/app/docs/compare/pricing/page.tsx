@@ -70,7 +70,7 @@ export default function PricingComparePage() {
               {
                 label: "Starter cost (approx.)",
                 official: "Historically $100+/mo Basic; PPU ~$0.005/read resource",
-                xflux: `Free: ${free.quota} calls + ${free.monitors} monitor. Starter: $${starter.price}/mo (${starter.quota} calls, ${starter.monitors} monitors)`,
+                xflux: `Free: ${free.quota} calls + ${free.monitors} monitor. Starter: 30-day free trial, then $${starter.price}/mo (${starter.quota} calls, ${starter.monitors} monitors)`,
               },
               {
                 label: "Profiles / timelines / search",

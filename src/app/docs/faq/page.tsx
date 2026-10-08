@@ -15,12 +15,13 @@ const FAQS: { q: string; answerText: string; a: ReactNode }[] = [
   {
     q: "Does Free include live webhooks?",
     answerText:
-      "Free can save a webhook URL and send test pings. Live monitor.hit delivery requires Starter ($19/mo) or above.",
+      "Free can save a webhook URL and send test pings. Live monitor.hit delivery requires Starter or above. New accounts can start a 30-day free Starter trial (card required, then $19/mo).",
     a: (
       <>
         Free can save a webhook URL and send <strong className="text-white">test pings</strong>. Live{" "}
-        <code className="text-zinc-300">monitor.hit</code> delivery requires Starter ($19/mo) or
-        above. See{" "}
+        <code className="text-zinc-300">monitor.hit</code> delivery requires Starter or above. Eligible
+        accounts get a <strong className="text-white">30-day free Starter trial</strong> (card
+        required; then $19/mo). See{" "}
         <Link href="/docs/webhooks" className="text-sky-400 hover:underline">
           Webhooks
         </Link>

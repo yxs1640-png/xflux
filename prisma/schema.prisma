@@ -68,6 +68,8 @@ model User {
   monitorHitsReadAt        DateTime?
   signupSource           String?
   signupSourceDetail     String?
+  /** Set when user starts a Starter trial or any paid subscription — blocks repeat trials. */
+  starterTrialUsedAt     DateTime?
   createdAt              DateTime  @default(now())
   updatedAt              DateTime  @updatedAt
 

@@ -26,7 +26,9 @@ export default function LimitsDocsPage() {
     <>
       <h1 className="text-4xl font-bold text-white mb-4">Plans & Limits</h1>
       <p className="text-zinc-400 mb-8">
-        XFlux uses monthly subscriptions. API calls and monitors are metered separately.
+        XFlux uses monthly subscriptions. API calls and monitors are metered separately. New Free
+        accounts can start a <strong className="text-white">30-day free Starter trial</strong>{" "}
+        (card required; one trial per account) before $19/mo billing begins.
       </p>
 
       <DocHeading id="plans">Subscription plans</DocHeading>

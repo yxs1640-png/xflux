@@ -21,12 +21,13 @@ export const PLANS = [
     quota: "150,000",
     monitors: 3,
     features: [
+      "30-day free trial (card required)",
       "150K API calls / month",
       "3 account monitors",
       "Signed HTTP webhooks",
       "1s min poll interval",
     ],
-    cta: "Start Starter",
+    cta: "Start free Starter trial",
     highlighted: false,
   },
   {
