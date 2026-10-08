@@ -19,6 +19,7 @@ import { isStripeConfigured } from "@/lib/stripe";
 import { formatNumber, formatDateOnly } from "@/lib/utils";
 import { getDashboardUserRecord } from "@/lib/dashboard-session";
 import { isStarterTrialEligible } from "@/lib/billing-trial";
+import { STARTER_TRIAL_DAYS } from "@/lib/starter-trial-offer";
 
 export default async function BillingPage() {
   const user = await getDashboardUserRecord();
@@ -50,6 +51,16 @@ export default async function BillingPage() {
         <h1 className="text-2xl font-bold text-white">Billing & Plans</h1>
         <p className="text-zinc-400">Manage your subscription and upgrade your plan</p>
       </div>
+
+      {starterTrialEligible && stripeEnabled && (
+        <div className="mb-6 rounded-lg border border-sky-500/30 bg-sky-500/10 px-4 py-3 text-sm text-sky-100">
+          <p className="font-medium text-white">Limited-time: {STARTER_TRIAL_DAYS}-day free Starter trial</p>
+          <p className="mt-0.5 text-sky-100/90">
+            Card required at checkout. You won&apos;t be charged until the trial ends — cancel anytime
+            in Manage billing. One trial per account; this offer may end later.
+          </p>
+        </div>
+      )}
 
       <div className="mb-8 flex flex-wrap items-center gap-4 rounded-xl border border-zinc-800 bg-zinc-900/30 px-6 py-4">
         <div>

@@ -5,6 +5,9 @@ import Link from "next/link";
 import { Bell, Loader2, X, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { starterPlanCta } from "@/lib/starter-trial-offer";
+
+const starterUpgradeCta = starterPlanCta();
 
 type AlertHit = {
   id: string;
@@ -127,7 +130,7 @@ export function MonitorAlertsBanner({
                 </p>
                 <Link href="/dashboard/billing">
                   <Button size="sm" variant="outline">
-                    Start free Starter trial
+                    {starterUpgradeCta}
                   </Button>
                 </Link>
               </div>

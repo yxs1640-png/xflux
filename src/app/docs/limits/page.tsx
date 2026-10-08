@@ -4,6 +4,10 @@ import { pageMetadata } from "@/lib/seo";
 import { DocHeading } from "@/components/docs/doc-blocks";
 import { PLANS } from "@/lib/constants";
 import { PLAN_RATE_LIMITS_PER_MINUTE } from "@/lib/rate-limit";
+import {
+  isStarterTrialOfferActive,
+  STARTER_TRIAL_DAYS,
+} from "@/lib/starter-trial-offer";
 
 const RATE_LIMIT_PLAN_ORDER: PlanTier[] = [
   "FREE",
@@ -26,9 +30,16 @@ export default function LimitsDocsPage() {
     <>
       <h1 className="text-4xl font-bold text-white mb-4">Plans & Limits</h1>
       <p className="text-zinc-400 mb-8">
-        XFlux uses monthly subscriptions. API calls and monitors are metered separately. New Free
-        accounts can start a <strong className="text-white">30-day free Starter trial</strong>{" "}
-        (card required; one trial per account) before $19/mo billing begins.
+        XFlux uses monthly subscriptions. API calls and monitors are metered separately.
+        {isStarterTrialOfferActive() ? (
+          <>
+            {" "}
+            <strong className="text-white">Limited-time:</strong> new Free accounts can start a{" "}
+            <strong className="text-white">{STARTER_TRIAL_DAYS}-day free Starter trial</strong>{" "}
+            (card required; one trial per account). This offer may end; then Starter bills at $19/mo
+            from day one.
+          </>
+        ) : null}
       </p>
 
       <DocHeading id="plans">Subscription plans</DocHeading>

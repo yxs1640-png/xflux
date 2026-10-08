@@ -12,6 +12,7 @@ import { trackClientEvent } from "@/lib/analytics/client";
 import { fireGoogleAdsPurchaseConversion } from "@/components/analytics/google-ads-conversion";
 import { getPlanPurchaseValueUsd } from "@/lib/google-ads-config";
 import { PAID_PLAN_COMING_SOON_LABEL } from "@/lib/constants";
+import { STARTER_PLAN_CTA, STARTER_TRIAL_CTA } from "@/lib/starter-trial-offer";
 
 interface Plan {
   id: string;
@@ -201,7 +202,7 @@ export function PlanSelector({
     }
     if (index < currentIndex) return `Switch to ${plan.name}`;
     if (stripeEnabled && plan.id === "BASIC") {
-      return starterTrialEligible ? "Start free Starter trial" : "Start Starter";
+      return starterTrialEligible ? STARTER_TRIAL_CTA : STARTER_PLAN_CTA;
     }
     return stripeEnabled ? plan.cta : `Switch to ${plan.name}`;
   }

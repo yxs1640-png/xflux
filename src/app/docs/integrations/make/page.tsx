@@ -2,6 +2,10 @@ import Link from "next/link";
 import { pageMetadata } from "@/lib/seo";
 import { Callout, CodeBlock, DocHeading } from "@/components/docs/doc-blocks";
 import { Button } from "@/components/ui/button";
+import {
+  isStarterTrialOfferActive,
+  STARTER_TRIAL_DAYS,
+} from "@/lib/starter-trial-offer";
 
 export const metadata = pageMetadata({
   title: "Connect XFlux to Make.com — Twitter Account Webhooks",
@@ -57,8 +61,10 @@ export default function MakeIntegrationPage() {
           <Link href="/pricing" className="text-sky-400 hover:underline">
             Starter
           </Link>{" "}
-          or above (30-day free trial available, then $19/mo; 1s minimum poll interval, 3
-          monitors).
+          or above
+          {isStarterTrialOfferActive()
+            ? ` (limited-time ${STARTER_TRIAL_DAYS}-day free trial available, then $19/mo; 1s minimum poll interval, 3 monitors).`
+            : " ($19/mo; 1s minimum poll interval, 3 monitors)."}
         </p>
       </Callout>
 

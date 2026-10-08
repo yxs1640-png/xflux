@@ -2,9 +2,12 @@ import "server-only";
 
 import { PlanTier } from "@prisma/client";
 import { prisma } from "./db";
+import {
+  isStarterTrialOfferActive,
+  STARTER_TRIAL_DAYS,
+} from "./starter-trial-offer";
 
-/** Starter (BASIC) Checkout trial length — no new Stripe env vars required. */
-export const STARTER_TRIAL_DAYS = 30;
+export { STARTER_TRIAL_DAYS, isStarterTrialOfferActive };
 
 type TrialEligibilityFields = {
   planTier: PlanTier;
@@ -12,8 +15,12 @@ type TrialEligibilityFields = {
   starterTrialUsedAt: Date | null;
 };
 
-/** Free users who have never started a paid sub or Starter trial. */
+/**
+ * Free users who can receive the limited-time Starter trial on Checkout.
+ * False when the offer is off, or the user already used a trial / paid sub.
+ */
 export function isStarterTrialEligible(user: TrialEligibilityFields): boolean {
+  if (!isStarterTrialOfferActive()) return false;
   if (user.starterTrialUsedAt) return false;
   if (user.planTier !== PlanTier.FREE) return false;
   if (user.subscriptionStatus === "trialing" || user.subscriptionStatus === "active") {

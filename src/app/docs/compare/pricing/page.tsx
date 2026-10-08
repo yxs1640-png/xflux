@@ -3,6 +3,10 @@ import { pageMetadata } from "@/lib/seo";
 import { Callout, DocHeading } from "@/components/docs/doc-blocks";
 import { Button } from "@/components/ui/button";
 import { PLANS } from "@/lib/constants";
+import {
+  isStarterTrialOfferActive,
+  STARTER_TRIAL_DAYS,
+} from "@/lib/starter-trial-offer";
 
 export const metadata = pageMetadata({
   title: "XFlux vs Official X API Pricing",
@@ -70,7 +74,9 @@ export default function PricingComparePage() {
               {
                 label: "Starter cost (approx.)",
                 official: "Historically $100+/mo Basic; PPU ~$0.005/read resource",
-                xflux: `Free: ${free.quota} calls + ${free.monitors} monitor. Starter: 30-day free trial, then $${starter.price}/mo (${starter.quota} calls, ${starter.monitors} monitors)`,
+                xflux: isStarterTrialOfferActive()
+                  ? `Free: ${free.quota} calls + ${free.monitors} monitor. Starter: limited-time ${STARTER_TRIAL_DAYS}-day free trial, then $${starter.price}/mo (${starter.quota} calls, ${starter.monitors} monitors)`
+                  : `Free: ${free.quota} calls + ${free.monitors} monitor. Starter: $${starter.price}/mo (${starter.quota} calls, ${starter.monitors} monitors)`,
               },
               {
                 label: "Profiles / timelines / search",

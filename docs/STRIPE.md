@@ -131,7 +131,8 @@ npm run dev
 | Production 未设 `BILLING_CHECKOUT_ENABLED=true` | 付费按钮 Coming soon；API checkout 返回 503 |
 | 未配置 Stripe（本地） | 可用 mock 升级（仅 dev，无 `sk_` 时） |
 | Production + Stripe 已配置 | mock 升级拒绝，必须走 Checkout |
-| 首次 Starter（BASIC）且未用过试用 | Checkout `subscription_data.trial_period_days: 30` + `payment_method_collection: always`（代码常量，**无需**额外 Stripe/Vercel 环境变量） |
+| 限时 Starter 试用（默认开） | `src/lib/starter-trial-offer.ts` 中 `STARTER_TRIAL_OFFER_ACTIVE`；设为 `false` 后 redeploy 即关闭（产品 CTA/文案同步消失）。紧急关闭可设 Vercel `STARTER_TRIAL_ENABLED=false`（可选，非必须） |
+| 首次 Starter（BASIC）且试用开启 + 未用过试用 | Checkout `subscription_data.trial_period_days: 30` + `payment_method_collection: always` |
 | 每用户仅一次试用 | `User.starterTrialUsedAt` 在首次 `active`/`trialing` 同步时写入；之后再订 Starter 无 trial |
 | 首次订阅（Growth/Pro/Scale，或已用过试用） | Stripe Checkout，立即计费 |
 | 已有订阅升级 | `subscriptions.update`（按比例计费） |

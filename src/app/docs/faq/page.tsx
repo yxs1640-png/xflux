@@ -3,6 +3,10 @@ import type { ReactNode } from "react";
 import { pageMetadata } from "@/lib/seo";
 import { DocHeading } from "@/components/docs/doc-blocks";
 import { FaqJsonLd } from "@/components/seo/faq-json-ld";
+import {
+  isStarterTrialOfferActive,
+  STARTER_TRIAL_DAYS,
+} from "@/lib/starter-trial-offer";
 
 export const metadata = pageMetadata({
   title: "FAQ",
@@ -11,17 +15,31 @@ export const metadata = pageMetadata({
   path: "/docs/faq",
 });
 
+const trialLive = isStarterTrialOfferActive();
+
 const FAQS: { q: string; answerText: string; a: ReactNode }[] = [
   {
     q: "Does Free include live webhooks?",
-    answerText:
-      "Free can save a webhook URL and send test pings. Live monitor.hit delivery requires Starter or above. New accounts can start a 30-day free Starter trial (card required, then $19/mo).",
-    a: (
+    answerText: trialLive
+      ? `Free can save a webhook URL and send test pings. Live monitor.hit delivery requires Starter or above. Limited-time: eligible accounts can start a ${STARTER_TRIAL_DAYS}-day free Starter trial (card required, then $19/mo).`
+      : "Free can save a webhook URL and send test pings. Live monitor.hit delivery requires Starter ($19/mo) or above.",
+    a: trialLive ? (
       <>
         Free can save a webhook URL and send <strong className="text-white">test pings</strong>. Live{" "}
-        <code className="text-zinc-300">monitor.hit</code> delivery requires Starter or above. Eligible
-        accounts get a <strong className="text-white">30-day free Starter trial</strong> (card
-        required; then $19/mo). See{" "}
+        <code className="text-zinc-300">monitor.hit</code> delivery requires Starter or above.{" "}
+        <strong className="text-white">Limited-time:</strong> eligible accounts can start a{" "}
+        <strong className="text-white">{STARTER_TRIAL_DAYS}-day free Starter trial</strong> (card
+        required; then $19/mo). This offer may end. See{" "}
+        <Link href="/docs/webhooks" className="text-sky-400 hover:underline">
+          Webhooks
+        </Link>
+        .
+      </>
+    ) : (
+      <>
+        Free can save a webhook URL and send <strong className="text-white">test pings</strong>. Live{" "}
+        <code className="text-zinc-300">monitor.hit</code> delivery requires Starter ($19/mo) or
+        above. See{" "}
         <Link href="/docs/webhooks" className="text-sky-400 hover:underline">
           Webhooks
         </Link>

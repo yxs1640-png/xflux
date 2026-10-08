@@ -1,3 +1,11 @@
+import {
+  isStarterTrialOfferActive,
+  STARTER_TRIAL_FEATURE_LINE,
+  starterPlanCta,
+} from "./starter-trial-offer";
+
+const starterTrialLive = isStarterTrialOfferActive();
+
 export const PLANS = [
   {
     id: "FREE",
@@ -21,13 +29,13 @@ export const PLANS = [
     quota: "150,000",
     monitors: 3,
     features: [
-      "30-day free trial (card required)",
+      ...(starterTrialLive ? [STARTER_TRIAL_FEATURE_LINE] : []),
       "150K API calls / month",
       "3 account monitors",
       "Signed HTTP webhooks",
       "1s min poll interval",
     ],
-    cta: "Start free Starter trial",
+    cta: starterPlanCta(starterTrialLive),
     highlighted: false,
   },
   {

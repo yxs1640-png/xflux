@@ -7,16 +7,23 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { PLANS, PAID_PLAN_COMING_SOON_LABEL } from "@/lib/constants";
 import { isBillingCheckoutEnabled } from "@/lib/billing-config";
+import {
+  isStarterTrialOfferActive,
+  STARTER_TRIAL_DAYS,
+} from "@/lib/starter-trial-offer";
 import { pageMetadata } from "@/lib/seo";
 import { PricingProductJsonLd } from "@/components/seo/product-json-ld";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 
+const trialLive = isStarterTrialOfferActive();
+
 export const metadata = pageMetadata({
   title: "Pricing",
-  description:
-    "Transparent X/Twitter API and monitor pricing. Free tier with 1,000 calls/month. Start a free 30-day Starter trial (then $19/mo) for webhooks, faster polling, and higher quotas.",
+  description: trialLive
+    ? `Transparent X/Twitter API and monitor pricing. Free tier with 1,000 calls/month. Limited-time: ${STARTER_TRIAL_DAYS}-day free Starter trial (then $19/mo) for webhooks, faster polling, and higher quotas.`
+    : "Transparent X/Twitter API and monitor pricing. Free tier with 1,000 calls/month. Paid plans from $19/mo with webhooks, faster polling, and higher quotas.",
   path: "/pricing",
 });
 
@@ -38,6 +45,12 @@ export default async function PricingPage() {
           <div className="text-center mb-16">
             <h1 className="text-4xl font-bold text-white">{t("title")}</h1>
             <p className="mt-4 text-zinc-400 max-w-xl mx-auto">{t("subtitle")}</p>
+            {trialLive && (
+              <p className="mt-3 text-sm text-sky-300/90">
+                Limited-time: {STARTER_TRIAL_DAYS}-day free Starter trial (card required). Offer may
+                end — one trial per account.
+              </p>
+            )}
             {!checkoutEnabled && (
               <p className="mt-3 text-sm text-amber-200/80">{t("paidComingSoon")}</p>
             )}

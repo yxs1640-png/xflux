@@ -2,6 +2,10 @@ import Link from "next/link";
 import { pageMetadata } from "@/lib/seo";
 import { CodeBlock, Callout, DocHeading } from "@/components/docs/doc-blocks";
 import { FaqJsonLd } from "@/components/seo/faq-json-ld";
+import {
+  isStarterTrialOfferActive,
+  STARTER_TRIAL_DAYS,
+} from "@/lib/starter-trial-offer";
 
 export const metadata = pageMetadata({
   title: "Webhook API Reference — Events, Signatures & Verification",
@@ -16,11 +20,14 @@ export const metadata = pageMetadata({
   ],
 });
 
+const trialLive = isStarterTrialOfferActive();
+
 const WEBHOOK_FAQS = [
   {
     question: "Which plans include live webhooks?",
-    answer:
-      "Starter and above deliver live monitor.hit events ($19/mo after a 30-day free trial for eligible accounts). Free can save a URL and send test pings only.",
+    answer: trialLive
+      ? `Starter and above deliver live monitor.hit events. Limited-time: eligible accounts get a ${STARTER_TRIAL_DAYS}-day free Starter trial, then $19/mo. Free can save a URL and send test pings only.`
+      : "Starter ($19/mo) and above deliver live monitor.hit events. Free can save a URL and send test pings only.",
   },
   {
     question: "How do I verify X-XFlux-Signature?",
@@ -46,8 +53,11 @@ export default function WebhooksDocsPage() {
       <h1 className="text-4xl font-bold text-white mb-4">Twitter Webhook Integration</h1>
       <p className="text-zinc-400 mb-4">
         Receive signed HTTP POST requests when a monitor detects a new tweet. Available on Starter
-        and above — start with a 30-day free Starter trial (card required), then $19/mo. For a
-        product overview, see{" "}
+        and above
+        {trialLive
+          ? ` — limited-time ${STARTER_TRIAL_DAYS}-day free Starter trial (card required), then $19/mo`
+          : " ($19/mo)"}
+        . For a product overview, see{" "}
         <Link href="/twitter-webhook" className="text-sky-400 hover:underline">
           Twitter webhook integration
         </Link>
@@ -64,7 +74,11 @@ export default function WebhooksDocsPage() {
 
       <DocHeading id="setup">Setup</DocHeading>
       <ol className="list-decimal list-inside space-y-2 text-zinc-400 text-sm leading-relaxed">
-        <li>Start a free Starter trial (or upgrade to Starter+) from Billing</li>
+        <li>
+          {trialLive
+            ? "Start the limited-time free Starter trial (or upgrade to Starter+) from Billing"
+            : "Upgrade to Starter or higher from Billing"}
+        </li>
         <li>Dashboard → Monitors → expand Webhook section on a monitor</li>
         <li>
           Enter your HTTPS endpoint URL and save — Discord or Slack incoming webhook URLs are

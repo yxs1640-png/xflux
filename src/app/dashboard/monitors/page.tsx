@@ -24,6 +24,9 @@ import {
 import { AnalyticsEvents } from "@/lib/analytics/events";
 import { trackClientEvent } from "@/lib/analytics/client";
 import { parseMonitorPrefillParams } from "@/lib/signals/monitor-cta";
+import { starterPlanCta } from "@/lib/starter-trial-offer";
+
+const starterUpgradeCta = starterPlanCta();
 
 interface MonitorHit {
   id: string;
@@ -214,7 +217,7 @@ function MonitorWebhookPanel({
               <Link href="/dashboard/billing">
                 <Button size="sm" className="mt-1">
                   <Zap className="h-3.5 w-3.5" />
-                  Start free Starter trial
+                  {starterUpgradeCta}
                 </Button>
               </Link>
             </div>
@@ -452,7 +455,7 @@ export default function MonitorsPage() {
           </div>
           <Link href="/dashboard/billing" className="shrink-0">
             <Button size="sm">
-              Start free Starter trial
+              {starterUpgradeCta}
             </Button>
           </Link>
         </div>

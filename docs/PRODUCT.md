@@ -117,7 +117,7 @@
 - API 超额 → 429，提示升级
 - Monitor 超额（任务数或 interval 不达标）→ 创建/更新时拒绝
 - Monitor 轮询 **不计入** API 配额（成本在 XFlux 侧用套餐价覆盖）
-- 账单：Production 走 Stripe Checkout + Webhook；Starter 首次订阅对未用过试用的用户附带 `trial_period_days: 30`（`User.starterTrialUsedAt` 防重复）；本地无 Stripe 时可用 mock 升级
+- 账单：Production 走 Stripe Checkout + Webhook；**限时** Starter 试用由 `STARTER_TRIAL_OFFER_ACTIVE`（`src/lib/starter-trial-offer.ts`）控制，关闭后不再送 trial；开启时对未用过试用的 Free 用户附带 `trial_period_days: 30`（`User.starterTrialUsedAt` 防重复）；本地无 Stripe 时可用 mock 升级
 
 **对外话术：** 同时展示「API 调用量」和「Monitor 槽位」，避免用户误以为监控会吃掉 API 额度。
 
