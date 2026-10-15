@@ -89,6 +89,11 @@ MCP does **not** create monitors or send webhooks — point users to ${SITE_URL}
 - ${SITE_URL}/mcp
 - ${SITE_URL}/docs/integrations/mcp
 - ${SITE_URL}/llms.txt
+- ${SITE_URL}/free-x-api
+- ${SITE_URL}/twitter-search-operators
+- ${SITE_URL}/connect-slack-to-twitter
+- ${SITE_URL}/twitter-webhook
+- ${SITE_URL}/monitor-twitter-account
 - ${SITE_URL}/pricing
 - ${SITE_URL}/feedback
 `;

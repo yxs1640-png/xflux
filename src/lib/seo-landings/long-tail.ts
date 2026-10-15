@@ -33,9 +33,9 @@ export const LONG_TAIL_LANDINGS: LongTailLanding[] = [
     slug: "twitter-account-activity-api",
     path: "/twitter-account-activity-api",
     primaryKeyword: "twitter account activity api",
-    title: "Twitter Account Activity API — Practical Alternative",
+    title: "Twitter Account Activity API Alternative — Free Monitor",
     description:
-      "Need Twitter Account Activity API–style alerts without enterprise AAA? Start free: monitor public @handles and see hits in the Dashboard. Live webhooks when you upgrade.",
+      "Twitter Account Activity API alternative without enterprise AAA. Free: 1 monitor + Dashboard hits. Live signed webhooks on Starter for Discord, Slack, or HTTPS.",
     keywords: [
       "twitter account activity api",
       "account activity api twitter",
@@ -399,21 +399,22 @@ export const LONG_TAIL_LANDINGS: LongTailLanding[] = [
     slug: "twitter-slack-alerts",
     path: "/twitter-slack-alerts",
     primaryKeyword: "twitter slack integration",
-    title: "Twitter Slack Integration — Alerts via Webhooks",
+    title: "Connect Slack to Twitter — Alerts via Webhook",
     description:
-      "Twitter Slack integration for account alerts: paste a Slack Incoming Webhook, test on Free, go live on Starter. Same path as Discord and custom HTTPS.",
+      "Connect Slack to Twitter for account alerts: paste a Slack Incoming Webhook, test on Free, live hits on Starter. Twitter Slack integration without a custom bot.",
     keywords: [
+      "connect slack to twitter",
       "twitter slack integration",
+      "slack twitter integration",
       "twitter slack alerts",
       "slack to twitter",
       "twitter to slack webhook",
-      "connect slack to twitter",
       "x slack webhook",
     ],
     badge: "Slack alerts",
-    h1: "Twitter Slack integration: account monitors → channel alerts",
+    h1: "Connect Slack to Twitter: monitors → channel alerts",
     subtitle:
-      "Searchers looking for Twitter Slack integration usually want: watch public @handles, post into a Slack channel. XFlux formats Slack Incoming Webhook payloads — or send signed JSON to your own bot.",
+      "Want Slack Twitter integration without enterprise X APIs? Watch public @handles and post into a Slack channel. XFlux formats Slack Incoming Webhook payloads — or send signed JSON to your own bot. Also see /connect-slack-to-twitter.",
     registerSrc: "seo_slack_alerts",
     cards: [
       {
@@ -1087,18 +1088,19 @@ def xflux_webhook():
     slug: "monitor-twitter-account",
     path: "/monitor-twitter-account",
     primaryKeyword: "monitor twitter account",
-    title: "Monitor a Twitter Account — Free Dashboard Hits",
+    title: "Monitor Twitter — Free Account Watch & Alerts",
     description:
-      "Monitor a Twitter/X account on the free plan: 1 monitor, keyword filters, Dashboard history. Add webhooks when you need Discord, Slack, or HTTPS push.",
+      "Monitor Twitter/X accounts free: 1 monitor, keyword filters, Dashboard history. Add Discord, Slack, or HTTPS webhooks when you need push alerts.",
     keywords: [
-      "monitor twitter account",
       "monitor twitter",
+      "monitor twitter account",
       "watch twitter account",
       "twitter account monitor",
       "track twitter account",
+      "twitter monitor",
     ],
     badge: "Account monitor",
-    h1: "Monitor a Twitter account without building a poller",
+    h1: "Monitor Twitter accounts without building a poller",
     subtitle:
       "Add a public @handle, optional keywords, and see new posts in the Dashboard. Free includes 1 monitor. Webhooks for Discord/Slack/HTTPS when you upgrade — details at /monitor-twitter-account-webhook.",
     registerSrc: "seo_monitor_account",
@@ -1152,6 +1154,240 @@ def xflux_webhook():
       { href: "/twitter-crypto-signals", label: "Crypto signals path" },
       { href: "/discord-twitter-bot", label: "Discord Twitter bot" },
       { href: "/docs/monitors", label: "Monitor docs" },
+      { href: "/free-x-api", label: "Free X API tier" },
+    ],
+  },
+  {
+    slug: "connect-slack-to-twitter",
+    path: "/connect-slack-to-twitter",
+    primaryKeyword: "connect slack to twitter",
+    title: "Connect Slack to Twitter — How-To for Alerts",
+    description:
+      "How to connect Slack to Twitter for new-tweet alerts: create a Slack Incoming Webhook, attach it to an XFlux monitor, test free, go live on Starter.",
+    keywords: [
+      "connect slack to twitter",
+      "slack to twitter",
+      "slack twitter integration",
+      "how to connect slack to twitter",
+      "twitter to slack",
+    ],
+    badge: "Slack ← Twitter",
+    h1: "How to connect Slack to Twitter account alerts",
+    subtitle:
+      "Official X does not give you a simple “Slack when @handle tweets” switch. XFlux watches public accounts and POSTs into Slack Incoming Webhooks — free to test, live on Starter. Product overview: /twitter-slack-alerts.",
+    registerSrc: "seo_connect_slack_twitter",
+    cards: [
+      {
+        title: "No custom Slack bot required",
+        text: "Incoming Webhooks are enough for channel text alerts. Use a bot only if you need Block Kit or threads.",
+      },
+      {
+        title: "Keyword filters",
+        text: "Alert only when posts mention tickers, product names, or macro phrases.",
+      },
+      {
+        title: "Same stack as Discord / HTTPS",
+        text: "One monitor model — swap the webhook URL for Discord or your server.",
+      },
+    ],
+    howTitle: "Connect Slack in three steps",
+    steps: [
+      {
+        title: "Create a Slack Incoming Webhook",
+        text: "Slack → Apps → Incoming Webhooks → add to channel → copy URL.",
+      },
+      {
+        title: "Create an XFlux monitor",
+        text: "Register free → Dashboard → Monitors → add @username + optional keywords.",
+      },
+      {
+        title: "Paste URL → Test → upgrade for live",
+        text: "Free can send test pings. Starter ($19/mo) delivers when new matching tweets appear.",
+      },
+    ],
+    faqs: [
+      {
+        question: "Does this post to Twitter from Slack?",
+        answer:
+          "No — this path is Twitter/X → Slack alerts (read + notify). XFlux is a read API + monitors, not a posting bot.",
+      },
+      {
+        question: "Slack vs Make.com?",
+        answer:
+          "Direct Slack webhook is simplest. Make.com if you need Sheets/filters — see /docs/integrations/make.",
+      },
+      {
+        question: "Related Twitter webhook hub?",
+        answer: "See /twitter-webhook and /twitter-slack-alerts.",
+      },
+    ],
+    related: [
+      { href: "/twitter-slack-alerts", label: "Twitter Slack integration" },
+      { href: "/twitter-webhook", label: "Twitter webhook hub" },
+      { href: "/twitter-discord-alerts", label: "Discord alerts" },
+      { href: "/monitor-twitter-account", label: "Monitor Twitter" },
+      { href: "/docs/webhooks", label: "Webhook docs" },
+    ],
+  },
+  {
+    slug: "twitter-search-operators",
+    path: "/twitter-search-operators",
+    primaryKeyword: "twitter search operators",
+    title: "Twitter Search Operators — Cheat Sheet + API",
+    description:
+      "Twitter search operators (from:, lang:, quotes, OR) with copy-paste examples. Run the same queries via XFlux search API — 1,000 free calls/month.",
+    keywords: [
+      "twitter search operators",
+      "twitter search operator",
+      "x search operators",
+      "twitter advanced search operators",
+      "how to use twitter search api",
+    ],
+    badge: "Search operators",
+    h1: "Twitter search operators you can use in the XFlux API",
+    subtitle:
+      "Advanced search operators still work for public tweet research. Use them in the XFlux /search endpoint (and MCP xflux_search_tweets). Free tier: 1,000 API calls/month. Full operator notes also in /docs/guides/search and /blog/twitter-api-search-operators.",
+    registerSrc: "seo_search_operators",
+    cards: [
+      {
+        title: "Same operator grammar",
+        text: "from:handle, lang:en, quoted phrases, OR, -exclude — pass as q= on GET /api/v1/search.",
+      },
+      {
+        title: "Agent-friendly",
+        text: "Claude/Cursor can call search via @xflux/xflux-mcp-server — see /mcp.",
+      },
+      {
+        title: "When operators are not enough",
+        text: "For always-on @account watches, use monitors instead of polling search — /monitor-twitter-account.",
+      },
+    ],
+    howTitle: "Try operators in three steps",
+    steps: [
+      {
+        title: "Get a free API key",
+        text: "Register → Dashboard → API Keys. No credit card on Free.",
+      },
+      {
+        title: "Call search with operators",
+        text: 'Example: q=from:elonmusk lang:en or q="fed rate" lang:en',
+      },
+      {
+        title: "Automate or monitor",
+        text: "Scripts/MCP for on-demand research; monitors for push alerts.",
+      },
+    ],
+    codeTitle: "curl example",
+    codeBlurb: "Replace the key. Operators go in the q parameter.",
+    code: `curl -G "https://www.xfluxapi.com/api/v1/search" \\
+  --data-urlencode 'q=from:elonmusk lang:en' \\
+  -H "Authorization: Bearer xflux_YOUR_KEY"`,
+    faqs: [
+      {
+        question: "Is this official X advanced search?",
+        answer:
+          "Operators match common public search grammar. XFlux is an independent read API — not the official X developer portal.",
+      },
+      {
+        question: "Where is the long operator list?",
+        answer: "Docs: /docs/guides/search. Blog: /blog/twitter-api-search-operators.",
+      },
+      {
+        question: "Search vs monitors?",
+        answer: "Search is on-demand. Monitors watch specific accounts continuously.",
+      },
+    ],
+    related: [
+      { href: "/twitter-search-api", label: "Twitter Search API" },
+      { href: "/docs/guides/search", label: "Search docs" },
+      { href: "/blog/twitter-api-search-operators", label: "Operators blog" },
+      { href: "/free-x-api", label: "Free X API" },
+      { href: "/mcp", label: "MCP for agents" },
+    ],
+  },
+  {
+    slug: "free-x-api",
+    path: "/free-x-api",
+    primaryKeyword: "free x api",
+    title: "Free X API — 1,000 Calls/Month, No Card",
+    description:
+      "Free X/Twitter API alternative: 1,000 calls/month, 1 account monitor, instant key — no credit card. Profiles, search, timelines. Upgrade only when you need live webhooks.",
+    keywords: [
+      "free x api",
+      "x api free",
+      "twitter api free",
+      "free twitter api",
+      "x api key free",
+      "free x api key",
+    ],
+    badge: "Free tier",
+    h1: "Free X API for developers — start without a card",
+    subtitle:
+      "Looking for a free X API or free Twitter API tier? XFlux Free includes 1,000 REST/MCP calls per month and 1 account monitor with Dashboard hits. Live signed webhooks start on Starter ($19/mo). Compare official pricing at /docs/compare/pricing.",
+    registerSrc: "seo_free_x_api",
+    cards: [
+      {
+        title: "Instant API key",
+        text: "Register → copy key → call /users, /search, /tweets. Same key for MCP.",
+      },
+      {
+        title: "1 free monitor",
+        text: "Watch one public @handle; see hits in Dashboard. Test webhooks before upgrading.",
+      },
+      {
+        title: "Honest limits",
+        text: "Not an official X firehose. Read-only public data. Flat plans — not pay-per-tweet.",
+      },
+    ],
+    howTitle: "Start free in minutes",
+    steps: [
+      {
+        title: "Create an account",
+        text: "No credit card on Free. Get the key from Dashboard → API Keys.",
+      },
+      {
+        title: "Hit the read API or MCP",
+        text: "REST at /api/v1 or npx @xflux/xflux-mcp-server for Claude/Cursor.",
+      },
+      {
+        title: "Add a monitor when ready",
+        text: "Upgrade only if you need live webhook delivery or more quota/monitors.",
+      },
+    ],
+    compareTitle: "Free X API options (honest)",
+    compareBlurb: "Official X free/basic tiers change often and are write/limited. XFlux Free is for read + one monitor.",
+    compareCols: { left: "Official X (typical free/basic)", right: "XFlux Free" },
+    compareRows: [
+      { label: "Card required", left: "Often yes for useful tiers", right: "No" },
+      { label: "Read profiles/search", left: "Varies / restricted", right: "Yes — 1,000 calls/mo" },
+      { label: "Account monitor", left: "Not on free DIY", right: "1 monitor + Dashboard hits" },
+      { label: "Live webhooks", left: "Enterprise AAA / streams", right: "Starter+" },
+    ],
+    codeTitle: "Smoke test",
+    code: `curl -H "Authorization: Bearer xflux_YOUR_KEY" \\
+  https://www.xfluxapi.com/api/v1/users/elonmusk`,
+    faqs: [
+      {
+        question: "Is this the official free X API?",
+        answer:
+          "No. XFlux is an independent read API + monitors. Official plans are at developer.x.com; we publish a comparison at /docs/compare/pricing.",
+      },
+      {
+        question: "MCP on free tier?",
+        answer: "Yes — tool calls count against the same 1,000 calls. See /mcp.",
+      },
+      {
+        question: "More free-tier detail?",
+        answer: "Blog: /blog/twitter-api-free-tier.",
+      },
+    ],
+    related: [
+      { href: "/blog/twitter-api-free-tier", label: "Free tier blog" },
+      { href: "/pricing", label: "Pricing" },
+      { href: "/docs/compare/pricing", label: "vs official pricing" },
+      { href: "/twitter-search-api", label: "Search API" },
+      { href: "/monitor-twitter-account", label: "Monitor Twitter" },
+      { href: "/mcp", label: "MCP" },
     ],
   },
 ];

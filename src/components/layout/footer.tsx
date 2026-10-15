@@ -58,6 +58,7 @@ export async function Footer() {
               <li><Link href="/twitter-webhook" className="hover:text-white transition-colors">{t("twitterWebhooks")}</Link></li>
               <li><Link href="/twitter-discord-alerts" className="hover:text-white transition-colors">{t("discordAlerts")}</Link></li>
               <li><Link href="/twitter-slack-alerts" className="hover:text-white transition-colors">{t("slackAlerts")}</Link></li>
+              <li><Link href="/connect-slack-to-twitter" className="hover:text-white transition-colors">{t("connectSlackToTwitter")}</Link></li>
               <li><Link href="/twitter-account-activity-api" className="hover:text-white transition-colors">{t("accountActivityApi")}</Link></li>
               <li><Link href="/filtered-stream-alternative" className="hover:text-white transition-colors">{t("filteredStreamAlt")}</Link></li>
               <li><Link href="/monitor-twitter-account-webhook" className="hover:text-white transition-colors">{t("monitorWebhook")}</Link></li>
@@ -65,6 +66,8 @@ export async function Footer() {
               <li><Link href="/twitter-crypto-signals" className="hover:text-white transition-colors">{t("cryptoSignalsPage")}</Link></li>
               <li><Link href="/discord-twitter-bot" className="hover:text-white transition-colors">{t("discordTwitterBot")}</Link></li>
               <li><Link href="/twitter-search-api" className="hover:text-white transition-colors">{t("twitterSearchApi")}</Link></li>
+              <li><Link href="/twitter-search-operators" className="hover:text-white transition-colors">{t("twitterSearchOperators")}</Link></li>
+              <li><Link href="/free-x-api" className="hover:text-white transition-colors">{t("freeXApi")}</Link></li>
               <li><Link href="/twitter-webhook-python" className="hover:text-white transition-colors">{t("webhookPython")}</Link></li>
               <li><Link href="/docs/integrations/make" className="hover:text-white transition-colors">{t("makeIntegration")}</Link></li>
               <li><Link href="/mcp" className="hover:text-white transition-colors">{t("mcpLanding")}</Link></li>
