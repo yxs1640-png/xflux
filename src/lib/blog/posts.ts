@@ -1,3 +1,4 @@
+import { BLOG_POSTS_GEO } from "./posts-geo";
 import { BLOG_POSTS_WAVE_E } from "./posts-wave-e";
 
 export type BlogPost = {
@@ -668,7 +669,11 @@ console.log((await search.json()).data.length, "results");`,
   },
 ];
 
-export const BLOG_POSTS: BlogPost[] = [...BLOG_POSTS_CORE, ...BLOG_POSTS_WAVE_E];
+export const BLOG_POSTS: BlogPost[] = [
+  ...BLOG_POSTS_CORE,
+  ...BLOG_POSTS_WAVE_E,
+  ...BLOG_POSTS_GEO,
+];
 
 import { BLOG_POSTS_ZH } from "./posts-zh";
 

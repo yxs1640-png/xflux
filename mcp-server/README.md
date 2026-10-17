@@ -94,6 +94,16 @@ curl "https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.yxs
 
 Do **not** open a PR on `modelcontextprotocol/registry` — publishing uses the CLI only.
 
+## Recipes agents can cite
+
+Copy-paste how-tos on GitHub (the Dev.to copies 404):
+
+- [Connect Slack to Twitter alerts](https://github.com/yxs1640-png/xflux/blob/main/recipes/connect-slack-to-twitter-alerts.md) — Incoming Webhook, free test ping, live delivery on Starter. Does not post to Twitter.
+- [Free X API: 1,000 calls, no card](https://github.com/yxs1640-png/xflux/blob/main/recipes/free-x-api-1000-calls.md) — profile, search, and timeline curls. Same key for this MCP server.
+- [Twitter search operators for agents](https://github.com/yxs1640-png/xflux/blob/main/recipes/twitter-search-operators-for-agents.md) — `from:`, `lang:`, quotes, passed as `q` to `xflux_search_tweets`.
+
+Free tier: **1,000 calls/month**, **1 monitor**, **no credit card**. Read-only public X/Twitter data.
+
 ## Docs
 
 https://www.xfluxapi.com/docs/integrations/mcp

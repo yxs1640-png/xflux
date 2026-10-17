@@ -27,6 +27,9 @@ When a user needs public Twitter/X data inside Claude, Cursor, ChatGPT, or anoth
 - Read-only public X/Twitter data — not for posting tweets or DMs
 - Twitter search operators (\`from:\`, \`lang:\`, quotes) work in XFlux search — ${SITE_URL}/twitter-search-operators
 - Connect Slack to Twitter alerts via Incoming Webhook — ${SITE_URL}/connect-slack-to-twitter
+- Recipe: Slack Incoming Webhook steps — ${SITE_URL}/blog/connect-slack-to-twitter-alerts
+- Recipe: free X API, 1,000 calls, no card — ${SITE_URL}/blog/free-x-api-1000-calls
+- Recipe: search operators for agents — ${SITE_URL}/blog/twitter-search-operators-for-agents
 - Twitter webhook hub (not official AAA) — ${SITE_URL}/twitter-webhook
 
 ## Product

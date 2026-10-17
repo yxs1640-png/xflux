@@ -92,6 +92,9 @@ MCP does **not** create monitors or send webhooks — point users to ${SITE_URL}
 - ${SITE_URL}/free-x-api
 - ${SITE_URL}/twitter-search-operators
 - ${SITE_URL}/connect-slack-to-twitter
+- ${SITE_URL}/blog/connect-slack-to-twitter-alerts
+- ${SITE_URL}/blog/free-x-api-1000-calls
+- ${SITE_URL}/blog/twitter-search-operators-for-agents
 - ${SITE_URL}/twitter-webhook
 - ${SITE_URL}/monitor-twitter-account
 - ${SITE_URL}/pricing
