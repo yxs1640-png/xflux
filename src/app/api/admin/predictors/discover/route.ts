@@ -4,7 +4,7 @@ import { runPredictorDiscovery } from "@/lib/predictor-discovery/run-discovery";
 import type { PredictorNiche } from "@prisma/client";
 import { PREDICTOR_NICHES } from "@/lib/predictor-discovery/types";
 
-export const maxDuration = 300;
+export const maxDuration = 120;
 
 export async function POST(request: NextRequest) {
   const session = await requireAdminSession();

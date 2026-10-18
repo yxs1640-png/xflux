@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { runPredictorDiscovery } from "@/lib/predictor-discovery/run-discovery";
+import { PREDICTOR_NICHES } from "@/lib/predictor-discovery/types";
 
-export const maxDuration = 300;
+export const maxDuration = 60;
 
 function authorized(request: NextRequest): boolean {
   const secret = process.env.CRON_SECRET?.trim();
@@ -20,7 +21,8 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const result = await runPredictorDiscovery();
+    const niche = PREDICTOR_NICHES[Math.floor(Date.now() / 86_400_000) % PREDICTOR_NICHES.length];
+    const result = await runPredictorDiscovery({ niche });
     return NextResponse.json({ ok: true, ...result });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Discovery failed";

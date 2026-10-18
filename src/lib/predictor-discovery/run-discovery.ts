@@ -10,8 +10,10 @@ import { verifyClaim } from "./verify-claims";
 import type { DiscoveryResult } from "./types";
 import { PREDICTOR_NICHES } from "./types";
 
-const TWEETS_PER_ACCOUNT = 40;
-const SEARCH_LIMIT = 15;
+const TWEETS_PER_ACCOUNT = 20;
+const SEARCH_LIMIT = 10;
+const MAX_AUTHORS_PER_SEARCH = 3;
+const MAX_VERIFY_ACCOUNTS = 8;
 const DISCOVERY_DAYS = 14;
 
 function withinDiscoveryWindow(date: Date): boolean {
@@ -141,6 +143,7 @@ async function scanSearchQuery(query: string, niche: PredictorNiche): Promise<nu
   for (const tweet of tweets) {
     const username = tweetUsername(tweet);
     if (!username || seenAuthors.has(username)) continue;
+    if (seenAuthors.size >= MAX_AUTHORS_PER_SEARCH) break;
     seenAuthors.add(username);
 
     const created = tweet.created_at ? new Date(tweet.created_at) : new Date();
@@ -168,44 +171,64 @@ async function scanSearchQuery(query: string, niche: PredictorNiche): Promise<nu
   return added;
 }
 
-async function verifyOpenClaims(): Promise<void> {
+async function verifyOpenClaims(niche?: PredictorNiche): Promise<void> {
   const openClaims = await prisma.predictorClaim.findMany({
-    where: { status: "OPEN" },
+    where: { status: "OPEN", ...(niche ? { niche } : {}) },
     include: { predictor: true },
-    take: 100,
+    take: 40,
     orderBy: { tweetCreatedAt: "asc" },
   });
 
+  const byAccount = new Map<string, typeof openClaims>();
   for (const claim of openClaims) {
-    const tweets = await getUserTweets(claim.predictor.username, 30);
-    const laterTweets = tweets
-      .filter((t) => t.created_at && new Date(t.created_at) > claim.tweetCreatedAt)
-      .map((t) => ({ text: t.text, createdAt: new Date(t.created_at!) }));
+    const key = claim.predictor.username.toLowerCase();
+    const list = byAccount.get(key);
+    if (list) {
+      list.push(claim);
+      continue;
+    }
+    if (byAccount.size >= MAX_VERIFY_ACCOUNTS) continue;
+    byAccount.set(key, [claim]);
+  }
 
-    const result = verifyClaim({
-      claimText: claim.tweetText,
-      claimCreatedAt: claim.tweetCreatedAt,
-      laterTweets,
-    });
+  for (const claims of byAccount.values()) {
+    const username = claims[0].predictor.username;
+    const predictorId = claims[0].predictorId;
+    const tweets = await getUserTweets(username, 20);
+    let changed = false;
 
-    if (result.status === claim.status) continue;
+    for (const claim of claims) {
+      const laterTweets = tweets
+        .filter((t) => t.created_at && new Date(t.created_at) > claim.tweetCreatedAt)
+        .map((t) => ({ text: t.text, createdAt: new Date(t.created_at!) }));
 
-    await prisma.predictorClaim.update({
-      where: { id: claim.id },
-      data: {
-        status: result.status,
-        statusReason: result.reason,
-        verifiedAt: result.status !== "OPEN" ? new Date() : null,
-      },
-    });
+      const result = verifyClaim({
+        claimText: claim.tweetText,
+        claimCreatedAt: claim.tweetCreatedAt,
+        laterTweets,
+      });
+
+      if (result.status === claim.status) continue;
+      changed = true;
+
+      await prisma.predictorClaim.update({
+        where: { id: claim.id },
+        data: {
+          status: result.status,
+          statusReason: result.reason,
+          verifiedAt: result.status !== "OPEN" ? new Date() : null,
+        },
+      });
+    }
+
+    if (!changed) continue;
 
     const allClaims = await prisma.predictorClaim.findMany({
-      where: { predictorId: claim.predictorId },
+      where: { predictorId },
     });
-    const statusCounts = countClaimStatuses(allClaims);
     await prisma.predictorProfile.update({
-      where: { id: claim.predictorId },
-      data: statusCounts,
+      where: { id: predictorId },
+      data: countClaimStatuses(allClaims),
     });
   }
 }
@@ -248,7 +271,7 @@ export async function runPredictorDiscovery(options?: {
       }
     }
 
-    await verifyOpenClaims();
+    await verifyOpenClaims(options?.niche);
 
     const authorCount = await prisma.predictorProfile.count();
 
