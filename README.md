@@ -1,225 +1,88 @@
 # XFlux
 
-Affordable & stable X/Twitter API proxy service — MVP built with Next.js 15, TypeScript, Prisma, and PostgreSQL.
+Read-only X/Twitter API for agents and apps: profiles, search, timelines, account monitors with signed webhooks, and Smart Money. Not for posting.
 
-## Features (MVP)
+**Site:** [xfluxapi.com](https://www.xfluxapi.com) · **MCP:** [xfluxapi.com/mcp](https://www.xfluxapi.com/mcp) · **Agents:** [llms.txt](https://www.xfluxapi.com/llms.txt)
 
-- **Landing page** — Marketing site with pricing and feature overview
-- **User auth** — Email/password registration and login (NextAuth)
-- **API Keys** — Generate and manage `xflux_*` API keys
-- **REST API proxy** — User profiles, tweets, search (mock + optional live Twitter API v2)
-- **MCP server** — Official Registry + npm (`@xflux/xflux-mcp-server`) for Claude Desktop & Cursor
-- **Dashboard** — Usage stats, API logs, quota tracking
-- **Monitors** — KOL tweet monitoring task management
-- **Billing** — Stripe Checkout subscriptions (Starter / Growth / Pro / Scale); see [docs/STRIPE.md](docs/STRIPE.md)
+Free tier: **1,000 calls/month**, **1 monitor**, **no credit card**. Paid plans add signed HTTP webhooks and higher quotas.
 
-## MCP (Claude / Cursor)
+## What it does
 
-Published on the [MCP Registry](https://registry.modelcontextprotocol.io) as `io.github.yxs1640-png/xflux` and on npm as [`@xflux/xflux-mcp-server`](https://www.npmjs.com/package/@xflux/xflux-mcp-server).
+- **Read API** — public profiles, timelines, single tweets, and search. Bearer key, JSON.
+- **Monitors** — watch @handles on a schedule. New tweets are delivered with a signed webhook on paid plans. Create monitors in the [Dashboard](https://www.xfluxapi.com/dashboard/monitors), not by posting to the API.
+- **Smart Money** — ranked KOL accounts and recent calls (read-only).
+- **MCP server** — the same read API inside Claude Desktop, Cursor, and other MCP clients.
+
+This service does not post tweets, send DMs, or require official X API approval.
+
+## REST API
+
+Base URL: `https://www.xfluxapi.com/api/v1`
+
+```bash
+curl -H "Authorization: Bearer xflux_YOUR_KEY" \
+  https://www.xfluxapi.com/api/v1/users/x
+```
+
+Get a key at [Dashboard → API Keys](https://www.xfluxapi.com/dashboard/api-keys).
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/v1/users/:username` | Profile |
+| GET | `/api/v1/users/:username/tweets` | Timeline |
+| GET | `/api/v1/tweets/:id` | One tweet |
+| GET | `/api/v1/search?q=` | Search tweets |
+| GET | `/api/v1/monitors` | Your monitors (read-only) |
+| GET | `/api/v1/monitors/:id/hits` | Hits for one monitor (read-only) |
+
+Docs: https://www.xfluxapi.com/docs
+
+## MCP
+
+Registry name `io.github.yxs1640-png/xflux`. npm package [`@xflux/xflux-mcp-server`](https://www.npmjs.com/package/@xflux/xflux-mcp-server).
 
 ```bash
 export XFLUX_API_KEY=xflux_your_key_here
 npx -y @xflux/xflux-mcp-server
 ```
 
-Docs: https://www.xfluxapi.com/docs/integrations/mcp
-
-## Tech Stack
-
-- Next.js 15 (App Router)
-- TypeScript
-- Tailwind CSS 4
-- Prisma + PostgreSQL
-- NextAuth.js
-- Recharts
-
-## Architecture
-
-- **Vercel** — Next.js app, auth, dashboard, public `/api/v1/*`
-- **Fly.io** — `api-server/` (Consumer API proxy) + `Dockerfile.worker` (Monitor 轮询)
-- **Supabase** — PostgreSQL
-
-See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for **Vercel + Fly.io** deployment.
-
-## Quick Start
-
-### Prerequisites
-
-- Node.js 20+
-- PostgreSQL database (local, [Neon](https://neon.tech), [Supabase](https://supabase.com), or Vercel Postgres)
-
-## Supabase 数据库配置
-
-Supabase **新版界面**里，连接串不在 `Project Settings → Database`，而在：
-
-**项目首页顶部 → 点击 `Connect` 按钮**
-
-### 只有 DIRECT_URL 时（本地开发够用）
-
-Project Overview 里若已有 `DIRECT_URL`（端口 **5432**），在 `.env` 里 **两个变量都填同一个值** 即可：
-
-```env
-DATABASE_URL="你的DIRECT_URL完整连接串"
-DIRECT_URL="你的DIRECT_URL完整连接串"
+```json
+{
+  "mcpServers": {
+    "xflux": {
+      "command": "npx",
+      "args": ["-y", "@xflux/xflux-mcp-server"],
+      "env": {
+        "XFLUX_API_KEY": "xflux_your_key_here"
+      }
+    }
+  }
+}
 ```
 
-示例格式：
-```env
-DATABASE_URL="postgresql://postgres:你的密码@db.abcdefgh.supabase.co:5432/postgres"
-DIRECT_URL="postgresql://postgres:你的密码@db.abcdefgh.supabase.co:5432/postgres"
-```
+| Tool | Description |
+|------|-------------|
+| `xflux_get_user` | Profile by @username |
+| `xflux_search_tweets` | Search recent tweets |
+| `xflux_get_user_tweets` | User timeline |
+| `xflux_get_tweet` | One tweet by ID |
+| `xflux_list_monitors` | List monitors (read-only) |
+| `xflux_get_monitor_hits` | Hits for one monitor |
+| `xflux_smart_money_list` | Ranked Smart Money accounts |
+| `xflux_smart_money_profile` | One Smart Money profile |
+| `xflux_smart_money_claims` | Recent Smart Money calls |
 
-然后执行：
-```bash
-npx prisma db push
-npm run dev
-```
+Server details: [mcp-server/README.md](mcp-server/README.md). Docs: https://www.xfluxapi.com/docs/integrations/mcp
 
-### 需要 DATABASE_URL（6543 池化连接）时
+## Recipes
 
-1. 项目首页 → **Connect**
-2. 选择 **ORMs** → **Prisma**，或选 **Transaction pooler**（端口 **6543**）
-3. 复制 Transaction 连接串 → 填入 `DATABASE_URL`，末尾加 `?pgbouncer=true`
-4. `DIRECT_URL` 仍用 5432 直连（Connect → **Direct connection** 或 Overview 里的值）
+- [Connect Slack to Twitter alerts](recipes/connect-slack-to-twitter-alerts.md)
+- [Free X API: 1,000 calls, no card](recipes/free-x-api-1000-calls.md)
+- [Twitter search operators for agents](recipes/twitter-search-operators-for-agents.md)
 
-| 变量 | 从哪里找 | 端口 |
-|------|----------|------|
-| `DIRECT_URL` | Connect → Direct connection，或 Project Overview | 5432 |
-| `DATABASE_URL` | Connect → Transaction pooler / ORMs → Prisma | 6543 |
+## This repository
 
-> 本地开发用 5432 直连即可；部署 Vercel 时再把 `DATABASE_URL` 换成 6543 池化连接。
-
-部署到 Vercel 时，在 Environment Variables 里添加 `DATABASE_URL`、`DIRECT_URL`、`NEXTAUTH_URL`、`NEXTAUTH_SECRET`。
-
-### Setup
-
-```bash
-cd ~/Projects/xflux
-npm install
-
-cp .env.example .env
-# Default uses SQLite — no Postgres install needed
-
-npx prisma db push
-npm run dev
-```
-
-**Local database options:**
-
-| Option | Command | When to use |
-|--------|---------|-------------|
-| **SQLite** (default) | `DATABASE_URL="file:./dev.db"` | Quick local dev, no install |
-| **Docker Postgres** | `npm run db:up` then use postgres URL in `.env` | Match production locally |
-| **Neon (cloud)** | Paste URL from [neon.tech](https://neon.tech) | No Docker, free tier |
-
-For Docker Postgres, change `prisma/schema.prisma` provider back to `postgresql` and set:
-`DATABASE_URL="postgresql://xflux:xflux@localhost:5432/xflux?schema=public"`
-
-Open [http://localhost:3000](http://localhost:3000)
-
-### Environment Variables
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `DATABASE_URL` | Yes | `file:./dev.db` (local SQLite) or PostgreSQL URL (production) |
-| `NEXTAUTH_URL` | Yes | App URL (e.g. `http://localhost:3000`) |
-| `NEXTAUTH_SECRET` | Yes | Random 32+ char secret |
-| `TWITTER_BEARER_TOKEN` | No | Twitter API v2 bearer token for live data |
-| `STRIPE_*` / `BILLING_CHECKOUT_ENABLED` | Prod | Live billing on Vercel — see [docs/STRIPE.md](docs/STRIPE.md) |
-
-Generate a secret:
-
-```bash
-openssl rand -base64 32
-```
-
-## API Usage
-
-After registering, use your API key:
-
-```bash
-curl -H "Authorization: Bearer xflux_YOUR_KEY" \
-  http://localhost:3000/api/v1/users/elonmusk
-```
-
-### Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/api/v1/users/:username` | User profile |
-| GET | `/api/v1/users/:username/tweets` | User timeline |
-| GET | `/api/v1/tweets/:id` | Tweet by ID |
-| GET | `/api/v1/search?q=keyword` | Search tweets |
-| POST | `/api/v1/tweets` | Post tweet (requires OAuth setup) |
-
-## Deploy to Vercel
-
-### Option A: Vercel CLI
-
-```bash
-npm i -g vercel
-vercel login
-vercel
-```
-
-### Option B: GitHub Integration
-
-1. Push to GitHub:
-   ```bash
-   git add .
-   git commit -m "Initial XFlux MVP"
-   git remote add origin YOUR_REPO_URL
-   git push -u origin main
-   ```
-
-2. Import project at [vercel.com/new](https://vercel.com/new)
-
-3. Add environment variables in Vercel dashboard:
-   - `DATABASE_URL` — from Vercel Postgres or Neon
-   - `NEXTAUTH_URL` — your production URL (e.g. `https://xflux.vercel.app`)
-   - `NEXTAUTH_SECRET` — random secret
-   - `TWITTER_BEARER_TOKEN` — optional
-
-4. After first deploy, run database migration:
-   ```bash
-   npx prisma db push
-   ```
-   Or add a build step with Vercel Postgres integration.
-
-### Vercel Postgres Setup
-
-1. In Vercel project → Storage → Create Database → Postgres
-2. Change `prisma/schema.prisma` datasource provider from `sqlite` to `postgresql`
-3. Connect to project — `DATABASE_URL` is auto-injected
-4. Redeploy (build runs `prisma db push` or migrate)
-
-## Project Structure
-
-```
-src/
-├── app/                  # Next.js App Router pages & API routes
-│   ├── api/v1/           # Public REST API (proxy)
-│   ├── dashboard/        # Authenticated dashboard
-│   ├── docs/             # API documentation
-│   └── pricing/          # Pricing page
-├── components/           # React components
-└── lib/                  # Auth, DB, quota, Twitter proxy
-prisma/
-└── schema.prisma         # Database schema
-```
-
-## Roadmap
-
-- [x] Stripe billing (Live on production — [docs/STRIPE.md](docs/STRIPE.md))
-- [ ] Real-time WebSocket monitoring
-- [ ] Telegram/Discord notifications
-- [ ] Account pool management
-- [ ] CLI tool
-- [ ] Batch DM / posting queue (Bull/Redis)
-
-## Legal Notice
-
-This project interacts with X/Twitter data. Ensure compliance with [X Developer Agreement](https://developer.x.com/en/developer-terms/agreement) and applicable laws. Use official APIs when possible.
+The public product runs from this repo: the website on Vercel, the API proxy and monitor worker on Fly.io, and the MCP package in `mcp-server/`. Deploy notes: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ## License
 
