@@ -74,6 +74,9 @@
     "twitterSearchApi": "Twitter Search API",
     "twitterSearchOperators": "Twitter 搜索运算符",
     "freeXApi": "免费 X API",
+    "twitterTimelineApi": "Twitter 时间线 API",
+    "twitterUserLookup": "Twitter 用户查询",
+    "verifyTwitterWebhook": "校验 Webhook 签名",
     "webhookPython": "Python Webhook",
     "mcpLanding": "面向 Agent 的 MCP"
   },

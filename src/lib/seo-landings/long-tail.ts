@@ -1390,6 +1390,242 @@ def xflux_webhook():
       { href: "/mcp", label: "MCP" },
     ],
   },
+  {
+    slug: "twitter-timeline-api",
+    path: "/twitter-timeline-api",
+    primaryKeyword: "twitter timeline api",
+    title: "Twitter Timeline API — User Tweets by @handle",
+    description:
+      "Twitter timeline API for a public @handle: GET /users/:username/tweets. Free XFlux key, 1,000 calls/month, no card. Same read in MCP as xflux_get_user_tweets.",
+    keywords: [
+      "twitter timeline api",
+      "x timeline api",
+      "get user tweets api",
+      "twitter user timeline api",
+      "fetch twitter timeline",
+    ],
+    badge: "User timeline",
+    h1: "Twitter timeline API for one public account",
+    subtitle:
+      "Pull recent public tweets for an @handle without the official X user-timeline product. One GET on XFlux, or the MCP tool xflux_get_user_tweets. Free tier: 1,000 calls/month. Always-on watches belong on monitors, not a polling loop.",
+    registerSrc: "seo_timeline_api",
+    cards: [
+      {
+        title: "One handle, one call",
+        text: "GET /api/v1/users/:username/tweets?limit=10 returns compact public tweets for that account.",
+      },
+      {
+        title: "Same key as search and profiles",
+        text: "Timelines, lookup, and search share the monthly quota. Monitor polling does not.",
+      },
+      {
+        title: "Agents use the MCP tool",
+        text: "Claude and Cursor call xflux_get_user_tweets. Install: /mcp.",
+      },
+    ],
+    howTitle: "Fetch a timeline",
+    steps: [
+      {
+        title: "Create a free key",
+        text: "Register → Dashboard → API Keys. No credit card on Free.",
+      },
+      {
+        title: "GET the username path",
+        text: "Example: /api/v1/users/FederalReserve/tweets?limit=10",
+      },
+      {
+        title: "Switch to a monitor for alerts",
+        text: "If you need every new post pushed to Slack or HTTPS, use /monitor-twitter-account instead of cron + timeline.",
+      },
+    ],
+    codeTitle: "curl",
+    codeBlurb: "Public accounts only. limit caps how many tweets come back.",
+    code: `curl -H "Authorization: Bearer xflux_YOUR_KEY" \\
+  "https://www.xfluxapi.com/api/v1/users/FederalReserve/tweets?limit=10"`,
+    faqs: [
+      {
+        question: "Is this the official X user timeline endpoint?",
+        answer:
+          "No. XFlux is an independent read API. The path is /api/v1/users/:username/tweets on www.xfluxapi.com.",
+      },
+      {
+        question: "Private or protected accounts?",
+        answer: "Public posts only. Protected accounts are not available.",
+      },
+      {
+        question: "Timeline vs search?",
+        answer:
+          "Timeline is one account’s recent posts. Search is a query (from:, lang:, phrases) across public tweets — see /twitter-search-api.",
+      },
+    ],
+    related: [
+      { href: "/twitter-user-lookup", label: "User lookup API" },
+      { href: "/twitter-search-api", label: "Search API" },
+      { href: "/docs/api", label: "API reference" },
+      { href: "/free-x-api", label: "Free X API" },
+      { href: "/mcp", label: "MCP" },
+    ],
+  },
+  {
+    slug: "twitter-user-lookup",
+    path: "/twitter-user-lookup",
+    primaryKeyword: "twitter user lookup api",
+    title: "Twitter User Lookup API — Profile by @username",
+    description:
+      "Look up a public X/Twitter profile by username. GET /users/:username with a free XFlux key — name, bio, counts. No posting, no card on Free.",
+    keywords: [
+      "twitter user lookup api",
+      "get twitter user by username",
+      "x user lookup api",
+      "twitter profile api",
+      "twitter user api",
+    ],
+    badge: "User lookup",
+    h1: "Twitter user lookup API by @username",
+    subtitle:
+      "Resolve a public profile before you pull a timeline or add a monitor. XFlux GET /api/v1/users/:username returns a compact profile. Free: 1,000 calls/month, no credit card. MCP tool: xflux_get_user.",
+    registerSrc: "seo_user_lookup",
+    cards: [
+      {
+        title: "Username, not a numeric id dance",
+        text: "Pass the @handle. You do not need a separate id lookup to read the public profile.",
+      },
+      {
+        title: "Then timeline or monitor",
+        text: "Same key calls /users/:username/tweets or creates a Dashboard monitor for that handle.",
+      },
+      {
+        title: "Read-only",
+        text: "Lookup does not follow, post, or DM. Public data only.",
+      },
+    ],
+    howTitle: "Look up a profile",
+    steps: [
+      {
+        title: "Get a free API key",
+        text: "Dashboard → API Keys. Details: /free-x-api.",
+      },
+      {
+        title: "GET /api/v1/users/:username",
+        text: "Example: /api/v1/users/x",
+      },
+      {
+        title: "Use the handle downstream",
+        text: "Timeline: /twitter-timeline-api. Alerts: /monitor-twitter-account.",
+      },
+    ],
+    codeTitle: "curl",
+    code: `curl -H "Authorization: Bearer xflux_YOUR_KEY" \\
+  https://www.xfluxapi.com/api/v1/users/x`,
+    faqs: [
+      {
+        question: "Does this return followers or following lists?",
+        answer:
+          "No. This call is the public profile summary. It is not a followers, following, or list endpoint.",
+      },
+      {
+        question: "Official X user lookup?",
+        answer:
+          "No. XFlux is independent. Compare pricing at /docs/compare/pricing.",
+      },
+      {
+        question: "Can an agent call this?",
+        answer: "Yes. Tool name xflux_get_user. Setup: /mcp.",
+      },
+    ],
+    related: [
+      { href: "/twitter-timeline-api", label: "Timeline API" },
+      { href: "/docs/api", label: "API reference" },
+      { href: "/free-x-api", label: "Free X API" },
+      { href: "/monitor-twitter-account", label: "Monitor Twitter" },
+      { href: "/mcp", label: "MCP" },
+    ],
+  },
+  {
+    slug: "verify-twitter-webhook",
+    path: "/verify-twitter-webhook",
+    primaryKeyword: "verify twitter webhook signature",
+    title: "Verify Twitter Webhook Signatures — HMAC-SHA256",
+    description:
+      "Verify XFlux monitor webhooks: HMAC-SHA256 over timestamp.rawBody, header x-xflux-signature, reject payloads older than 5 minutes. Not official X CRC.",
+    keywords: [
+      "verify twitter webhook signature",
+      "twitter webhook hmac",
+      "xflux webhook signature",
+      "verify twitter webhook",
+      "hmac sha256 twitter webhook",
+    ],
+    badge: "Webhook signatures",
+    h1: "Verify a Twitter account-alert webhook signature",
+    subtitle:
+      "XFlux signs live monitor webhooks so your server can reject forgeries. Compute HMAC-SHA256 over {timestamp}.{raw body} and compare to x-xflux-signature. This is not official X Account Activity CRC. Discord and Slack Incoming Webhooks do not use this header.",
+    registerSrc: "seo_verify_webhook",
+    cards: [
+      {
+        title: "Raw body, then JSON",
+        text: "Hash the exact bytes you received. Parsing JSON first changes the string and breaks the signature.",
+      },
+      {
+        title: "Five-minute window",
+        text: "Header x-xflux-timestamp is unix seconds. Reject if it is more than 300 seconds from now.",
+      },
+      {
+        title: "HTTPS endpoints only",
+        text: "Slack and Discord URLs are formatted for those apps. Custom servers use the signed JSON and this check.",
+      },
+    ],
+    howTitle: "Check a delivery",
+    steps: [
+      {
+        title: "Copy the webhook secret",
+        text: "Dashboard → the monitor’s webhook secret. Starter+ sends live hits; Free can send a test ping.",
+      },
+      {
+        title: "Read the two headers",
+        text: "x-xflux-timestamp and x-xflux-signature (value starts with sha256=).",
+      },
+      {
+        title: "Compare in constant time",
+        text: "Expected digest is HMAC-SHA256 of timestamp + \".\" + raw body. Deduplicate on tweet id + monitor id.",
+      },
+    ],
+    codeTitle: "Node check",
+    codeBlurb: "Full Express example: /docs/webhooks. Python: /twitter-webhook-python.",
+    code: `import crypto from "crypto";
+
+const expected = "sha256=" + crypto
+  .createHmac("sha256", secret)
+  .update(\`\${timestamp}.\${rawBody}\`)
+  .digest("hex");
+
+const ok = crypto.timingSafeEqual(
+  Buffer.from(expected),
+  Buffer.from(signatureHeader)
+);`,
+    faqs: [
+      {
+        question: "Is this the official X CRC challenge?",
+        answer:
+          "No. Official Account Activity API uses a CRC handshake. XFlux uses HMAC-SHA256 on monitor.hit POSTs. See /twitter-account-activity-api.",
+      },
+      {
+        question: "Do Slack and Discord need this?",
+        answer:
+          "No. Those URLs get an app-specific body. Verify HMAC on your own HTTPS endpoint.",
+      },
+      {
+        question: "Where is the secret?",
+        answer: "On the monitor in the Dashboard. Reference: /docs/webhooks.",
+      },
+    ],
+    related: [
+      { href: "/docs/webhooks", label: "Webhook docs" },
+      { href: "/twitter-webhook-nodejs", label: "Node.js webhook" },
+      { href: "/twitter-webhook-python", label: "Python webhook" },
+      { href: "/twitter-webhook", label: "Twitter webhook hub" },
+      { href: "/monitor-twitter-account", label: "Monitor Twitter" },
+    ],
+  },
 ];
 
 export function getLongTailLanding(slug: string): LongTailLanding | undefined {

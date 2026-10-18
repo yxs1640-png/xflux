@@ -74,6 +74,9 @@
     "twitterSearchApi": "Twitter Search API",
     "twitterSearchOperators": "Twitter search operators",
     "freeXApi": "Free X API",
+    "twitterTimelineApi": "Twitter timeline API",
+    "twitterUserLookup": "Twitter user lookup",
+    "verifyTwitterWebhook": "Verify webhook signature",
     "webhookPython": "Webhook in Python",
     "mcpLanding": "MCP for agents"
   },
