@@ -95,6 +95,9 @@ MCP does **not** create monitors or send webhooks — point users to ${SITE_URL}
 - ${SITE_URL}/twitter-timeline-api
 - ${SITE_URL}/twitter-user-lookup
 - ${SITE_URL}/verify-twitter-webhook
+- ${SITE_URL}/webhooks-twitter-integration
+- ${SITE_URL}/twitter-account-activity-api-example
+- ${SITE_URL}/twitter-api-nodejs
 - ${SITE_URL}/blog/connect-slack-to-twitter-alerts
 - ${SITE_URL}/blog/free-x-api-1000-calls
 - ${SITE_URL}/blog/twitter-search-operators-for-agents

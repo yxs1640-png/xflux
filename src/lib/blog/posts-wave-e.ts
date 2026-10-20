@@ -4,9 +4,9 @@ import type { BlogPost } from "./posts";
 export const BLOG_POSTS_WAVE_E: BlogPost[] = [
   {
     slug: "twitter-api-search-operators",
-    title: "X/Twitter Search Operators for APIs (from:, since:, lang:)",
+    title: "Twitter Search Operators for APIs (from:, since:, lang:)",
     description:
-      "Use X advanced search operators with a read API — from:user, since:, until:, lang:, filter:replies — plus XFlux /api/v1/search examples.",
+      "Twitter search operators with a read API — from:user, since:, until:, lang:, filter:replies — plus XFlux /api/v1/search examples and how to use Twitter search API.",
     datePublished: "2026-09-28",
     keywords: [
       "twitter search operators",
@@ -142,9 +142,9 @@ print(len(r.json()["data"]))`,
   },
   {
     slug: "twitter-api-free-tier",
-    title: "Twitter/X API Free Tier in 2026: What You Actually Get",
+    title: "X API Free / Twitter API Free Tier 2026 — What You Get",
     description:
-      "Compare free options for reading public X data — official X API access reality vs freemium alternatives like XFlux (1,000 calls + 1 monitor).",
+      "X API free and Twitter API free tier in 2026: official access reality vs a freemium read API like XFlux (1,000 calls + 1 monitor, no card).",
     datePublished: "2026-09-28",
     keywords: [
       "twitter api free tier",
@@ -275,9 +275,9 @@ await fetch(discordWebhook, {
   },
   {
     slug: "twitter-webhooks-account-alerts",
-    title: "Twitter Webhooks for Account Alerts (Not Cron or Spreadsheets)",
+    title: "Twitter Webhook Integration for Account Alerts (Not Cron)",
     description:
-      "X has no public Twitter webhook for new tweets. Use account monitors + signed HTTP webhooks for Discord, Slack, or your server — discover handles, promote keepers, budget Free vs Starter.",
+      "Webhooks Twitter integration without enterprise AAA: account monitors + signed HTTP webhooks for Discord, Slack, or your server. Free to test; live hits on Starter.",
     datePublished: "2026-10-08",
     keywords: [
       "twitter webhook",

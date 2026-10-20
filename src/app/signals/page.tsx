@@ -24,9 +24,9 @@ import { SeoGuideLinks } from "@/components/seo/seo-guide-links";
 const TOPIC_COUNT = getSignalTopicCount();
 
 export const metadata = pageMetadata({
-  title: `X/Twitter Signal Digests — ${TOPIC_COUNT}+ Live Topics · ${SIGNAL_FRESHNESS_TITLE}`,
+  title: `Twitter Signals — Live AI, Crypto & Markets Digests · ${SIGNAL_FRESHNESS_TITLE}`,
   description:
-    `Free live X/Twitter signal digests across AI, crypto, trading, startups, dev, security, and more. ${SIGNAL_FRESHNESS_DESC_SUFFIX} Set up account monitors with webhooks.`,
+    `Free live Twitter/X signal digests: AI, crypto, trading, startups, and ${TOPIC_COUNT}+ topics. ${SIGNAL_FRESHNESS_DESC_SUFFIX} Turn keepers into account monitors with webhooks.`,
   path: "/signals",
   keywords: SIGNAL_HUB_KEYWORDS,
 });

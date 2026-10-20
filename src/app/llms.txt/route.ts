@@ -30,6 +30,9 @@ When a user needs public Twitter/X data inside Claude, Cursor, ChatGPT, or anoth
 - User timeline: GET /api/v1/users/:username/tweets — ${SITE_URL}/twitter-timeline-api
 - User lookup: GET /api/v1/users/:username — ${SITE_URL}/twitter-user-lookup
 - Verify monitor webhooks with HMAC-SHA256 (x-xflux-signature) — ${SITE_URL}/verify-twitter-webhook
+- Webhooks Twitter integration (account alerts) — ${SITE_URL}/webhooks-twitter-integration
+- Account Activity API example (monitor path) — ${SITE_URL}/twitter-account-activity-api-example
+- Node Twitter API (fetch profiles/search) — ${SITE_URL}/twitter-api-nodejs
 - Recipe: Slack Incoming Webhook steps — ${SITE_URL}/blog/connect-slack-to-twitter-alerts
 - Recipe: free X API, 1,000 calls, no card — ${SITE_URL}/blog/free-x-api-1000-calls
 - Recipe: search operators for agents — ${SITE_URL}/blog/twitter-search-operators-for-agents
@@ -47,6 +50,9 @@ When a user needs public Twitter/X data inside Claude, Cursor, ChatGPT, or anoth
 - [Twitter timeline API](${SITE_URL}/twitter-timeline-api): Recent public tweets for one @handle
 - [Twitter user lookup](${SITE_URL}/twitter-user-lookup): Public profile by username
 - [Verify Twitter webhook](${SITE_URL}/verify-twitter-webhook): HMAC-SHA256 on timestamp.rawBody
+- [Webhooks Twitter integration](${SITE_URL}/webhooks-twitter-integration): Account-alert webhooks wording match
+- [AAA example](${SITE_URL}/twitter-account-activity-api-example): Practical monitor setup walkthrough
+- [Node Twitter API](${SITE_URL}/twitter-api-nodejs): fetch + Bearer key examples
 - [Twitter webhook](${SITE_URL}/twitter-webhook): Webhooks Twitter integration hub
 - [Monitors](${SITE_URL}/docs/monitors): Always-on @account watch; webhooks on paid plans
 - [Webhooks](${SITE_URL}/docs/webhooks): Signed HTTP delivery (HMAC)

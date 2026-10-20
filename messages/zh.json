@@ -77,6 +77,9 @@
     "twitterTimelineApi": "Twitter 时间线 API",
     "twitterUserLookup": "Twitter 用户查询",
     "verifyTwitterWebhook": "校验 Webhook 签名",
+    "webhooksTwitterIntegration": "Webhooks Twitter 集成",
+    "aaaExample": "Account Activity API 示例",
+    "twitterApiNodejs": "Node Twitter API",
     "webhookPython": "Python Webhook",
     "mcpLanding": "面向 Agent 的 MCP"
   },

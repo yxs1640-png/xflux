@@ -4,9 +4,9 @@ import type { BlogPost } from "./posts";
 export const BLOG_POSTS_WAVE_E_ZH: BlogPost[] = [
   {
     slug: "twitter-api-search-operators",
-    title: "X/Twitter 搜索运算符（from: / since: / lang:）与 API 用法",
+    title: "Twitter Search Operators（from: / since: / lang:）与 API 用法",
     description:
-      "在读 API 里使用 X 高级搜索运算符——from:用户、since:、until:、lang:、filter:replies，并附 XFlux /api/v1/search 示例。",
+      "Twitter search operators：在读 API 里用 from:、since:、until:、lang:、filter:replies，并附 XFlux /api/v1/search 与 how to use Twitter search API 示例。",
     datePublished: "2026-09-28",
     keywords: [
       "twitter search operators",
@@ -134,9 +134,9 @@ print(len(r.json()["data"]))`,
   },
   {
     slug: "twitter-api-free-tier",
-    title: "2026 年 Twitter/X API 免费档：你实际能得到什么",
+    title: "X API Free / Twitter API 免费档 2026：你实际能得到什么",
     description:
-      "对比读取公开 X 数据的免费路径——官方准入现实 vs XFlux 等 freemium（1,000 次调用 + 1 个 monitor）。",
+      "X API free、Twitter API free 在 2026：官方准入现实 vs XFlux 等 freemium（1,000 次调用 + 1 个 monitor，无需信用卡）。",
     datePublished: "2026-09-28",
     keywords: [
       "twitter api free tier",
@@ -263,9 +263,9 @@ await fetch(discordWebhook, {
   },
   {
     slug: "twitter-webhooks-account-alerts",
-    title: "Twitter Webhook 做账号告警（别靠 Cron 或表格）",
+    title: "Twitter Webhook Integration：账号告警（别靠 Cron）",
     description:
-      "X 没有公开的新推文 Twitter webhook。用账号监控 + 签名 HTTP webhook 接到 Discord/Slack/自建服务——先发现账号，再升级 monitor，并分清 Free 与 Starter 预算。",
+      "Webhooks Twitter integration，无需企业 AAA：账号监控 + 签名 HTTP webhook 接到 Discord/Slack/自建服务。Free 可测，Starter 起实时投递。",
     datePublished: "2026-10-08",
     keywords: [
       "twitter webhook",
