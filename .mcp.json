@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "xflux": {
+      "command": "npx",
+      "args": ["-y", "@xflux/xflux-mcp-server"],
+      "env": {
+        "XFLUX_API_KEY": "xflux_your_key_here"
+      }
+    }
+  }
+}
