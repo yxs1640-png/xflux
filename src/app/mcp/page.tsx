@@ -6,8 +6,9 @@ import { Footer } from "@/components/layout/footer";
 import { CodeBlock } from "@/components/docs/doc-blocks";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { BreadcrumbJsonLd } from "@/components/seo/breadcrumb-json-ld";
 import { FaqJsonLd } from "@/components/seo/faq-json-ld";
-import { pageMetadata } from "@/lib/seo";
+import { pageMetadata, SITE_NAME } from "@/lib/seo";
 
 export const metadata = pageMetadata({
   title: "XFlux MCP — X/Twitter Data for Claude & Cursor",
@@ -63,6 +64,12 @@ export default async function McpMarketingPage() {
   return (
     <>
       <FaqJsonLd items={faqs} />
+      <BreadcrumbJsonLd
+        items={[
+          { name: SITE_NAME, path: "/" },
+          { name: "MCP", path: "/mcp" },
+        ]}
+      />
       <Header />
       <main className="pt-24 pb-16">
         <div className="mx-auto max-w-4xl px-4 sm:px-6">

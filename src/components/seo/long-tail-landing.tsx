@@ -5,13 +5,21 @@ import { Footer } from "@/components/layout/footer";
 import { CodeBlock } from "@/components/docs/doc-blocks";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { BreadcrumbJsonLd } from "@/components/seo/breadcrumb-json-ld";
 import { FaqJsonLd } from "@/components/seo/faq-json-ld";
 import type { LongTailLanding } from "@/lib/seo-landings/long-tail";
+import { SITE_NAME } from "@/lib/seo";
 
 export function LongTailLandingPage({ page }: { page: LongTailLanding }) {
   return (
     <>
       <FaqJsonLd items={page.faqs} />
+      <BreadcrumbJsonLd
+        items={[
+          { name: SITE_NAME, path: "/" },
+          { name: page.h1, path: page.path },
+        ]}
+      />
       <Header />
       <main className="pt-24 pb-16">
         <div className="mx-auto max-w-4xl px-4 sm:px-6">
@@ -23,7 +31,12 @@ export function LongTailLandingPage({ page }: { page: LongTailLanding }) {
             <h1 className="text-4xl font-bold text-white sm:text-5xl leading-tight">
               {page.h1}
             </h1>
-            <p className="mt-6 text-lg text-zinc-400 max-w-2xl mx-auto leading-relaxed">
+            {page.verdict ? (
+              <p className="mt-6 text-lg text-zinc-200 max-w-2xl mx-auto leading-relaxed font-medium">
+                {page.verdict}
+              </p>
+            ) : null}
+            <p className="mt-4 text-base text-zinc-400 max-w-2xl mx-auto leading-relaxed">
               {page.subtitle}
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
@@ -43,17 +56,28 @@ export function LongTailLandingPage({ page }: { page: LongTailLanding }) {
             </div>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-3 mb-16">
-            {page.cards.map((card) => (
-              <Card key={card.title}>
-                <CardHeader>
-                  <Check className="h-8 w-8 text-sky-400 mb-2" />
-                  <CardTitle className="text-lg">{card.title}</CardTitle>
-                  <CardDescription>{card.text}</CardDescription>
-                </CardHeader>
-              </Card>
-            ))}
-          </div>
+          {page.facts && page.facts.length > 0 ? (
+            <section className="mb-16 space-y-8">
+              {page.facts.map((fact) => (
+                <div key={fact.heading}>
+                  <h2 className="text-2xl font-bold text-white mb-2">{fact.heading}</h2>
+                  <p className="text-zinc-300 text-sm leading-relaxed">{fact.data}</p>
+                </div>
+              ))}
+            </section>
+          ) : (
+            <div className="grid gap-6 sm:grid-cols-3 mb-16">
+              {page.cards.map((card) => (
+                <Card key={card.title}>
+                  <CardHeader>
+                    <Check className="h-8 w-8 text-sky-400 mb-2" />
+                    <CardTitle className="text-lg">{card.title}</CardTitle>
+                    <CardDescription>{card.text}</CardDescription>
+                  </CardHeader>
+                </Card>
+              ))}
+            </div>
+          )}
 
           <section className="mb-16">
             <h2 className="text-2xl font-bold text-white mb-6">{page.howTitle}</h2>
@@ -145,10 +169,10 @@ export function LongTailLandingPage({ page }: { page: LongTailLanding }) {
           </section>
 
           <section className="rounded-xl border border-zinc-800 bg-zinc-900/30 p-8 text-center">
-            <h2 className="text-xl font-bold text-white mb-2">Try account monitors free</h2>
+            <h2 className="text-xl font-bold text-white mb-2">Start on Free</h2>
             <p className="text-zinc-400 text-sm mb-6 max-w-lg mx-auto">
-              Free includes 1 monitor and Dashboard hit history. Live webhook delivery starts on
-              Starter ($19/mo).
+              Free: 1,000 API calls/month and 1 monitor with Dashboard hits. Live webhook delivery
+              starts on Starter ($19/mo).
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               <Link href={`/register?src=${page.registerSrc}_cta`}>

@@ -6,7 +6,8 @@ import { Footer } from "@/components/layout/footer";
 import { CodeBlock } from "@/components/docs/doc-blocks";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { pageMetadata } from "@/lib/seo";
+import { pageMetadata, SITE_NAME } from "@/lib/seo";
+import { BreadcrumbJsonLd } from "@/components/seo/breadcrumb-json-ld";
 import { FaqJsonLd } from "@/components/seo/faq-json-ld";
 
 const WEBHOOK_HUB_FAQS = [
@@ -75,6 +76,12 @@ export default async function TwitterWebhookPage() {
   return (
     <>
       <FaqJsonLd items={WEBHOOK_HUB_FAQS} />
+      <BreadcrumbJsonLd
+        items={[
+          { name: SITE_NAME, path: "/" },
+          { name: "Twitter Webhook", path: "/twitter-webhook" },
+        ]}
+      />
       <Header />
       <main className="pt-24 pb-16">
         <div className="mx-auto max-w-4xl px-4 sm:px-6">
