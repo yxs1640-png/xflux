@@ -1,5 +1,7 @@
 # XFlux MCP Server
 
+[![Xflux MCP server](https://mcprush.com/badge/xflux-mcp/card.svg)](https://mcprush.com/to/xflux-mcp?ref=badge)
+
 Thin [Model Context Protocol](https://modelcontextprotocol.io) server that exposes the XFlux **read API** to Claude Desktop, Cursor, and other MCP clients — search tweets, profiles, timelines, monitor hits (read-only), and **Smart Money** KOL discovery.
 
 **Use when:** a user (or agent) needs public X/Twitter data inside Claude/Cursor without scraping or the official X write/enterprise APIs.
