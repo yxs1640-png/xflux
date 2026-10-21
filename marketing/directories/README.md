@@ -69,10 +69,13 @@ Free tier: 1,000 API calls/month and 1 monitor. Paid plans from $19/mo with webh
 | [free-for.dev](https://github.com/ripienaar/free-for-dev/pull/4733) | Merged | https://github.com/ripienaar/free-for-dev/pull/4733 |
 | [SaaSHub](https://www.saashub.com/xflux) | Verified (pending approval) | https://www.saashub.com/xflux — logo/pricing/details done; wait for review |
 | [Dev.to](https://dev.to) | Banned — public URLs 404 | Do not publish `../devto/03`–`05` on this account or a new one. Use `recipes/` on the public GitHub repo instead |
-| [mcprush](https://mcprush.com/yxs1640-png/xflux-mcp) | Unclaimed | Claim with GitHub `yxs1640-png`. Do not buy Boost |
-| [Glama](https://glama.ai/mcp/servers) | Claim | GitHub login → find `yxs1640-png/xflux` → claim |
-| [mcpbeat](https://mcpbeat.com/mcp-servers/yxs1640-png/xflux/) | Unclaimed | “Your server? Claim it” on that page |
-| [awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers) | Not listed | PR under `### 💬 Communication`, title ends with `🤖🤖🤖` |
+| [mcprush](https://mcprush.com/yxs1640-png/xflux-mcp) | Claimed (Grade A) | Badge in `mcp-server/README.md`. Do not monetize / Stripe Connect |
+| [Glama](https://glama.ai/mcp/servers/yxs1640-png/xflux) | Live; README stale | Login admin → request repository re-sync (`glama.json` on main) |
+| [mcpbeat](https://mcpbeat.com/mcp-servers/yxs1640-png/xflux/) | OWNER CONFIRMED | Done |
+| [awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers/pull/16868) | PR open | Wait for merge (`has-glama`) |
+| [cursor.directory](https://cursor.directory/plugins/new) | Ready | Scan `https://github.com/yxs1640-png/xflux` (`.mcp.json` on main) |
+| [Cline marketplace](https://github.com/cline/mcp-marketplace/issues/new?template=mcp-server-submission.yml) | Draft ready | See `../geo/cline-mcp-marketplace-issue.md` |
+| [LobeHub](https://lobehub.com/mcp) | Manifest ready | `lhm login` then publish — see `../geo/agent-directory-clicks.md` |
 | [Product Hunt](https://www.producthunt.com) | Scheduled | See `../product-hunt/SCHEDULE.md` (not same week as HN) |
 | [Hacker News Show HN](https://news.ycombinator.com/item?id=49295237) | Posted | Monitor comments |
 | [Reddit r/SideProject](https://reddit.com/r/SideProject) | Ready | See `../reddit/01-sideproject-showcase.md` |
