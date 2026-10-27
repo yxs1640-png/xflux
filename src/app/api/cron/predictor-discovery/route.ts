@@ -4,6 +4,10 @@ import { PREDICTOR_NICHES } from "@/lib/predictor-discovery/types";
 
 export const maxDuration = 60;
 
+/**
+ * Vercel Cron is disabled (`crons: []` in vercel.json) to save Fluid Active CPU.
+ * Trigger manually with Authorization: Bearer $CRON_SECRET, or re-add a schedule later / move to Fly.
+ */
 function authorized(request: NextRequest): boolean {
   const secret = process.env.CRON_SECRET?.trim();
   if (secret) {

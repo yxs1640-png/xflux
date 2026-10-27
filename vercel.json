@@ -3,10 +3,5 @@
   "framework": "nextjs",
   "installCommand": "npm install",
   "regions": ["bom1"],
-  "crons": [
-    {
-      "path": "/api/cron/predictor-discovery",
-      "schedule": "0 2 * * *"
-    }
-  ]
+  "crons": []
 }
