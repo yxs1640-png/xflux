@@ -56,8 +56,14 @@ export function middleware(request: NextRequest) {
   return response;
 }
 
+/**
+ * Locale cookies only matter for HTML UI. Skip API + static-ish paths so
+ * high-volume /api/v1 traffic does not burn Vercel Fluid Active CPU on middleware.
+ */
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|api/|ingest/|llms\\.txt|llms-full\\.txt|robots\\.txt|sitemap\\.xml|.*\\..*).*)",
+  ],
 };
 
 void locales;
