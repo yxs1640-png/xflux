@@ -29,9 +29,9 @@ const WEBHOOK_HUB_FAQS = [
 ];
 
 export const metadata = pageMetadata({
-  title: "Twitter Webhook — Webhooks Twitter Integration Guide",
+  title: "Twitter Webhook — Alerts for Public @Accounts",
   description:
-    "Twitter webhook and webhooks Twitter integration for public accounts: test Discord, Slack, or HTTPS on Free; live signed delivery on Starter. Not enterprise AAA.",
+    "Twitter webhook for new tweets from public @handles: paste Discord, Slack, or HTTPS URL. Free Test ping; live signed POSTs from $19/mo. Not enterprise Account Activity API.",
   path: "/twitter-webhook",
   keywords: [
     "twitter webhook",

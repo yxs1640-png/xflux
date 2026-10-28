@@ -40,9 +40,9 @@ export const LONG_TAIL_LANDINGS: LongTailLanding[] = [
     slug: "twitter-account-activity-api",
     path: "/twitter-account-activity-api",
     primaryKeyword: "twitter account activity api",
-    title: "Twitter Account Activity API — Free Monitor Alternative",
+    title: "Twitter Account Activity API Alternative — Free Monitor",
     description:
-      "Account Activity API Twitter alternative without enterprise AAA. Free: 1 monitor + Dashboard hits. Live signed webhooks on Starter for Discord, Slack, or HTTPS.",
+      "Twitter Account Activity API alternative for public @handles: free 1 monitor + Dashboard hits; live signed webhooks to Discord/Slack/HTTPS from $19/mo. No enterprise AAA.",
     keywords: [
       "twitter account activity api",
       "account activity api twitter",
@@ -426,9 +426,9 @@ export const LONG_TAIL_LANDINGS: LongTailLanding[] = [
     slug: "twitter-slack-alerts",
     path: "/twitter-slack-alerts",
     primaryKeyword: "twitter slack integration",
-    title: "Twitter Slack Integration — Alerts via Incoming Webhook",
+    title: "Slack Twitter Integration — Tweets → Slack Channel",
     description:
-      "Twitter Slack integration / Slack Twitter integration: paste a Slack Incoming Webhook, test on Free, live hits on Starter. No custom Slack bot required.",
+      "Slack Twitter integration without enterprise X APIs: watch public @handles, paste a Slack Incoming Webhook, Test free, live alerts on Starter ($19/mo). No Slack bot app required.",
     keywords: [
       "connect slack to twitter",
       "twitter slack integration",
@@ -700,9 +700,9 @@ app.post(
     slug: "monitor-twitter-account-webhook",
     path: "/monitor-twitter-account-webhook",
     primaryKeyword: "monitor twitter account webhook",
-    title: "Monitor Twitter Account → Webhook Alerts",
+    title: "Monitor Twitter Account Webhook — Push New Tweets",
     description:
-      "Monitor a Twitter/X account for free: 1 monitor and Dashboard hits. Save a webhook and test — live POSTs when you upgrade.",
+      "Monitor a Twitter account and fire a webhook: Free 1 @handle + Test ping; live Discord/Slack/HTTPS POSTs on Starter. Keyword filters; no enterprise AAA.",
     keywords: [
       "monitor twitter account webhook",
       "twitter account monitor webhook",
@@ -1144,9 +1144,9 @@ def xflux_webhook():
     slug: "monitor-twitter-account",
     path: "/monitor-twitter-account",
     primaryKeyword: "monitor twitter account",
-    title: "Monitor Twitter Account — Free Watch & Alerts",
+    title: "Monitor Twitter Account Free — Watch @Handles",
     description:
-      "Monitor Twitter account free: 1 @handle, keyword filters, Dashboard history. Add Discord, Slack, or HTTPS webhooks when you need push. Also covers twitter monitor crypto workflows.",
+      "Monitor Twitter / monitor Twitter account free: 1 public @handle, optional keywords, Dashboard hits. Discord, Slack, or HTTPS webhooks from Starter ($19/mo). No DIY poller.",
     keywords: [
       "monitor twitter",
       "monitor twitter account",
@@ -1247,9 +1247,9 @@ def xflux_webhook():
     slug: "connect-slack-to-twitter",
     path: "/connect-slack-to-twitter",
     primaryKeyword: "connect slack to twitter",
-    title: "Connect Slack to Twitter — How-To (Incoming Webhook)",
+    title: "Connect Slack to Twitter — Incoming Webhook Alerts",
     description:
-      "How to connect Slack to Twitter / Slack to Twitter alerts: create a Slack Incoming Webhook, attach it to an XFlux monitor, test free, go live on Starter.",
+      "Connect Slack to Twitter for new-tweet alerts: Slack Incoming Webhook + XFlux monitor. No Account Activity API. Free Test ping; live delivery on Starter ($19/mo).",
     keywords: [
       "connect slack to twitter",
       "slack to twitter",
@@ -1842,9 +1842,9 @@ const ok = crypto.timingSafeEqual(
     slug: "webhooks-twitter-integration",
     path: "/webhooks-twitter-integration",
     primaryKeyword: "webhooks twitter integration",
-    title: "Webhooks Twitter Integration — Account Alerts",
+    title: "Webhooks Twitter Integration — @Account → HTTP POST",
     description:
-      "Webhooks Twitter integration for public @accounts: signed HTTP POSTs to Discord, Slack, or your server. Free to test; live monitor.hit on Starter. Not official AAA.",
+      "Webhooks Twitter integration: when a public Twitter account tweets, POST to Discord, Slack, or your URL. Free Test; live signed monitor.hit on Starter ($19/mo). Not official AAA.",
     keywords: [
       "webhooks twitter integration",
       "twitter webhook integration",
