@@ -136,6 +136,77 @@ curl -G "https://www.xfluxapi.com/api/v1/users/elonmusk/tweets" \\
     ],
   },
   {
+    slug: "monitor-firstsquawk-twitter-slack",
+    title: "Monitor @FirstSquawk on Twitter → Slack or Discord",
+    description:
+      "Looking for FirstSquawk on X? Official account is @FirstSquawk. Want every headline in Slack or Discord? Free XFlux monitor (1 @handle) + Test webhook; live push when you upgrade. Also works for LiveSquawk and DeItaone.",
+    datePublished: "2026-10-28",
+    keywords: [
+      "firstsquawk twitter",
+      "firstsquawk",
+      "monitor firstsquawk",
+      "firstsquawk slack",
+      "livesquawk twitter",
+      "deltaone twitter alerts",
+    ],
+    sections: [
+      {
+        heading: "If you only need the FirstSquawk account",
+        paragraphs: [
+          "FirstSquawk is an independent financial news / squawk service. Their public X account is https://x.com/FirstSquawk (also firstsquawk.com for paid audio/text products).",
+          "XFlux is not FirstSquawk and does not replace their newswire. This page is for people who want to watch that public feed (or similar squawk accounts) and push new posts into Slack, Discord, or HTTPS.",
+        ],
+      },
+      {
+        heading: "What XFlux adds",
+        paragraphs: [
+          "Add @FirstSquawk as an XFlux account monitor. Free includes 1 monitor, optional keyword filters, Dashboard hit history, and a Test ping to your webhook URL. Live channel delivery starts when you upgrade.",
+          "Same path works for other public macro/breaking accounts traders already watch, for example @LiveSquawk and @DeItaone. Keyword templates: /docs/guides/trading-keywords.",
+          "Product pages: /monitor-twitter-account and /connect-slack-to-twitter.",
+        ],
+      },
+      {
+        heading: "1. Point Slack or Discord at a monitor",
+        paragraphs: [
+          "Create a Slack Incoming Webhook (or Discord channel webhook) and copy the URL. Register free at /register?src=blog_firstsquawk — no card on Free.",
+          "Dashboard → Monitors → add username FirstSquawk (no @). Optional keywords for earnings-only noise control, e.g. earnings, EPS, guidance, beat, miss. Paste the webhook URL → click Test.",
+        ],
+      },
+      {
+        heading: "2. Add sibling squawk accounts when you need more slots",
+        paragraphs: [
+          "Free is one active monitor. When you need LiveSquawk, DeItaone, or Unusual Whales in parallel, upgrade for more monitor slots and live POSTs.",
+          "Do not poll search in a loop for from:FirstSquawk — a monitor is cheaper on quota and built for continuous watch. On-demand reads still use the same API key: /free-x-api.",
+        ],
+      },
+      {
+        heading: "Example: pull the latest posts with the read API",
+        paragraphs: [
+          "To backfill or inspect the timeline without waiting for a hit, use GET /api/v1/users/FirstSquawk/tweets. Free: 1,000 API calls/month.",
+        ],
+        code: `curl -H "Authorization: Bearer xflux_YOUR_KEY" \\
+  "https://www.xfluxapi.com/api/v1/users/FirstSquawk/tweets?limit=10"`,
+      },
+    ],
+    faqs: [
+      {
+        question: "Is XFlux affiliated with FirstSquawk?",
+        answer:
+          "No. FirstSquawk is a separate news/squawk product. XFlux only reads public X/Twitter data and can monitor public @handles you choose.",
+      },
+      {
+        question: "Can I get FirstSquawk’s paid audio feed through XFlux?",
+        answer:
+          "No. XFlux only sees public posts on X. Paid FirstSquawk audio/text products stay on firstsquawk.com.",
+      },
+      {
+        question: "Do I need the official Account Activity API?",
+        answer:
+          "Not for watching a few public accounts. Use /monitor-twitter-account instead of enterprise AAA.",
+      },
+    ],
+  },
+  {
     slug: "twitter-search-operators-for-agents",
     title: "Twitter Search Operators for Agents (from:, lang:, quotes)",
     description:

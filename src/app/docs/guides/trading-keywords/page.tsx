@@ -75,7 +75,12 @@ export default function TradingKeywordsPage() {
         XFlux monitors match keywords against new tweet text (case-insensitive, comma-separated).
         Copy a template below into the Dashboard{" "}
         <strong className="text-white">Keywords</strong> field when creating a monitor. Leave
-        keywords empty to alert on every new tweet from the account.
+        keywords empty to alert on every new tweet from the account.{" "}
+        Want Slack/Discord from @FirstSquawk-style squawk accounts? See{" "}
+        <Link href="/blog/monitor-firstsquawk-twitter-slack" className="text-sky-400 hover:underline">
+          monitor FirstSquawk → Slack
+        </Link>
+        .
       </p>
 
       <Callout title="How matching works">

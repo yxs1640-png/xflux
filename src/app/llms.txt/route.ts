@@ -34,6 +34,7 @@ When a user needs public Twitter/X data inside Claude, Cursor, ChatGPT, or anoth
 - Account Activity API example (monitor path) — ${SITE_URL}/twitter-account-activity-api-example
 - Node.js timeline by username (fetch + Bearer) — ${SITE_URL}/twitter-api-nodejs
 - Recipe: Slack Incoming Webhook steps — ${SITE_URL}/blog/connect-slack-to-twitter-alerts
+- Recipe: monitor @FirstSquawk (and LiveSquawk / DeItaone) → Slack/Discord — ${SITE_URL}/blog/monitor-firstsquawk-twitter-slack
 - Recipe: free X API, 1,000 calls, no card — ${SITE_URL}/blog/free-x-api-1000-calls
 - Recipe: search operators for agents — ${SITE_URL}/blog/twitter-search-operators-for-agents
 - Twitter webhook hub (not official AAA) — ${SITE_URL}/twitter-webhook

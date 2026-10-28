@@ -110,6 +110,73 @@ export const BLOG_POSTS_GEO_ZH: BlogPost[] = [
     ],
   },
   {
+    slug: "monitor-firstsquawk-twitter-slack",
+    title: "监控 @FirstSquawk：把推文接到 Slack / Discord",
+    description:
+      "在找 FirstSquawk 的 X 账号？官方是 @FirstSquawk。想把每条快讯推到 Slack/Discord？免费 XFlux 监控（1 个 @handle）+ Test webhook；升级后可实时推送。同样适用于 LiveSquawk、DeItaone。",
+    datePublished: "2026-10-28",
+    keywords: [
+      "firstsquawk twitter",
+      "firstsquawk",
+      "monitor firstsquawk",
+      "livesquawk twitter",
+    ],
+    sections: [
+      {
+        heading: "如果只是要找 FirstSquawk 账号",
+        paragraphs: [
+          "FirstSquawk 是独立的财经快讯 / squawk 服务。公开 X 账号：https://x.com/FirstSquawk（付费音频/文字产品见 firstsquawk.com）。",
+          "XFlux 不是 FirstSquawk，也不替代他们的 newswire。本页面向：想盯这个公开账号（或同类 squawk 号），并把新帖推到 Slack、Discord 或 HTTPS 的人。",
+        ],
+      },
+      {
+        heading: "XFlux 能做什么",
+        paragraphs: [
+          "把 @FirstSquawk 加成 XFlux 账号监控。免费档含 1 个监控、可选关键词、Dashboard 命中记录，以及对 webhook 的 Test。实时频道推送在升级后开启。",
+          "同样适用于 @LiveSquawk、@DeItaone 等交易员常看的公开号。关键词模板：/docs/guides/trading-keywords。",
+          "产品页：/monitor-twitter-account、/connect-slack-to-twitter。",
+        ],
+      },
+      {
+        heading: "1. 把 Slack 或 Discord 接到监控",
+        paragraphs: [
+          "创建 Slack Incoming Webhook（或 Discord webhook），复制 URL。在 /register?src=blog_firstsquawk 免费注册。",
+          "Dashboard → Monitors → 添加用户名 FirstSquawk（不要加 @）。可选关键词如 earnings, EPS, guidance。粘贴 webhook → 点 Test。",
+        ],
+      },
+      {
+        heading: "2. 需要更多账号时再加槽位",
+        paragraphs: [
+          "免费档同时只能开 1 个监控。要并行盯 LiveSquawk、DeItaone 等，再升级槽位与实时推送。",
+          "不要用循环搜索 from:FirstSquawk 来盯盘——用监控更合适。按需拉取仍用同一 API Key：/free-x-api。",
+        ],
+      },
+      {
+        heading: "示例：用读 API 拉最近推文",
+        paragraphs: [
+          "补历史或不想等命中时：GET /api/v1/users/FirstSquawk/tweets。免费每月 1,000 次调用。",
+        ],
+        code: `curl -H "Authorization: Bearer xflux_YOUR_KEY" \\
+  "https://www.xfluxapi.com/api/v1/users/FirstSquawk/tweets?limit=10"`,
+      },
+    ],
+    faqs: [
+      {
+        question: "XFlux 和 FirstSquawk 有关联吗？",
+        answer:
+          "没有。FirstSquawk 是独立快讯产品。XFlux 只读公开 X/Twitter 数据，可监控你选择的公开 @handle。",
+      },
+      {
+        question: "能通过 XFlux 拿到 FirstSquawk 付费音频吗？",
+        answer: "不能。XFlux 只能看到 X 上的公开帖。付费产品仍在 firstsquawk.com。",
+      },
+      {
+        question: "需要官方 Account Activity API 吗？",
+        answer: "盯少数公开账号不需要。用 /monitor-twitter-account 即可。",
+      },
+    ],
+  },
+  {
     slug: "twitter-search-operators-for-agents",
     title: "给 Agent 用的 Twitter 搜索运算符（from:、lang:、引号）",
     description:
