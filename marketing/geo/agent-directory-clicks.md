@@ -18,17 +18,17 @@ Issue: https://github.com/cline/mcp-marketplace/issues/3363
 Wait for maintainer review. Draft copy remains in `marketing/geo/cline-mcp-marketplace-issue.md`.  
 
 
-## 4) LobeHub
+## 4) LobeHub — YOUR CLICKS
 
-Manifest generated: `mcp-server/lhm.plugin.json` (9 tools, v1.2.1).
-
-In your terminal (browser login required):
+Manifest: `mcp-server/lhm.plugin.json` (9 tools, v1.2.1). Needs interactive browser login.
 
 ```bash
+cd /Users/yxs/Projects/xflux
+export npm_config_registry=https://registry.npmjs.org/
 npx -y @lobehub/market-cli login
 npx -y @lobehub/market-cli github connect
 npx -y @lobehub/market-cli plugin publish https://github.com/yxs1640-png/xflux --dir /Users/yxs/Projects/xflux/mcp-server
 npx -y @lobehub/market-cli plugin list --output json
 ```
 
-Do **not** paste credentials from `~/.lobehub-market/`.
+Do **not** paste credentials from `~/.lobehub-market/`. After live, update `marketing/directories/README.md`.

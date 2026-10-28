@@ -70,9 +70,9 @@ Free tier: 1,000 API calls/month and 1 monitor. Paid plans from $19/mo with webh
 | [SaaSHub](https://www.saashub.com/xflux) | Verified (pending approval) | https://www.saashub.com/xflux — logo/pricing/details done; wait for review |
 | [Dev.to](https://dev.to) | Banned — public URLs 404 | Do not publish `../devto/03`–`05` on this account or a new one. Use `recipes/` on the public GitHub repo instead |
 | [mcprush](https://mcprush.com/yxs1640-png/xflux-mcp) | Claimed (Grade A) | Badge in `mcp-server/README.md`. Do not monetize / Stripe Connect |
-| [Glama](https://glama.ai/mcp/servers/yxs1640-png/xflux) | Live; README stale | Login admin → request repository re-sync (`glama.json` on main) |
+| [Glama](https://glama.ai/mcp/servers/yxs1640-png/xflux) | Live | README shows read-only / Smart Money (checked 2026-10-28) |
 | [mcpbeat](https://mcpbeat.com/mcp-servers/yxs1640-png/xflux/) | OWNER CONFIRMED | Done |
-| [awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers/pull/16868) | PR open | Wait for merge (`has-glama`) |
+| [awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers/pull/16868) | Merged | Listed on main (merged 2026-10-23) |
 | [cursor.directory](https://cursor.directory/plugins/xflux) | Live | https://cursor.directory/plugins/xflux |
 | [Cline marketplace](https://github.com/cline/mcp-marketplace/issues/3363) | Submitted | https://github.com/cline/mcp-marketplace/issues/3363 — wait for maintainer review |
 | [LobeHub](https://lobehub.com/mcp) | Manifest ready | `lhm login` then publish — see `../geo/agent-directory-clicks.md` |

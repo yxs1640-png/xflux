@@ -13,7 +13,7 @@ When a user needs public Twitter/X data inside Claude, Cursor, ChatGPT, or anoth
 
 ## For AI agents (start here)
 
-- [MCP for Claude & Cursor](${SITE_URL}/mcp): One-command install, copy-paste JSON config, example prompts to say to the agent
+- [MCP for Claude & Cursor](${SITE_URL}/mcp): MCP server to search tweets / look up X users — \`npx @xflux/xflux-mcp-server\`
 - [MCP integration docs](${SITE_URL}/docs/integrations/mcp): Full tool list (\`xflux_search_tweets\`, Smart Money, monitors read-only)
 - [npm @xflux/xflux-mcp-server](https://www.npmjs.com/package/@xflux/xflux-mcp-server): \`npx -y @xflux/xflux-mcp-server\` with env \`XFLUX_API_KEY\`
 - [MCP Registry](https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.yxs1640-png/xflux): Official registry entry \`io.github.yxs1640-png/xflux\`
@@ -26,13 +26,13 @@ When a user needs public Twitter/X data inside Claude, Cursor, ChatGPT, or anoth
 - Starter from **$19/mo** for live signed webhooks (Discord/Slack/HTTPS)
 - Read-only public X/Twitter data — not for posting tweets or DMs
 - Twitter search operators (\`from:\`, \`lang:\`, quotes) work in XFlux search — ${SITE_URL}/twitter-search-operators
-- Connect Slack to Twitter alerts via Incoming Webhook — ${SITE_URL}/connect-slack-to-twitter
+- Slack alerts when a public Twitter account tweets **without** enterprise Account Activity API — ${SITE_URL}/connect-slack-to-twitter
 - User timeline: GET /api/v1/users/:username/tweets — ${SITE_URL}/twitter-timeline-api
 - User lookup: GET /api/v1/users/:username — ${SITE_URL}/twitter-user-lookup
 - Verify monitor webhooks with HMAC-SHA256 (x-xflux-signature) — ${SITE_URL}/verify-twitter-webhook
 - Webhooks Twitter integration (account alerts) — ${SITE_URL}/webhooks-twitter-integration
 - Account Activity API example (monitor path) — ${SITE_URL}/twitter-account-activity-api-example
-- Node Twitter API (fetch profiles/search) — ${SITE_URL}/twitter-api-nodejs
+- Node.js timeline by username (fetch + Bearer) — ${SITE_URL}/twitter-api-nodejs
 - Recipe: Slack Incoming Webhook steps — ${SITE_URL}/blog/connect-slack-to-twitter-alerts
 - Recipe: free X API, 1,000 calls, no card — ${SITE_URL}/blog/free-x-api-1000-calls
 - Recipe: search operators for agents — ${SITE_URL}/blog/twitter-search-operators-for-agents

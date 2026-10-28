@@ -52,12 +52,15 @@ Compare scores to `marketing/geo/prompt-self-test-2026-10-21.md`.
 
 ---
 
-## D) Owner clicks before day 7 (if not done)
+## D) Owner clicks (status 2026-10-28)
 
 - [ ] GSC: sitemap submitted, no soft-404 on new landings  
-- [ ] Glama admin re-sync README  
-- [ ] cursor.directory / LobeHub / Cline listing live  
-- [ ] Deploy dual-track code (commit + push when ready)
+- [x] Glama README current (read-only / Smart Money)  
+- [x] cursor.directory live — https://cursor.directory/plugins/xflux  
+- [x] Cline submitted — https://github.com/cline/mcp-marketplace/issues/3363  
+- [ ] LobeHub publish (owner terminal)  
+- [x] Dual-track deploy on main  
+- See scored log: `day7-check-2026-10-28.md`
 
 ---
 

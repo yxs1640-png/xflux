@@ -1260,32 +1260,32 @@ def xflux_webhook():
     badge: "Slack ← Twitter",
     h1: "How to connect Slack to Twitter account alerts",
     verdict:
-      "X → Slack: Slack Incoming Webhook + XFlux monitor. Test free; live alerts on Starter ($19/mo).",
+      "Slack alerts for public @handles without Account Activity API: XFlux monitor → Slack Incoming Webhook. Test free; live on Starter ($19/mo).",
     subtitle:
-      "Official X does not give you a simple “Slack when @handle tweets” switch. XFlux watches public accounts and POSTs into Slack Incoming Webhooks — free to test, live on Starter. Product overview: /twitter-slack-alerts.",
+      "Skip enterprise Account Activity API. XFlux watches public Twitter/X accounts and POSTs new tweets into a Slack Incoming Webhook — free Test pings, live delivery on Starter. No custom Slack bot required. Product overview: /twitter-slack-alerts.",
     registerSrc: "seo_connect_slack_twitter",
     facts: [
       {
+        heading: "No enterprise AAA",
+        data: "Public @handle monitors + webhook delivery. Not official Account Activity API / CRC.",
+      },
+      {
         heading: "Slack side",
-        data: "Use a Slack Incoming Webhook URL (channel-scoped). No custom Slack bot required for plain text alerts.",
+        data: "Paste a Slack Incoming Webhook URL (channel-scoped). Plain text alerts — no Slack bot app required.",
       },
       {
         heading: "XFlux side",
-        data: "One public @handle monitor + optional keywords. Free can send Test pings; live delivery needs Starter.",
-      },
-      {
-        heading: "Direction of data",
-        data: "Twitter/X → Slack only. This path does not post from Slack to X.",
+        data: "One public @handle + optional keywords. Free: Test ping + Dashboard. Starter $19/mo: live monitor.hit POSTs.",
       },
     ],
     cards: [
       {
-        title: "No custom Slack bot required",
-        text: "Incoming Webhooks are enough for channel text alerts. Use a bot only if you need Block Kit or threads.",
+        title: "Replace AAA for public watches",
+        text: "If you only need “when @handle tweets → Slack”, use an XFlux monitor — not enterprise Account Activity API.",
       },
       {
-        title: "Keyword filters",
-        text: "Alert only when posts mention tickers, product names, or macro phrases.",
+        title: "No custom Slack bot required",
+        text: "Incoming Webhooks are enough for channel text alerts. Use a bot only if you need Block Kit or threads.",
       },
       {
         title: "Same stack as Discord / HTTPS",
@@ -1307,15 +1307,27 @@ def xflux_webhook():
         text: "Free can send test pings. Starter ($19/mo) delivers when new matching tweets appear.",
       },
     ],
+    codeTitle: "What Slack receives",
+    codeBlurb:
+      "XFlux formats a Slack Incoming Webhook payload. Live POSTs start on Starter; Free supports Test.",
+    code: `{
+  "text": "New post from @FederalReserve: <tweet text>\\nhttps://x.com/FederalReserve/status/…"
+}`,
     compareTitle: "Connect Slack to Twitter paths",
-    compareCols: { left: "Make.com / n8n only", right: "XFlux + Slack webhook" },
+    compareCols: { left: "DIY poll / Make / Syften-style", right: "XFlux + Slack webhook" },
     compareRows: [
-      { label: "Data source", left: "You still need X data", right: "Built-in account monitors" },
-      { label: "Free test", left: "Depends on X connector", right: "Test ping on Free" },
+      { label: "Data source", left: "You still need X data or a watcher", right: "Built-in account monitors" },
+      { label: "Enterprise AAA", left: "Often still required for official push", right: "Not needed for public @handles" },
+      { label: "Free test", left: "Depends on connector", right: "Test ping on Free" },
       { label: "Live alert plan", left: "Platform + X costs", right: "Starter $19/mo" },
-      { label: "Sheets / multi-step", left: "Strong", right: "Use Make on top — /docs/integrations/make" },
     ],
     faqs: [
+      {
+        question:
+          "How do I get Slack alerts when a public Twitter account tweets, without enterprise Account Activity API?",
+        answer:
+          "Use XFlux: create a Slack Incoming Webhook, add a public @handle monitor, paste the URL, click Test. Live alerts need Starter ($19/mo). Steps on this page; hub: /twitter-webhook.",
+      },
       {
         question: "How do I connect Slack to Twitter for new-tweet alerts?",
         answer:
@@ -1327,13 +1339,9 @@ def xflux_webhook():
           "No. This path is X → Slack alerts only. XFlux does not post tweets.",
       },
       {
-        question: "Should I use Make.com instead of a direct Slack webhook?",
+        question: "Should I use Make.com or a DIY poller instead?",
         answer:
-          "Direct Slack is simplest. Use Make when you need Sheets or filters — /docs/integrations/make.",
-      },
-      {
-        question: "Where is the Twitter Slack product overview?",
-        answer: "/twitter-slack-alerts and hub /twitter-webhook.",
+          "Direct Slack webhook is simplest for one channel. Use Make for Sheets/filters — /docs/integrations/make. DIY poll still needs an X read API — /free-x-api.",
       },
     ],
     related: [
@@ -2042,61 +2050,72 @@ const ok = crypto.timingSafeEqual(
     badge: "Node.js",
     h1: "Node Twitter API for public read data",
     verdict:
-      "Node fetch + Bearer key → profiles, timelines, search on XFlux. Free: 1,000 calls/mo. Webhooks: /twitter-webhook-nodejs.",
+      "Node.js user timeline by username: GET www.xfluxapi.com/api/v1/users/:username/tweets with Bearer key. Free 1,000 calls/mo.",
     subtitle:
-      "Call XFlux from Node with fetch: profiles, timelines, search. Same free tier as curl. For monitor webhooks in Express, see /twitter-webhook-nodejs. Longer guide: /docs/guides/nodejs.",
+      "Call XFlux from Node with fetch — user timeline by @username, profiles, and search. No official X bearer required. Free: 1,000 calls/month. Express webhook verify: /twitter-webhook-nodejs. Longer guide: /docs/guides/nodejs.",
     registerSrc: "seo_twitter_api_nodejs",
     facts: [
       {
-        heading: "Base URL",
-        data: "https://www.xfluxapi.com/api/v1 with Authorization: Bearer xflux_…",
+        heading: "Timeline by username",
+        data: "GET https://www.xfluxapi.com/api/v1/users/:username/tweets?limit=10 — public accounts only.",
       },
       {
-        heading: "Free quota",
-        data: "1,000 successful calls/month. Not for posting or DMs.",
+        heading: "Auth",
+        data: "Header Authorization: Bearer xflux_… from Dashboard → API Keys. Free tier, no card.",
       },
       {
         heading: "Webhook path",
-        data: "Express HMAC verify for monitors: /twitter-webhook-nodejs. Full guide: /docs/guides/nodejs.",
+        data: "Push alerts (not poll): /twitter-webhook-nodejs. Full guide: /docs/guides/nodejs.",
       },
     ],
     cards: [
       {
-        title: "Bearer key, JSON responses",
-        text: "Authorization: Bearer xflux_… against https://www.xfluxapi.com/api/v1.",
+        title: "Timeline without official X SDK",
+        text: "One fetch to /users/:username/tweets — no user-id lookup step required.",
       },
       {
-        title: "No official X app approval",
-        text: "Self-serve key for public reads. Not for posting or DMs.",
+        title: "Same key for profile + search",
+        text: "Also GET /users/:username and /search/tweets. Quota: /docs/limits.",
       },
       {
         title: "Agents can use MCP instead",
-        text: "npx @xflux/xflux-mcp-server — /mcp.",
+        text: "npx @xflux/xflux-mcp-server — tool xflux_get_user_tweets. See /mcp.",
       },
     ],
-    howTitle: "Minimal Node example",
+    howTitle: "Minimal Node timeline example",
     steps: [
       {
         title: "Get a free key",
         text: "Register → Dashboard → API Keys. Details: /free-x-api.",
       },
       {
-        title: "fetch a profile or search",
-        text: "Use the snippet below. Count each successful call against the monthly quota.",
+        title: "fetch timeline by username",
+        text: "Use the snippet below (FederalReserve example). Each 200 counts as one call.",
       },
       {
         title: "Add webhooks when you need push",
         text: "Monitors + Express verify: /twitter-webhook-nodejs.",
       },
     ],
-    codeTitle: "fetch profile",
+    codeTitle: "fetch user timeline by username",
+    codeBlurb:
+      "Public accounts only. Swap the username path segment. Profile: /api/v1/users/:username — see /twitter-timeline-api.",
     code: `const key = process.env.XFLUX_API_KEY;
-const res = await fetch("https://www.xfluxapi.com/api/v1/users/x", {
-  headers: { Authorization: \`Bearer \${key}\` },
-});
-const user = await res.json();
-console.log(user);`,
+const username = "FederalReserve";
+const res = await fetch(
+  \`https://www.xfluxapi.com/api/v1/users/\${encodeURIComponent(username)}/tweets?limit=10\`,
+  { headers: { Authorization: \`Bearer \${key}\` } },
+);
+if (!res.ok) throw new Error(await res.text());
+const tweets = await res.json();
+console.log(tweets);`,
     faqs: [
+      {
+        question:
+          "Node.js example to call a Twitter read API for user timeline by username?",
+        answer:
+          "Yes — fetch https://www.xfluxapi.com/api/v1/users/:username/tweets with Authorization: Bearer xflux_…. Copy the snippet on this page. Free: 1,000 calls/mo. Also /twitter-timeline-api.",
+      },
       {
         question: "Is this the official twitter-api-v2 Node SDK?",
         answer:

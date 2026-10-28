@@ -11,15 +11,16 @@ import { FaqJsonLd } from "@/components/seo/faq-json-ld";
 import { pageMetadata, SITE_NAME } from "@/lib/seo";
 
 export const metadata = pageMetadata({
-  title: "XFlux MCP — X/Twitter Data for Claude & Cursor",
+  title: "MCP Server for Claude & Cursor — Search Tweets | XFlux",
   description:
-    "Connect Claude Desktop or Cursor to XFlux with npx @xflux/xflux-mcp-server. Profiles, search, timelines, Smart Money — not the Figma xflux MCP. Agents: see /llms.txt.",
+    "MCP server so Claude or Cursor can search tweets and look up X users: npx @xflux/xflux-mcp-server. Free 1,000 calls/mo. Registry io.github.yxs1640-png/xflux. Not for posting.",
   path: "/mcp",
   keywords: [
     "xflux mcp",
     "twitter mcp server",
     "claude twitter mcp",
     "cursor mcp x api",
+    "mcp server search tweets",
     "xflux mcp server",
     "twitter api for ai agents",
   ],
@@ -45,6 +46,7 @@ export default async function McpMarketingPage() {
     { question: t("faq2Q"), answer: t("faq2A") },
     { question: t("faq3Q"), answer: t("faq3A") },
     { question: t("faq4Q"), answer: t("faq4A") },
+    { question: t("faq5Q"), answer: t("faq5A") },
   ];
 
   const cards = [
