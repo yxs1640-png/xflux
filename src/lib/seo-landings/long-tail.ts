@@ -42,7 +42,7 @@ export const LONG_TAIL_LANDINGS: LongTailLanding[] = [
     primaryKeyword: "twitter account activity api",
     title: "Twitter Account Activity API Alternative — Free Monitor",
     description:
-      "Twitter Account Activity API alternative for public @handles: free 1 monitor + Dashboard hits; live signed webhooks to Discord/Slack/HTTPS from $19/mo. No enterprise AAA.",
+      "Twitter Account Activity API alternative: Free 1 public @handle monitor, keyword filters, and Dashboard hits. Test Discord/Slack/HTTPS webhooks free; live push when you upgrade. No enterprise AAA.",
     keywords: [
       "twitter account activity api",
       "account activity api twitter",
@@ -428,7 +428,7 @@ export const LONG_TAIL_LANDINGS: LongTailLanding[] = [
     primaryKeyword: "twitter slack integration",
     title: "Slack Twitter Integration — Tweets → Slack Channel",
     description:
-      "Slack Twitter integration without enterprise X APIs: watch public @handles, paste a Slack Incoming Webhook, Test free, live alerts on Starter ($19/mo). No Slack bot app required.",
+      "Slack Twitter integration without enterprise X APIs: Free 1 @handle monitor + Slack Incoming Webhook Test. Dashboard history included; live channel alerts when you upgrade. No Slack bot app required.",
     keywords: [
       "connect slack to twitter",
       "twitter slack integration",
@@ -702,7 +702,7 @@ app.post(
     primaryKeyword: "monitor twitter account webhook",
     title: "Monitor Twitter Account Webhook — Push New Tweets",
     description:
-      "Monitor a Twitter account and fire a webhook: Free 1 @handle + Test ping; live Discord/Slack/HTTPS POSTs on Starter. Keyword filters; no enterprise AAA.",
+      "Monitor a Twitter account and fire a webhook: Free 1 @handle, keyword filters, Dashboard hits, and Test ping to Discord/Slack/HTTPS. Live POSTs when you upgrade. No enterprise AAA.",
     keywords: [
       "monitor twitter account webhook",
       "twitter account monitor webhook",
@@ -1146,7 +1146,7 @@ def xflux_webhook():
     primaryKeyword: "monitor twitter account",
     title: "Monitor Twitter Account Free — Watch @Handles",
     description:
-      "Monitor Twitter / monitor Twitter account free: 1 public @handle, optional keywords, Dashboard hits. Discord, Slack, or HTTPS webhooks from Starter ($19/mo). No DIY poller.",
+      "Monitor Twitter account free: 1 public @handle, optional keywords, and Dashboard hit history. Test Discord, Slack, or HTTPS webhooks on Free; live push when you upgrade. No DIY poller.",
     keywords: [
       "monitor twitter",
       "monitor twitter account",
@@ -1249,7 +1249,7 @@ def xflux_webhook():
     primaryKeyword: "connect slack to twitter",
     title: "Connect Slack to Twitter — Incoming Webhook Alerts",
     description:
-      "Connect Slack to Twitter for new-tweet alerts: Slack Incoming Webhook + XFlux monitor. No Account Activity API. Free Test ping; live delivery on Starter ($19/mo).",
+      "Connect Slack to Twitter for new-tweet alerts: Free XFlux monitor (1 @handle) + Slack Incoming Webhook Test. No Account Activity API. Dashboard hits on Free; live delivery when you upgrade.",
     keywords: [
       "connect slack to twitter",
       "slack to twitter",
@@ -1844,7 +1844,7 @@ const ok = crypto.timingSafeEqual(
     primaryKeyword: "webhooks twitter integration",
     title: "Webhooks Twitter Integration — @Account → HTTP POST",
     description:
-      "Webhooks Twitter integration: when a public Twitter account tweets, POST to Discord, Slack, or your URL. Free Test; live signed monitor.hit on Starter ($19/mo). Not official AAA.",
+      "Webhooks Twitter integration: Free 1 @handle monitor + Test POST to Discord, Slack, or your URL. Dashboard history on Free; live signed monitor.hit when you upgrade. Not official AAA.",
     keywords: [
       "webhooks twitter integration",
       "twitter webhook integration",
