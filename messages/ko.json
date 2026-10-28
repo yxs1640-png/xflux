@@ -126,7 +126,10 @@
     "ctaTitle": "XFlux로 빌드할 준비가 되셨나요?",
     "ctaSubtitle": "무료 시작 — 카드 불필요. 모니터와 더 높은 한도가 필요할 때 업그레이드.",
     "ctaButton": "무료 계정 만들기",
-    "ctaDashboard": "대시보드 열기"
+    "ctaDashboard": "대시보드 열기",
+    "linkMonitor": "Twitter 모니터링",
+    "linkSlack": "Slack 알림",
+    "linkWebhook": "Twitter 웹훅"
   },
   "pricing": {
     "title": "요금",
@@ -136,7 +139,9 @@
     "aiCta": "AI 리서치",
     "cryptoCta": "크립토 알림",
     "webhookCta": "웹훅 연동",
-    "compareBlurb": "공식 X API 필터 스트림은 월 $5,000부터. XFlux Starter($19/월)는 선택한 계정을 모니터링하고 새 트윗에 서명 웹훅 POST — 트레이딩·AI·크립토용 키워드 필터 지원."
+    "compareBlurb": "공식 X API 필터 스트림은 월 $5,000부터. XFlux Starter($19/월)는 선택한 계정을 모니터링하고 새 트윗에 서명 웹훅 POST — 트레이딩·AI·크립토용 키워드 필터 지원.",
+    "monitorCta": "계정 모니터",
+    "slackCta": "Slack 알림"
   },
   "signals": {
     "hubTitle": "라이브 Signals",

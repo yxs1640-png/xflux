@@ -43,7 +43,7 @@ const CAP_META = [
     descKey: "monitorsDesc" as const,
     useKey: "monitorsUse" as const,
     endpoints: ["Dashboard → Monitors"],
-    href: "/docs/monitors",
+    href: "/monitor-twitter-account",
   },
   {
     icon: Webhook,

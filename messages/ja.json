@@ -126,7 +126,10 @@
     "ctaTitle": "XFlux で構築を始めますか？",
     "ctaSubtitle": "無料で開始 — クレジットカード不要。監視や上限が必要になったらアップグレード。",
     "ctaButton": "無料アカウント作成",
-    "ctaDashboard": "ダッシュボードを開く"
+    "ctaDashboard": "ダッシュボードを開く",
+    "linkMonitor": "Twitter 監視",
+    "linkSlack": "Slack アラート",
+    "linkWebhook": "Twitter Webhook"
   },
   "pricing": {
     "title": "料金",
@@ -136,7 +139,9 @@
     "aiCta": "AIリサーチ",
     "cryptoCta": "暗号資産アラート",
     "webhookCta": "Webhook 連携",
-    "compareBlurb": "公式 X API のフィルタストリームは月 $5,000 から。XFlux Starter（$19/月）は選んだアカウントを監視し、新規ツイートで署名付き Webhook を POST — 取引・AI・暗号資産向けキーワードも可。"
+    "compareBlurb": "公式 X API のフィルタストリームは月 $5,000 から。XFlux Starter（$19/月）は選んだアカウントを監視し、新規ツイートで署名付き Webhook を POST — 取引・AI・暗号資産向けキーワードも可。",
+    "monitorCta": "アカウント監視",
+    "slackCta": "Slack アラート"
   },
   "signals": {
     "hubTitle": "ライブ Signals",

@@ -59,16 +59,22 @@ X-XFlux-Signature: sha256=...
             </pre>
             <div className="flex flex-wrap gap-4 mt-4">
               <Link
+                href="/monitor-twitter-account"
+                className="inline-flex items-center gap-1 text-sm text-sky-400 hover:text-sky-300"
+              >
+                {t("monitorLink")} <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                href="/connect-slack-to-twitter"
+                className="inline-flex items-center gap-1 text-sm text-sky-400 hover:text-sky-300"
+              >
+                {t("slackLink")} <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
                 href="/twitter-webhook"
                 className="inline-flex items-center gap-1 text-sm text-sky-400 hover:text-sky-300"
               >
                 {t("webhookLink")} <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link
-                href="/use-cases/trading-alerts"
-                className="inline-flex items-center gap-1 text-sm text-sky-400 hover:text-sky-300"
-              >
-                {t("tradingLink")} <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           </div>

@@ -140,16 +140,20 @@ export default async function HomePage() {
                   {t("compareOfficial")}
                 </Link>
                 {" · "}
+                <Link href="/monitor-twitter-account" className="text-sky-400 hover:text-sky-300">
+                  {t("linkMonitor")}
+                </Link>
+                {" · "}
+                <Link href="/connect-slack-to-twitter" className="text-sky-400 hover:text-sky-300">
+                  {t("linkSlack")}
+                </Link>
+                {" · "}
+                <Link href="/twitter-webhook" className="text-sky-400 hover:text-sky-300">
+                  {t("linkWebhook")}
+                </Link>
+                {" · "}
                 <Link href="/use-cases/trading-alerts" className="text-sky-400 hover:text-sky-300">
                   {t("linkTrading")}
-                </Link>
-                {" · "}
-                <Link href="/use-cases/ai-research" className="text-sky-400 hover:text-sky-300">
-                  {t("linkAi")}
-                </Link>
-                {" · "}
-                <Link href="/use-cases/crypto-alerts" className="text-sky-400 hover:text-sky-300">
-                  {t("linkCrypto")}
                 </Link>
               </p>
             </div>

@@ -10,6 +10,8 @@ export type BlogPost = {
   /** Sections rendered as {h2, paragraphs[], optional code?} */
   sections: { heading: string; paragraphs: string[]; code?: string }[];
   faqs: { question: string; answer: string }[];
+  /** Optional crawlable product deep-links (rendered as <a>). */
+  relatedLinks?: { href: string; label: string }[];
 };
 
 const BLOG_POSTS_CORE: BlogPost[] = [

@@ -164,7 +164,10 @@
     "ctaSubtitle": "一分钟内拿到 API Key。每月 1,000 次免费调用 —— 无需信用卡。",
     "ctaSubtitleLoggedIn": "你的 API Key 已就绪。前往控制台开始使用。",
     "ctaButton": "创建免费账号",
-    "ctaDashboard": "打开控制台"
+    "ctaDashboard": "打开控制台",
+    "linkMonitor": "监控 Twitter",
+    "linkSlack": "Slack 提醒",
+    "linkWebhook": "Twitter Webhook"
   },
   "pricing": {
     "title": "定价",
@@ -181,7 +184,9 @@
     "perMonth": "/月",
     "apiCallsMonth": "{quota} 次 API/月",
     "monitorTasks": "{monitors} 个监控任务",
-    "getStarted": "开始使用"
+    "getStarted": "开始使用",
+    "monitorCta": "账号监控",
+    "slackCta": "Slack 提醒"
   },
   "signals": {
     "hubBadge": "{count} 个实时信号摘要",
@@ -330,7 +335,9 @@
     "step3Title": "③ 自动化",
     "step3Desc": "付费套餐可将监控命中路由到 Webhook，用于 Slack 提醒、交易机器人或 AI 摘要流水线。",
     "ctaKey": "免费获取 API Key",
-    "ctaEndpoints": "查看全部端点"
+    "ctaEndpoints": "查看全部端点",
+    "monitorLink": "监控 Twitter 账号",
+    "slackLink": "连接 Slack 到 Twitter"
   },
   "stats": {
     "freeQuota": "每月免费额度",
@@ -621,7 +628,8 @@
     "buildTitle": "用 XFlux 构建",
     "buildDesc": "免费档可读取与 1 个监控。Starter 起 $19/月提供签名 Webhook 与更快轮询。",
     "viewPricing": "查看定价",
-    "moreFromBlog": "更多博客文章"
+    "moreFromBlog": "更多博客文章",
+    "relatedGuides": "相关指南"
   },
   "compareUi": {
     "title": "对比 XFlux",

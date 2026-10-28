@@ -126,7 +126,10 @@
     "ctaTitle": "Prêt à construire avec XFlux ?",
     "ctaSubtitle": "Commencez gratuitement — sans carte. Passez à l'offre supérieure pour moniteurs et quotas plus élevés.",
     "ctaButton": "Créer un compte gratuit",
-    "ctaDashboard": "Ouvrir le tableau de bord"
+    "ctaDashboard": "Ouvrir le tableau de bord",
+    "linkMonitor": "Monitor Twitter",
+    "linkSlack": "Alertes Slack",
+    "linkWebhook": "Webhook Twitter"
   },
   "pricing": {
     "title": "Tarifs",
@@ -136,7 +139,9 @@
     "aiCta": "Recherche IA",
     "cryptoCta": "Alertes crypto",
     "webhookCta": "Intégration webhook",
-    "compareBlurb": "Le filtered stream officiel de l'API X commence à $5 000/mois. XFlux Starter ($19/mois) surveille les comptes choisis et envoie des webhooks signés — avec filtres de mots-clés pour trading, IA et crypto."
+    "compareBlurb": "Le filtered stream officiel de l'API X commence à $5 000/mois. XFlux Starter ($19/mois) surveille les comptes choisis et envoie des webhooks signés — avec filtres de mots-clés pour trading, IA et crypto.",
+    "monitorCta": "Surveiller des comptes",
+    "slackCta": "Alertes Slack"
   },
   "signals": {
     "hubTitle": "Signals en direct",

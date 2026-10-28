@@ -80,6 +80,16 @@ export default async function PricingPage() {
                   {t("cryptoCta")}
                 </Button>
               </Link>
+              <Link href="/monitor-twitter-account">
+                <Button variant="outline" size="sm">
+                  {t("monitorCta")}
+                </Button>
+              </Link>
+              <Link href="/connect-slack-to-twitter">
+                <Button variant="outline" size="sm">
+                  {t("slackCta")}
+                </Button>
+              </Link>
               <Link href="/twitter-webhook">
                 <Button variant="outline" size="sm">
                   {t("webhookCta")}

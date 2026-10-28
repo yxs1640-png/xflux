@@ -165,14 +165,20 @@ print(len(r.json()["data"]))`,
         heading: "What XFlux Free includes",
         paragraphs: [
           "XFlux Free: 1,000 API calls per month, 1 account monitor, self-serve signup, no credit card. Reads cover profiles, timelines, tweet lookup, and search. Docs and dashboard are included.",
-          "Live signed webhooks on new posts start on paid plans (from $19/mo). Free is meant to validate auth, integrate clients, and prove the monitor UX — not to power a production newsroom.",
+          "Free can Test a Discord, Slack, or HTTPS webhook and keep hit history in the Dashboard. Live push starts when you upgrade — Free is for auth, clients, and proving the monitor UX, not a production newsroom.",
         ],
       },
       {
         heading: "How to stay inside 1,000 calls",
         paragraphs: [
-          "Cache profile lookups. Prefer monitors over tight polling loops. Use search with operators and small limits. Batch experiments in one script instead of flapping the same endpoint in a UI hot reload.",
-          "When you hit the ceiling, Starter jumps to 150,000 calls/month plus webhook delivery. Pricing detail: /pricing and /blog/x-api-cost-2026.",
+          "Cache profile lookups. Prefer account monitors over tight polling loops. Use search with operators and small limits. Batch experiments in one script instead of flapping the same endpoint in a UI hot reload.",
+          "When you hit the ceiling, paid plans raise quota and unlock live webhook delivery. Pricing detail: /pricing and /blog/x-api-cost-2026.",
+        ],
+      },
+      {
+        heading: "From Free reads to alerts",
+        paragraphs: [
+          "When you outgrow one-off curl calls: watch a public @handle with a monitor, then attach Slack or a signed HTTPS webhook. Same Free account — one monitor slot included.",
         ],
       },
       {
@@ -181,6 +187,11 @@ print(len(r.json()["data"]))`,
           "Scrapers and unofficial clients can look “free” until they break TOS, IP blocks, or your pager. Managed read APIs trade money for stability. Compare options: /blog/twitter-api-alternative and /compare.",
         ],
       },
+    ],
+    relatedLinks: [
+      { href: "/monitor-twitter-account", label: "Monitor a Twitter account (Free)" },
+      { href: "/connect-slack-to-twitter", label: "Connect Slack to Twitter alerts" },
+      { href: "/twitter-webhook", label: "Twitter webhook hub" },
     ],
     faqs: [
       {

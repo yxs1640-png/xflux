@@ -164,7 +164,10 @@
     "ctaSubtitle": "Get your API key in under a minute. 1,000 free calls every month — no credit card.",
     "ctaSubtitleLoggedIn": "Your API key is ready. Head to the dashboard to get started.",
     "ctaButton": "Create Free Account",
-    "ctaDashboard": "Open Dashboard"
+    "ctaDashboard": "Open Dashboard",
+    "linkMonitor": "Monitor Twitter",
+    "linkSlack": "Slack alerts",
+    "linkWebhook": "Twitter webhook"
   },
   "pricing": {
     "title": "Pricing",
@@ -181,7 +184,9 @@
     "perMonth": "/month",
     "apiCallsMonth": "{quota} API calls/month",
     "monitorTasks": "{monitors} monitor tasks",
-    "getStarted": "Get started"
+    "getStarted": "Get started",
+    "monitorCta": "Monitor accounts",
+    "slackCta": "Slack alerts"
   },
   "signals": {
     "hubBadge": "{count} live signal digests",
@@ -330,7 +335,9 @@
     "step3Title": "③ Automate",
     "step3Desc": "On paid plans, route monitor hits to your webhook for Slack alerts, trading bots, or AI summarization pipelines.",
     "ctaKey": "Get your API key — free",
-    "ctaEndpoints": "See all endpoints"
+    "ctaEndpoints": "See all endpoints",
+    "monitorLink": "Monitor Twitter account",
+    "slackLink": "Connect Slack to Twitter"
   },
   "stats": {
     "freeQuota": "Free Monthly Quota",
@@ -621,7 +628,8 @@
     "buildTitle": "Build with XFlux",
     "buildDesc": "Free tier for reads and one monitor. Starter from $19/mo for signed webhooks and faster polling.",
     "viewPricing": "View pricing",
-    "moreFromBlog": "More from the blog"
+    "moreFromBlog": "More from the blog",
+    "relatedGuides": "Related guides"
   },
   "compareUi": {
     "title": "Compare XFlux",

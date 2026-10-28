@@ -105,6 +105,21 @@ export default async function BlogPostPage({ params }: Props) {
             </section>
           )}
 
+          {post.relatedLinks && post.relatedLinks.length > 0 && (
+            <section className="mb-14">
+              <h2 className="text-xl font-bold text-white mb-4">{t("relatedGuides")}</h2>
+              <ul className="space-y-2">
+                {post.relatedLinks.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} className="text-sm text-sky-400 hover:underline">
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
           {monitorPrefill && (
             <div className="mb-6">
               <SignalMonitorCta

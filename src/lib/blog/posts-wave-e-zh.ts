@@ -157,14 +157,20 @@ print(len(r.json()["data"]))`,
         heading: "XFlux Free 含什么",
         paragraphs: [
           "Free：每月 1,000 次 API 调用、1 个账号监控、自助注册、无需信用卡。可读资料、时间线、推文查询与搜索。含文档与 Dashboard。",
-          "新帖签名 webhook 从付费计划开始（$19/mo 起）。Free 用来验证鉴权、接客户端、体验 monitor——不是撑生产新闻台。",
+          "Free 可对 Discord / Slack / HTTPS 发 Test，并在 Dashboard 看命中。实时推送升级后开启——Free 用来验鉴权、接客户端、体验监控，不是撑生产新闻台。",
         ],
       },
       {
         heading: "如何把 1,000 次用好",
         paragraphs: [
-          "缓存资料查询。少用密轮询，多用 monitors。搜索加运算符并限制 limit。避免热重载狂打同一接口。",
-          "触顶后 Starter 升到每月 150,000 次并含 webhook。价格：/pricing 与 /blog/x-api-cost-2026。",
+          "缓存资料查询。少用密轮询，多用账号监控。搜索加运算符并限制 limit。避免热重载狂打同一接口。",
+          "触顶后付费档提高配额并解锁实时 webhook。价格：/pricing 与 /blog/x-api-cost-2026。",
+        ],
+      },
+      {
+        heading: "从免费读取到告警",
+        paragraphs: [
+          "curl 不够用时：用监控盯公开 @handle，再挂 Slack 或签名 HTTPS webhook。同一免费账号自带 1 个监控位。",
         ],
       },
       {
@@ -173,6 +179,11 @@ print(len(r.json()["data"]))`,
           "爬虫和非官方客户端看着「免费」，直到 TOS、封 IP 或值班爆炸。托管读 API 用钱换稳定。对比：/blog/twitter-api-alternative 与 /compare。",
         ],
       },
+    ],
+    relatedLinks: [
+      { href: "/monitor-twitter-account", label: "免费监控 Twitter 账号" },
+      { href: "/connect-slack-to-twitter", label: "把 Twitter 提醒接到 Slack" },
+      { href: "/twitter-webhook", label: "Twitter Webhook 总览" },
     ],
     faqs: [
       {
