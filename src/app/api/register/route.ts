@@ -5,6 +5,8 @@ import { generateApiKey, hashPassword } from "@/lib/crypto";
 import { normalizeUserSourceFields, userSourceSchema } from "@/lib/user-source-schema";
 import { AnalyticsEvents } from "@/lib/analytics/events";
 import { identifyServerUser, trackServerEvent } from "@/lib/analytics/server";
+import { issueEmailVerification } from "@/lib/email-verification";
+import { UNVERIFIED_FREE_QUOTA } from "@/lib/quota";
 
 const schema = z
   .object({
@@ -63,10 +65,18 @@ export async function POST(request: NextRequest) {
       ...(source.userSourceDetail ? { signup_source_detail: source.userSourceDetail } : {}),
     });
 
+    // Soft-fail: account + key still work; unverified Free quota stays at UNVERIFIED_FREE_QUOTA.
+    const verifyMail = await issueEmailVerification(user.id, user.email);
+    if (!verifyMail.sent) {
+      console.warn("Email verification send failed:", verifyMail.error);
+    }
+
     return NextResponse.json({
       userId: user.id,
       email: user.email,
       apiKey: key,
+      emailVerificationSent: verifyMail.sent,
+      unverifiedQuota: UNVERIFIED_FREE_QUOTA,
     });
   } catch (err) {
     if (err instanceof z.ZodError) {

@@ -1,7 +1,7 @@
 import { cache } from "react";
 import { Suspense } from "react";
 import Link from "next/link";
-import { PLAN_LIMITS } from "@/lib/quota";
+import { getEffectiveApiQuotaLimit } from "@/lib/quota";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { UsageChart } from "@/components/dashboard/usage-chart";
@@ -26,6 +26,7 @@ const getDashboardHomeData = cache(async () => {
         email: true,
         planTier: true,
         quotaUsed: true,
+        emailVerifiedAt: true,
         monitorHitsReadAt: true,
         apiKeys: { where: { isActive: true } },
         monitorTasks: { where: { isActive: true } },
@@ -65,7 +66,7 @@ export default async function DashboardPage() {
 
   const { user, recentHits, apiLogs } = data;
 
-  const limit = PLAN_LIMITS[user.planTier];
+  const limit = getEffectiveApiQuotaLimit(user);
   const usagePercent = Math.round((user.quotaUsed / limit) * 100);
 
   const last7Days = buildDailyChartData(apiLogs, 7);

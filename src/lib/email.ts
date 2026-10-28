@@ -207,6 +207,27 @@ export async function sendFeedbackRewardEmail(options: {
   });
 }
 
+export async function sendEmailVerificationEmail(options: {
+  to: string;
+  verifyUrl: string;
+}): Promise<{ sent: boolean; error?: string }> {
+  const html = `
+    <p>Hi,</p>
+    <p>Confirm your email to unlock the full Free plan
+    (<strong>1,000 API calls/month</strong>). Until then, new accounts are limited to
+    <strong>50 calls/month</strong>.</p>
+    <p><a href="${escapeHtml(options.verifyUrl)}">Verify my email</a></p>
+    <p style="color:#888;font-size:12px">This link expires in 48 hours. If you did not create
+    an XFlux account, you can ignore this email.</p>
+    <p>— XFlux</p>
+  `;
+  return sendWithResend({
+    to: options.to,
+    subject: "Verify your email for XFlux (unlock 1,000 free API calls)",
+    html,
+  });
+}
+
 export async function sendFeedbackInviteEmail(options: {
   to: string;
   name?: string | null;

@@ -5,6 +5,7 @@ import { PlanChangeBannerSlot } from "@/components/billing/plan-change-banner-sl
 import { QuotaUpsellBannerSlot } from "@/components/billing/quota-upsell-banner-slot";
 import { OnboardingChecklistSlot } from "@/components/dashboard/onboarding-checklist-slot";
 import { MonitorAlertsBannerSlot } from "@/components/dashboard/monitor-alerts-banner-slot";
+import { EmailVerifyBannerSlot } from "@/components/dashboard/email-verify-banner-slot";
 import { requireDashboardSession } from "@/lib/dashboard-session";
 import { isAdminEmail } from "@/lib/admin";
 
@@ -27,6 +28,9 @@ export default async function DashboardLayout({
       <DashboardSidebar isAdmin={isAdminEmail(session.user.email)} />
       <main className="flex-1 overflow-auto">
         <div className="p-8">
+          <Suspense fallback={null}>
+            <EmailVerifyBannerSlot />
+          </Suspense>
           <Suspense fallback={null}>
             <PlanChangeBannerSlot />
           </Suspense>

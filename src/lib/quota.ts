@@ -1,14 +1,12 @@
 import { PlanTier } from "@prisma/client";
 import { prisma } from "./db";
+import {
+  getEffectiveApiQuotaLimit,
+  PLAN_LIMITS,
+  UNVERIFIED_FREE_QUOTA,
+} from "./quota-constants";
 
-export const PLAN_LIMITS: Record<PlanTier, number> = {
-  FREE: 1_000,
-  BASIC: 150_000,
-  GROWTH: 500_000,
-  PRO: 1_200_000,
-  SCALE: 4_000_000,
-  ENTERPRISE: 4_000_000,
-};
+export { getEffectiveApiQuotaLimit, PLAN_LIMITS, UNVERIFIED_FREE_QUOTA };
 
 export const PLAN_MONITOR_LIMITS: Record<PlanTier, number> = {
   FREE: 1,
@@ -94,9 +92,16 @@ export const PLAN_SIGNAL_SUBMISSION_LIMITS: Record<PlanTier, number> = {
 export async function checkAndConsumeQuota(
   userId: string,
   cost = 1
-): Promise<{ allowed: boolean; remaining: number; limit: number }> {
+): Promise<{
+  allowed: boolean;
+  remaining: number;
+  limit: number;
+  emailVerified: boolean;
+}> {
   const user = await prisma.user.findUnique({ where: { id: userId } });
-  if (!user) return { allowed: false, remaining: 0, limit: 0 };
+  if (!user) {
+    return { allowed: false, remaining: 0, limit: 0, emailVerified: false };
+  }
 
   const now = new Date();
   const resetAt = user.quotaResetAt;
@@ -113,9 +118,15 @@ export async function checkAndConsumeQuota(
     });
   }
 
-  const limit = PLAN_LIMITS[user.planTier];
+  const limit = getEffectiveApiQuotaLimit(user);
+  const emailVerified = Boolean(user.emailVerifiedAt);
   if (quotaUsed + cost > limit) {
-    return { allowed: false, remaining: Math.max(0, limit - quotaUsed), limit };
+    return {
+      allowed: false,
+      remaining: Math.max(0, limit - quotaUsed),
+      limit,
+      emailVerified,
+    };
   }
 
   await prisma.user.update({
@@ -127,6 +138,7 @@ export async function checkAndConsumeQuota(
     allowed: true,
     remaining: limit - quotaUsed - cost,
     limit,
+    emailVerified,
   };
 }
 

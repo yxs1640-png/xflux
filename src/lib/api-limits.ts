@@ -28,12 +28,16 @@ export async function enforceApiRequestLimits(
 
   const quota = await checkAndConsumeQuota(userId);
   if (!quota.allowed) {
+    const needsVerify = !quota.emailVerified;
     const response = NextResponse.json(
       {
-        error: "Monthly quota exceeded",
-        code: "QUOTA_EXCEEDED",
+        error: needsVerify
+          ? "Unverified email quota exceeded — verify your email to unlock 1,000 Free calls/month"
+          : "Monthly quota exceeded",
+        code: needsVerify ? "EMAIL_UNVERIFIED_QUOTA" : "QUOTA_EXCEEDED",
         limit: quota.limit,
         remaining: quota.remaining,
+        verify_url: needsVerify ? "https://www.xfluxapi.com/dashboard" : undefined,
       },
       { status: 429 }
     );

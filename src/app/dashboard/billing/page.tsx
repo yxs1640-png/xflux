@@ -4,7 +4,7 @@ import { PlanSelector } from "@/components/billing/plan-selector";
 import { BillingStatusBanner } from "@/components/billing/billing-status-banner";
 import { ManageBillingButton } from "@/components/billing/manage-billing-button";
 import { Badge } from "@/components/ui/badge";
-import { PLAN_LIMITS } from "@/lib/quota";
+import { getEffectiveApiQuotaLimit } from "@/lib/quota";
 import { isActiveSubscriptionStatus } from "@/lib/billing";
 import {
   getBillingPeriodDisplay,
@@ -26,7 +26,7 @@ export default async function BillingPage() {
 
   if (!user) return null;
 
-  const limit = PLAN_LIMITS[user.planTier];
+  const limit = getEffectiveApiQuotaLimit(user);
   const checkoutEnabled = isBillingCheckoutEnabled();
   const stripeEnabled = isPaidBillingAvailable();
   const hasActiveSubscription = isActiveSubscriptionStatus(user.subscriptionStatus);

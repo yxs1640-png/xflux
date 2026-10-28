@@ -68,6 +68,10 @@ model User {
   monitorHitsReadAt        DateTime?
   signupSource           String?
   signupSourceDetail     String?
+  /** Null until the user clicks the verification link (new signups). Legacy users backfilled. */
+  emailVerifiedAt        DateTime?
+  emailVerifyTokenHash   String?   @unique
+  emailVerifyExpiresAt   DateTime?
   /** Set when user starts a Starter trial or any paid subscription — blocks repeat trials. */
   starterTrialUsedAt     DateTime?
   createdAt              DateTime  @default(now())

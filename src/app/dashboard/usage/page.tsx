@@ -1,5 +1,5 @@
 import { cache } from "react";
-import { PLAN_LIMITS } from "@/lib/quota";
+import { getEffectiveApiQuotaLimit } from "@/lib/quota";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { UsageChart } from "@/components/dashboard/usage-chart";
 import { OnboardingUsageTracker } from "@/components/dashboard/onboarding-usage-tracker";
@@ -25,7 +25,7 @@ const getUsagePageData = cache(async () => {
   const [user, logs, endpointGroups] = await Promise.all([
     prisma.user.findUnique({
       where: { id: userId },
-      select: { planTier: true, quotaUsed: true },
+      select: { planTier: true, quotaUsed: true, emailVerifiedAt: true },
     }),
     prisma.apiLog.findMany({
       where: { userId, createdAt: { gte: since } },
@@ -49,7 +49,7 @@ export default async function UsagePage() {
 
   if (!user) return null;
 
-  const limit = PLAN_LIMITS[user.planTier];
+  const limit = getEffectiveApiQuotaLimit(user);
   const last30Days = buildDailyChartData(logs, 30);
 
   return (
