@@ -75,7 +75,7 @@ Free tier: 1,000 API calls/month and 1 monitor. Paid plans from $19/mo with webh
 | [awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers/pull/16868) | Merged | Listed on main (merged 2026-10-23) |
 | [cursor.directory](https://cursor.directory/plugins/xflux) | Live | https://cursor.directory/plugins/xflux |
 | [Cline marketplace](https://github.com/cline/mcp-marketplace/issues/3363) | Submitted | https://github.com/cline/mcp-marketplace/issues/3363 — wait for maintainer review |
-| [LobeHub](https://lobehub.com/mcp) | Manifest ready | `lhm login` then publish — see `../geo/agent-directory-clicks.md` |
+| [LobeHub](https://lobehub.com/mcp) | Submitted (unpublished) | `yxs1640-png-xflux@1.2.1` filed 2026-10-28; enrichment processing — wait until status ≠ unpublished |
 | [Product Hunt](https://www.producthunt.com) | Scheduled | See `../product-hunt/SCHEDULE.md` (not same week as HN) |
 | [Hacker News Show HN](https://news.ycombinator.com/item?id=49295237) | Posted | Monitor comments |
 | [Reddit r/SideProject](https://reddit.com/r/SideProject) | Ready | See `../reddit/01-sideproject-showcase.md` |
