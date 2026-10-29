@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { HeroActions } from "@/components/landing/hero-actions";
 import { ApiPlayground } from "@/components/landing/api-playground";
 
-export async function Hero({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
+export async function Hero() {
   const t = await getTranslations("home");
   const trustPoints = [t("trustFree"), t("trustRest"), t("trustMonitors")];
 
@@ -32,7 +32,7 @@ export async function Hero({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
               <span className="text-zinc-300">{t("heroSubtitleEmphasis")}</span>
             </p>
 
-            <HeroActions isLoggedIn={isLoggedIn} />
+            <HeroActions />
 
             <ul className="mt-6 flex flex-wrap items-center justify-center lg:justify-start gap-x-6 gap-y-2 text-sm text-zinc-500">
               {trustPoints.map((point) => (

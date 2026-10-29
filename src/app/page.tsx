@@ -1,6 +1,4 @@
-import { getServerSession } from "next-auth";
 import { getTranslations } from "next-intl/server";
-import { authOptions } from "@/lib/auth";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Hero } from "@/components/landing/hero";
@@ -30,13 +28,13 @@ export const metadata = pageMetadata({
 });
 
 export default async function HomePage() {
-  const session = await getServerSession(authOptions);
+  // No getServerSession here — keeps homepage statically cacheable (Fluid CPU).
+  // Auth-aware CTAs resolve on the client (HeroActions / SessionProvider).
   const t = await getTranslations("home");
-  const isLoggedIn = !!session;
   const checkoutEnabled = isBillingCheckoutEnabled();
-  const registerHref = isLoggedIn ? "/dashboard/billing" : "/register?src=homepage_pricing";
-  const pricingHref = isLoggedIn ? "/dashboard/billing" : "/pricing";
-  const ctaHref = isLoggedIn ? "/dashboard" : "/register?src=homepage_footer";
+  const registerHref = "/register?src=homepage_pricing";
+  const pricingHref = "/pricing";
+  const ctaHref = "/register?src=homepage_footer";
   const homepagePlans = getHomepagePlans();
 
   return (
@@ -44,14 +42,14 @@ export default async function HomePage() {
       <HomeJsonLd />
       <Header />
       <main>
-        <Hero isLoggedIn={isLoggedIn} />
+        <Hero />
         <PopularSignals />
         <ApiCapabilities />
         <UseCaseStrip />
         <ProductOverview />
         <StatsBar />
-        <UseCases registerHref={isLoggedIn ? "/dashboard" : "/register?src=homepage_usecases"} />
-        <PriceComparison registerHref={isLoggedIn ? "/dashboard" : "/register?src=homepage_compare"} />
+        <UseCases registerHref="/register?src=homepage_usecases" />
+        <PriceComparison registerHref="/register?src=homepage_compare" />
         <HowItWorks />
         <Features />
 
@@ -104,25 +102,13 @@ export default async function HomePage() {
                         {PAID_PLAN_COMING_SOON_LABEL}
                       </Button>
                     ) : (
-                      <Link
-                        href={
-                          isLoggedIn
-                            ? isPaidPlan
-                              ? "/dashboard/billing"
-                              : "/dashboard"
-                            : registerHref
-                        }
-                      >
+                      <Link href={registerHref}>
                         <Button
                           variant={plan.highlighted ? "primary" : "outline"}
                           className="w-full"
                           size="sm"
                         >
-                          {isLoggedIn
-                            ? isPaidPlan
-                              ? t("viewBilling")
-                              : t("goDashboard")
-                            : plan.cta}
+                          {plan.cta}
                         </Button>
                       </Link>
                     )}
@@ -165,13 +151,9 @@ export default async function HomePage() {
             <h2 className="text-3xl font-bold text-white mb-4">
               {t("ctaTitle")}
             </h2>
-            <p className="text-zinc-400 mb-8">
-              {isLoggedIn ? t("ctaSubtitleLoggedIn") : t("ctaSubtitle")}
-            </p>
+            <p className="text-zinc-400 mb-8">{t("ctaSubtitle")}</p>
             <Link href={ctaHref}>
-              <Button size="lg">
-                {isLoggedIn ? t("ctaDashboard") : t("ctaButton")}
-              </Button>
+              <Button size="lg">{t("ctaButton")}</Button>
             </Link>
           </div>
         </section>

@@ -8,7 +8,6 @@ import { SignalRefreshButton } from "@/components/signals/signal-refresh-button"
 import { SignalMonitorCta } from "@/components/signals/signal-monitor-cta";
 import { SIGNAL_FRESHNESS_FEED_NOTE } from "@/lib/signals/freshness-copy";
 import { isSignalMonitorCtaSlug } from "@/lib/signals/monitor-cta";
-import { getCachedSession } from "@/lib/dashboard-session";
 
 function formatRelativeTime(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -43,10 +42,7 @@ export async function SignalFeedContent({
   cacheKey,
   includeJsonLd = true,
 }: SignalFeedContentProps) {
-  const [feed, session] = await Promise.all([
-    getSignalFeed(topic, { fresh, cacheKey }),
-    getCachedSession(),
-  ]);
+  const feed = await getSignalFeed(topic, { fresh, cacheKey });
   const showMonitorCta = isSignalMonitorCtaSlug(topic.slug);
 
   return (
@@ -118,7 +114,6 @@ export async function SignalFeedContent({
             <SignalMonitorCta
               slug={topic.slug}
               accounts={topic.watchAccounts}
-              isLoggedIn={Boolean(session?.user?.id)}
               registerSrc={topic.registerSrc}
               location="brief"
             />

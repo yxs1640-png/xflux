@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { GoogleAdsTag } from "@/components/analytics/google-ads-tag";
 import { OrganizationJsonLd } from "@/components/seo/organization-json-ld";
 import { Providers } from "@/components/providers";
+import { LocaleProvider } from "@/components/i18n/locale-provider";
+import { defaultLocale, type Locale } from "@/i18n/config";
 import { DEFAULT_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/seo";
 import "./globals.css";
 
@@ -50,19 +51,23 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const locale = await getLocale();
+  // Static EN shell — locale switching happens in LocaleProvider (client).
+  const locale = (await getLocale()) as Locale;
   const messages = await getMessages();
 
   return (
-    <html lang={locale}>
+    <html lang={locale || defaultLocale}>
       <head>
         <GoogleAdsTag />
         <OrganizationJsonLd />
       </head>
       <body className="min-h-screen antialiased">
-        <NextIntlClientProvider locale={locale} messages={messages}>
+        <LocaleProvider
+          initialLocale={(locale as Locale) || defaultLocale}
+          initialMessages={messages as Record<string, unknown>}
+        >
           <Providers>{children}</Providers>
-        </NextIntlClientProvider>
+        </LocaleProvider>
       </body>
     </html>
   );

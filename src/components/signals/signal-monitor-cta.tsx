@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { Bell } from "lucide-react";
 import { AnalyticsEvents } from "@/lib/analytics/events";
 import { trackClientEvent } from "@/lib/analytics/client";
@@ -13,7 +14,8 @@ import {
 type SignalMonitorCtaProps = {
   slug: string;
   accounts: readonly string[];
-  isLoggedIn: boolean;
+  /** Optional override; defaults to client session so marketing pages stay static. */
+  isLoggedIn?: boolean;
   registerSrc: string;
   location: string;
   keywords?: string;
@@ -24,13 +26,18 @@ type SignalMonitorCtaProps = {
 export function SignalMonitorCta({
   slug,
   accounts,
-  isLoggedIn,
+  isLoggedIn: isLoggedInProp,
   registerSrc,
   location,
   keywords,
   title = "Monitor these accounts — hits can go to Discord or Slack",
   description = "Free includes 1 monitor. Pick the handle that moves your workflow; after it's created you can attach a Discord or Slack webhook.",
 }: SignalMonitorCtaProps) {
+  const { data: session, status } = useSession();
+  const isLoggedIn =
+    typeof isLoggedInProp === "boolean"
+      ? isLoggedInProp
+      : status === "authenticated" && !!session;
   const handles = normalizeMonitorHandles(accounts);
   if (handles.length === 0) return null;
 

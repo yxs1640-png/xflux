@@ -7,7 +7,6 @@ import { CodeBlock } from "@/components/docs/doc-blocks";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { SignalMonitorCta } from "@/components/signals/signal-monitor-cta";
-import { getCachedSession } from "@/lib/dashboard-session";
 import { getLandingMonitorPrefill, monitorCtaHref } from "@/lib/signals/monitor-cta";
 import { pageMetadata } from "@/lib/seo";
 
@@ -60,8 +59,7 @@ const WORKFLOW = [
 
 export default async function TradingAlertsPage() {
   const t = await getTranslations("useCaseTrading");
-  const session = await getCachedSession();
-  const isLoggedIn = Boolean(session?.user?.id);
+  const isLoggedIn = false;
   const prefill = getLandingMonitorPrefill("use-cases/trading-alerts")!;
   const primaryHref = monitorCtaHref({
     isLoggedIn,
@@ -263,7 +261,7 @@ export default async function TradingAlertsPage() {
             <SignalMonitorCta
               slug="trading-alerts"
               accounts={prefill.accounts}
-              isLoggedIn={isLoggedIn}
+              
               registerSrc={prefill.registerSrc}
               location="trading_alerts_landing"
               title="Monitor market voices — push hits to Discord or Slack"

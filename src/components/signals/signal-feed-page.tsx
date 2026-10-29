@@ -15,7 +15,6 @@ import {
 import { SeoGuideLinks } from "@/components/seo/seo-guide-links";
 import { SignalMonitorCta } from "@/components/signals/signal-monitor-cta";
 import { isSignalMonitorCtaSlug } from "@/lib/signals/monitor-cta";
-import { getCachedSession } from "@/lib/dashboard-session";
 
 type SignalFeedPageProps = {
   topic: SignalTopicConfig;
@@ -25,7 +24,6 @@ type SignalFeedPageProps = {
 export async function SignalFeedPage({ topic, children }: SignalFeedPageProps) {
   const relatedTopics = getRelatedSignalTopics(topic, 5);
   const categoryLabel = getSignalCategoryLabel(topic.category);
-  const session = isSignalMonitorCtaSlug(topic.slug) ? await getCachedSession() : null;
   const showMonitorCta = isSignalMonitorCtaSlug(topic.slug);
 
   return (
@@ -105,7 +103,6 @@ export async function SignalFeedPage({ topic, children }: SignalFeedPageProps) {
               <SignalMonitorCta
                 slug={topic.slug}
                 accounts={topic.watchAccounts}
-                isLoggedIn={Boolean(session?.user?.id)}
                 registerSrc={topic.registerSrc}
                 location="page_footer"
               />

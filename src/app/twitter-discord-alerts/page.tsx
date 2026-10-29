@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { FaqJsonLd } from "@/components/seo/faq-json-ld";
 import { SignalMonitorCta } from "@/components/signals/signal-monitor-cta";
-import { getCachedSession } from "@/lib/dashboard-session";
 import { getLandingMonitorPrefill, monitorCtaHref } from "@/lib/signals/monitor-cta";
 import { pageMetadata } from "@/lib/seo";
 
@@ -29,8 +28,7 @@ export const metadata = pageMetadata({
 
 export default async function TwitterDiscordAlertsPage() {
   const t = await getTranslations("discordLanding");
-  const session = await getCachedSession();
-  const isLoggedIn = Boolean(session?.user?.id);
+  const isLoggedIn = false;
   const prefill = getLandingMonitorPrefill("twitter-discord-alerts")!;
   const primaryHref = monitorCtaHref({
     isLoggedIn,
@@ -202,7 +200,7 @@ app.post("/webhooks/xflux", rawBodyMiddleware, (req, res) => {
             <SignalMonitorCta
               slug="twitter-discord-alerts"
               accounts={prefill.accounts}
-              isLoggedIn={isLoggedIn}
+              
               registerSrc={prefill.registerSrc}
               location="discord_alerts_landing"
               title="Create a Monitor first — then paste your Discord webhook"

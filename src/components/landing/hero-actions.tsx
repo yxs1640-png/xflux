@@ -1,13 +1,17 @@
 "use client";
 
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { AnalyticsEvents } from "@/lib/analytics/events";
 import { trackClientEvent } from "@/lib/analytics/client";
 
-export function HeroActions({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
+export function HeroActions({ isLoggedIn: isLoggedInProp }: { isLoggedIn?: boolean } = {}) {
+  const { data: session, status } = useSession();
+  const isLoggedIn =
+    typeof isLoggedInProp === "boolean" ? isLoggedInProp : status === "authenticated" && !!session;
   const t = useTranslations("home");
   const tc = useTranslations("common");
 

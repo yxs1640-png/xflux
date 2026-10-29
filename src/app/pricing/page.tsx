@@ -1,8 +1,5 @@
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { authOptions } from "@/lib/auth";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { PLANS, PAID_PLAN_COMING_SOON_LABEL } from "@/lib/constants";
@@ -28,13 +25,9 @@ export const metadata = pageMetadata({
 });
 
 export default async function PricingPage() {
-  const session = await getServerSession(authOptions);
+  // No session redirect — keeps /pricing statically cacheable for crawlers.
   const checkoutEnabled = isBillingCheckoutEnabled();
   const t = await getTranslations("pricing");
-
-  if (session) {
-    redirect("/dashboard/billing");
-  }
 
   return (
     <>

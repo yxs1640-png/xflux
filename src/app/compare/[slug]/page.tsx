@@ -6,7 +6,6 @@ import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { FaqJsonLd } from "@/components/seo/faq-json-ld";
 import { SignalMonitorCta } from "@/components/signals/signal-monitor-cta";
-import { getCachedSession } from "@/lib/dashboard-session";
 import { getLandingMonitorPrefill, monitorCtaHref } from "@/lib/signals/monitor-cta";
 import { pageMetadata } from "@/lib/seo";
 import {
@@ -16,6 +15,8 @@ import {
 } from "@/lib/compare/competitors";
 
 type Props = { params: Promise<{ slug: string }> };
+
+export const dynamicParams = false;
 
 export function generateStaticParams() {
   return getAllCompareSlugs().map((slug) => ({ slug }));
@@ -41,8 +42,7 @@ export default async function CompareSlugPage({ params }: Props) {
   if (!page) notFound();
 
   const others = getComparePages(locale).filter((p) => p.slug !== page.slug);
-  const session = await getCachedSession();
-  const isLoggedIn = Boolean(session?.user?.id);
+  const isLoggedIn = false;
   const monitorPrefill = getLandingMonitorPrefill(`compare/${page.slug}`);
   const primaryHref = monitorPrefill
     ? monitorCtaHref({
@@ -151,7 +151,7 @@ export default async function CompareSlugPage({ params }: Props) {
               <SignalMonitorCta
                 slug={page.slug}
                 accounts={monitorPrefill.accounts}
-                isLoggedIn={isLoggedIn}
+                
                 registerSrc={monitorPrefill.registerSrc}
                 location="compare_page"
                 title="Try the monitor path — Discord/Slack after you create one"

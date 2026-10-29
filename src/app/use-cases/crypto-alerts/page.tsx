@@ -7,7 +7,6 @@ import { CodeBlock } from "@/components/docs/doc-blocks";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { SignalMonitorCta } from "@/components/signals/signal-monitor-cta";
-import { getCachedSession } from "@/lib/dashboard-session";
 import { getLandingMonitorPrefill, monitorCtaHref } from "@/lib/signals/monitor-cta";
 import { pageMetadata } from "@/lib/seo";
 
@@ -60,8 +59,7 @@ const WORKFLOW = [
 
 export default async function CryptoAlertsPage() {
   const t = await getTranslations("useCaseCrypto");
-  const session = await getCachedSession();
-  const isLoggedIn = Boolean(session?.user?.id);
+  const isLoggedIn = false;
   const prefill = getLandingMonitorPrefill("use-cases/crypto-alerts")!;
   const primaryHref = monitorCtaHref({
     isLoggedIn,
@@ -215,7 +213,7 @@ export default async function CryptoAlertsPage() {
             <SignalMonitorCta
               slug="crypto-alerts"
               accounts={prefill.accounts}
-              isLoggedIn={isLoggedIn}
+              
               registerSrc={prefill.registerSrc}
               location="crypto_alerts_landing"
               title="Pick a KOL — Monitor hits can go to Discord or Slack"

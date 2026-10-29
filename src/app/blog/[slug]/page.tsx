@@ -7,12 +7,14 @@ import { Button } from "@/components/ui/button";
 import { ArticleJsonLd } from "@/components/seo/article-json-ld";
 import { FaqJsonLd } from "@/components/seo/faq-json-ld";
 import { SignalMonitorCta } from "@/components/signals/signal-monitor-cta";
-import { getCachedSession } from "@/lib/dashboard-session";
-import { getLandingMonitorPrefill, monitorCtaHref } from "@/lib/signals/monitor-cta";
+import { getLandingMonitorPrefill } from "@/lib/signals/monitor-cta";
 import { pageMetadata } from "@/lib/seo";
 import { getAllSlugs, getBlogPost, getBlogPosts, getPost } from "@/lib/blog/posts";
 
 type Props = { params: Promise<{ slug: string }> };
+
+/** Unknown slugs → instant 404 (no SSR) so crawler probes don't burn Fluid CPU. */
+export const dynamicParams = false;
 
 export function generateStaticParams() {
   return getAllSlugs().map((slug) => ({ slug }));
@@ -32,22 +34,15 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
+  // Server render uses defaultLocale (static). Client LocaleProvider upgrades UI chrome.
   const locale = await getLocale();
   const t = await getTranslations("blogUi");
   const post = getBlogPost(slug, locale);
   if (!post) notFound();
 
   const others = getBlogPosts(locale).filter((p) => p.slug !== post.slug).slice(0, 4);
-  const session = await getCachedSession();
-  const isLoggedIn = Boolean(session?.user?.id);
   const monitorPrefill = getLandingMonitorPrefill(`blog/${post.slug}`);
-  const primaryHref = monitorPrefill
-    ? monitorCtaHref({
-        isLoggedIn,
-        registerSrc: monitorPrefill.registerSrc,
-        accounts: monitorPrefill.accounts,
-      })
-    : "/register?src=blog_post";
+  const primaryHref = "/register?src=blog_post";
 
   return (
     <>
@@ -125,7 +120,6 @@ export default async function BlogPostPage({ params }: Props) {
               <SignalMonitorCta
                 slug={post.slug}
                 accounts={monitorPrefill.accounts}
-                isLoggedIn={isLoggedIn}
                 registerSrc={monitorPrefill.registerSrc}
                 location="blog_post"
               />
