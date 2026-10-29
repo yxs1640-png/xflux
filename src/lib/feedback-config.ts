@@ -31,8 +31,8 @@ export const ADOPTION_DRIVER_IDS = ADOPTION_DRIVER_OPTIONS.map((o) => o.id);
 export const FEEDBACK_NOTIFY_EMAIL =
   process.env.FEEDBACK_NOTIFY_EMAIL?.trim() || "yxs1640@gmail.com";
 
-export const FEEDBACK_FROM_EMAIL =
-  process.env.FEEDBACK_FROM_EMAIL?.trim() || "XFlux <support@xfluxapi.com>";
+/** Production From — hardcoded so Vercel env cannot revert to onboarding@resend.dev. */
+export const FEEDBACK_FROM_EMAIL = "XFlux <support@xfluxapi.com>";
 
 /** Shown on /feedback — keep in sync with FEEDBACK_REWARD_CALLS in feedback-reward.ts */
 export const FEEDBACK_REWARD_CALLS_DISPLAY = 3_000;
