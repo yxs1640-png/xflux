@@ -1,0 +1,27 @@
+# Daily Fluid Active CPU check for Hobby 4h cap.
+# Secret: VERCEL_TOKEN (https://vercel.com/account/tokens) with team read access.
+name: Monitor Vercel Fluid CPU
+
+on:
+  schedule:
+    # 09:00 Asia/Shanghai ≈ 01:00 UTC
+    - cron: "0 1 * * *"
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check Fluid Active CPU
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: node scripts/monitor-vercel-fluid-cpu.mjs
+      - name: JSON snapshot
+        if: always()
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: node scripts/monitor-vercel-fluid-cpu.mjs --json || true
