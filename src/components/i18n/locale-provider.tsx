@@ -37,10 +37,31 @@ function readLocaleCookie(): Locale | null {
   return isLocale(value) ? value : null;
 }
 
+function negotiateBrowserLocale(): Locale {
+  if (typeof navigator === "undefined") return defaultLocale;
+  const candidates = [navigator.language, ...(navigator.languages ?? [])];
+  for (const tag of candidates) {
+    const lower = tag.toLowerCase();
+    if (isLocale(lower)) return lower;
+    const base = lower.split("-")[0];
+    if (isLocale(base)) return base;
+    if (base === "zh") return "zh";
+  }
+  return defaultLocale;
+}
+
 async function loadMessages(locale: Locale, baseEn: Messages): Promise<Messages> {
   if (locale === "en") return baseEn;
   const mod = await import(`../../../messages/${locale}.json`);
   return deepMergeMessages(baseEn, mod.default as Messages);
+}
+
+async function persistLocaleCookie(locale: Locale) {
+  await fetch("/api/locale", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ locale }),
+  });
 }
 
 export function LocaleProvider({
@@ -57,45 +78,40 @@ export function LocaleProvider({
   const [pending, setPending] = useState(false);
   const enBase = initialMessages;
 
-  const applyLocale = useCallback(
-    async (next: Locale) => {
-      if (next === locale) return;
-      setPending(true);
-      try {
-        const nextMessages = await loadMessages(next, enBase);
-        setLocaleState(next);
-        setMessages(nextMessages);
-        document.documentElement.lang = next;
-      } finally {
-        setPending(false);
-      }
-    },
-    [enBase, locale]
-  );
-
-  // Hydrate from cookie without a server round-trip (keeps HTML static/CDN-friendly).
-  useEffect(() => {
-    const fromCookie = readLocaleCookie();
-    if (fromCookie && fromCookie !== locale) {
-      void applyLocale(fromCookie);
-    } else {
-      document.documentElement.lang = locale;
+  const applyLocale = useCallback(async (next: Locale) => {
+    setPending(true);
+    try {
+      const nextMessages = await loadMessages(next, enBase);
+      setLocaleState(next);
+      setMessages(nextMessages);
+      document.documentElement.lang = next;
+    } finally {
+      setPending(false);
     }
-    // Only on mount — cookie-driven upgrade.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [enBase]);
 
   const setLocale = useCallback(
     async (next: Locale) => {
-      await fetch("/api/locale", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ locale: next }),
-      });
+      await persistLocaleCookie(next);
       await applyLocale(next);
     },
     [applyLocale]
   );
+
+  // Cookie / browser language — no Edge middleware (that was ~half of Fluid CPU by region).
+  useEffect(() => {
+    const fromCookie = readLocaleCookie();
+    const preferred = fromCookie ?? negotiateBrowserLocale();
+    if (preferred === initialLocale) {
+      document.documentElement.lang = preferred;
+      return;
+    }
+    if (!fromCookie && preferred !== defaultLocale) {
+      void persistLocaleCookie(preferred).then(() => applyLocale(preferred));
+    } else {
+      void applyLocale(preferred);
+    }
+  }, [applyLocale, initialLocale]);
 
   const ctx = useMemo(
     () => ({ locale, setLocale, pending }),
