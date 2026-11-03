@@ -18,6 +18,10 @@ function pickNumber(...values: unknown[]): number {
 function pickString(...values: unknown[]): string {
   for (const v of values) {
     if (typeof v === "string" && v.length > 0) return v;
+    // Prefer string fields (id_str / rest_id). Numeric fallback only after
+    // parseJsonPreservingLargeIntegers has quoted 16+ digit snowflakes.
+    if (typeof v === "bigint") return v.toString();
+    if (typeof v === "number" && Number.isFinite(v)) return String(Math.trunc(v));
   }
   return "";
 }

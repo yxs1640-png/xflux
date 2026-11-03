@@ -1,4 +1,5 @@
 import { config } from "../config.js";
+import { parseJsonPreservingLargeIntegers } from "./json-safe-parse.js";
 import {
   extractTweetsFromResponse,
   mapConsumerProfilePassthrough,
@@ -53,7 +54,7 @@ async function consumerFetch<T>(
   }
 
   try {
-    return JSON.parse(text) as T;
+    return parseJsonPreservingLargeIntegers<T>(text);
   } catch {
     throw new ConsumerApiError(`Invalid JSON from Consumer API ${endpoint}`, 502, text);
   }

@@ -43,6 +43,8 @@ function pickNumber(...values: unknown[]): number {
 function pickString(...values: unknown[]): string {
   for (const v of values) {
     if (typeof v === "string" && v.length > 0) return v;
+    if (typeof v === "bigint") return v.toString();
+    if (typeof v === "number" && Number.isFinite(v)) return String(Math.trunc(v));
   }
   return "";
 }

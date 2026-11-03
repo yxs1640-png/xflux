@@ -1,4 +1,5 @@
 import type { TwitterTweet, TwitterUser } from "./twitter-types";
+import { parseJsonPreservingLargeIntegers } from "./json-safe-parse";
 import {
   extractTweetsFromResponse,
   mapConsumerProfilePassthrough,
@@ -82,7 +83,7 @@ async function consumerFetch<T>(
   }
 
   try {
-    return JSON.parse(text) as T;
+    return parseJsonPreservingLargeIntegers<T>(text);
   } catch {
     throw new ConsumerApiError(`Invalid JSON from Consumer API ${endpoint}`, 502);
   }
