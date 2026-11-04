@@ -7,8 +7,21 @@ export interface TwitterUser {
   following_count: number;
   tweet_count: number;
   profile_image_url?: string;
+  profile_banner_url?: string;
+  profile_image_shape?: string;
   verified: boolean;
+  legacy_verified?: boolean;
+  verified_type?: string;
   created_at: string;
+  location?: string;
+  url?: string;
+  website?: string;
+  protected?: boolean;
+  can_dm?: boolean;
+  suspended?: boolean;
+  professional_type?: string;
+  professional_categories?: string[];
+  has_extended_profile?: boolean;
 }
 
 export interface TwitterTweet {
@@ -79,6 +92,101 @@ function userScore(user: TwitterUser): number {
   );
 }
 
+function enrichProfileExtras(
+  resultNode: Record<string, unknown> | null,
+  legacy?: Record<string, unknown> | null
+): Partial<TwitterUser> {
+  if (!resultNode && !legacy) return {};
+
+  const dm = resultNode ? asRecord(resultNode.dm_permissions) : null;
+  const locationNode = resultNode ? asRecord(resultNode.location) : null;
+  const privacy = resultNode ? asRecord(resultNode.privacy) : null;
+  const professional = resultNode ? asRecord(resultNode.professional) : null;
+  const verification = resultNode ? asRecord(resultNode.verification) : null;
+  const banner = resultNode ? asRecord(resultNode.banner) : null;
+  const website = resultNode ? asRecord(resultNode.website) : null;
+  const properties = resultNode ? asRecord(resultNode.properties) : null;
+  const profileBio = resultNode ? asRecord(resultNode.profile_bio) : null;
+  const bioEntities = profileBio ? asRecord(profileBio.entities) : null;
+  const bioUrlBlock = bioEntities ? asRecord(bioEntities.url) : null;
+  const bioUrls = Array.isArray(bioUrlBlock?.urls) ? bioUrlBlock.urls : [];
+  const firstBioUrl = bioUrls.length ? asRecord(bioUrls[0]) : null;
+
+  const categoriesRaw = Array.isArray(professional?.category) ? professional.category : [];
+  const professional_categories = categoriesRaw
+    .map((c) => pickString(asRecord(c)?.name))
+    .filter(Boolean);
+
+  const legacyEntities = legacy ? asRecord(legacy.entities) : null;
+  const legacyUrlBlock = legacyEntities ? asRecord(legacyEntities.url) : null;
+  const legacyUrls = Array.isArray(legacyUrlBlock?.urls) ? legacyUrlBlock.urls : [];
+  const firstLegacyUrl = legacyUrls.length ? asRecord(legacyUrls[0]) : null;
+
+  const expandedUrl =
+    pickString(
+      firstBioUrl?.expanded_url,
+      firstLegacyUrl?.expanded_url,
+      legacy?.url,
+      website?.url
+    ) || undefined;
+
+  const websiteDisplay =
+    pickString(
+      firstBioUrl?.display_url,
+      firstLegacyUrl?.display_url,
+      expandedUrl?.replace(/^https?:\/\//, "")
+    ) || undefined;
+
+  const legacyVerified = verification
+    ? Boolean(verification.verified)
+    : legacy
+      ? Boolean(legacy.verified)
+      : undefined;
+
+  const out: Partial<TwitterUser> = {};
+
+  const location = pickString(locationNode?.location, legacy?.location);
+  if (location) out.location = location;
+
+  if (expandedUrl) out.url = expandedUrl;
+  if (websiteDisplay) out.website = websiteDisplay;
+
+  const bannerUrl = pickString(
+    banner?.image_url,
+    legacy?.profile_banner_url,
+    legacy?.profile_banner_url_https
+  );
+  if (bannerUrl) out.profile_banner_url = bannerUrl;
+
+  const shape = pickString(resultNode?.profile_image_shape);
+  if (shape) out.profile_image_shape = shape;
+
+  if (dm && typeof dm.can_dm === "boolean") out.can_dm = dm.can_dm;
+  else if (legacy && typeof legacy.can_dm === "boolean") out.can_dm = legacy.can_dm;
+
+  if (privacy && typeof privacy.protected === "boolean") out.protected = privacy.protected;
+  else if (legacy && typeof legacy.protected === "boolean") out.protected = legacy.protected;
+
+  if (privacy && typeof privacy.suspended === "boolean") out.suspended = privacy.suspended;
+
+  const verifiedType = pickString(verification?.verified_type, legacy?.verified_type);
+  if (verifiedType) out.verified_type = verifiedType;
+
+  if (legacyVerified !== undefined) out.legacy_verified = legacyVerified;
+
+  const professionalType = pickString(professional?.professional_type);
+  if (professionalType) out.professional_type = professionalType;
+  if (professional_categories.length) out.professional_categories = professional_categories;
+
+  if (properties && typeof properties.has_extended_profile === "boolean") {
+    out.has_extended_profile = properties.has_extended_profile;
+  } else if (legacy && typeof legacy.has_extended_profile === "boolean") {
+    out.has_extended_profile = legacy.has_extended_profile;
+  }
+
+  return out;
+}
+
 function buildUserFromLegacy(
   legacy: Record<string, unknown>,
   resultNode: Record<string, unknown> | null,
@@ -98,6 +206,8 @@ function buildUserFromLegacy(
 
   const relationshipCounts = resultNode ? asRecord(resultNode.relationship_counts) : null;
   const publicMetrics = resultNode ? asRecord(resultNode.public_metrics) : null;
+  const verification = resultNode ? asRecord(resultNode.verification) : null;
+  const avatar = resultNode ? asRecord(resultNode.avatar) : null;
 
   return {
     id: pickString(
@@ -132,11 +242,19 @@ function buildUserFromLegacy(
       resultNode?.tweet_count
     ),
     profile_image_url:
-      pickString(legacy.profile_image_url_https, legacy.profile_image_url) || undefined,
+      pickString(
+        legacy.profile_image_url_https,
+        legacy.profile_image_url,
+        avatar?.image_url
+      ) || undefined,
     verified: Boolean(
-      legacy.verified || legacy.is_blue_verified || resultNode?.is_blue_verified
+      verification?.is_blue_verified ||
+        legacy.verified ||
+        legacy.is_blue_verified ||
+        resultNode?.is_blue_verified
     ),
     created_at: pickString(legacy.created_at, core?.created_at) || new Date(0).toISOString(),
+    ...enrichProfileExtras(resultNode, legacy),
   };
 }
 
@@ -169,6 +287,7 @@ function buildUserFromModernResult(
     profile_image_url: pickString(avatar?.image_url) || undefined,
     verified: Boolean(verification?.is_blue_verified || verification?.verified),
     created_at: pickString(core?.created_at) || new Date(0).toISOString(),
+    ...enrichProfileExtras(resultNode, null),
   };
 }
 

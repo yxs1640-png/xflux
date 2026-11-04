@@ -78,7 +78,16 @@ X-API-Key: xflux_YOUR_API_KEY`}</CodeBlock>
     "username": "elonmusk",
     "name": "Elon Musk",
     "followers_count": 000000,
-    "verified": true
+    "verified": true,
+    "location": "…",
+    "url": "https://…",
+    "website": "example.com",
+    "can_dm": false,
+    "protected": false,
+    "profile_banner_url": "https://…",
+    "profile_image_shape": "Circle",
+    "professional_type": "Business",
+    "professional_categories": ["…"]
   }
 }`}</CodeBlock>
 
