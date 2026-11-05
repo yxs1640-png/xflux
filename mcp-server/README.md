@@ -57,6 +57,28 @@ npx @xflux/xflux-mcp-server
 
 Optional: `XFLUX_API_BASE` (default `https://www.xfluxapi.com/api/v1`) for local dev.
 
+## Copy-paste prompts
+
+After the MCP server is connected in Claude or Cursor:
+
+```text
+Using XFlux, search tweets with q="$SOL" OR "Solana" lang:en -is:retweet from the last day. List accounts with clear price calls and >10k followers.
+```
+
+```text
+Using XFlux, pull @HyperliquidX profile and latest tweets, then summarize what the account is pushing this week.
+```
+
+```text
+Using XFlux Smart Money, list 4 CRYPTO accounts from the last 14 days and note one recent claim each.
+```
+
+```text
+Using XFlux, list my monitors and show the most recent hits. If I have none, suggest three @handles worth watching for trading alerts.
+```
+
+Marketing page with one-click copy: https://www.xfluxapi.com/mcp
+
 ## Develop from source
 
 ```bash

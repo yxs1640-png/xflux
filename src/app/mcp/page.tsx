@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { CodeBlock } from "@/components/docs/doc-blocks";
+import { CopyablePrompts } from "@/components/mcp/copyable-prompts";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BreadcrumbJsonLd } from "@/components/seo/breadcrumb-json-ld";
@@ -169,16 +170,11 @@ npx -y @xflux/xflux-mcp-server`}</CodeBlock>
           <section className="mb-16">
             <h2 className="text-2xl font-bold text-white mb-4">{t("promptsTitle")}</h2>
             <p className="text-zinc-400 text-sm mb-4">{t("promptsBlurb")}</p>
-            <ul className="space-y-3">
-              {prompts.map((prompt) => (
-                <li
-                  key={prompt}
-                  className="rounded-lg border border-zinc-800 bg-zinc-950/60 px-4 py-3 text-sm text-zinc-200 leading-relaxed"
-                >
-                  {prompt}
-                </li>
-              ))}
-            </ul>
+            <CopyablePrompts
+              prompts={prompts}
+              copyLabel={t("promptCopy")}
+              copiedLabel={t("promptCopied")}
+            />
           </section>
 
           <section className="mb-16 rounded-xl border border-sky-500/25 bg-sky-500/5 p-6">

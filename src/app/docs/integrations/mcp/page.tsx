@@ -160,14 +160,25 @@ npx -y @xflux/xflux-mcp-server`}</CodeBlock>
   }
 }`}</CodeBlock>
 
-      <DocHeading id="example-prompts">Example prompts</DocHeading>
+      <DocHeading id="example-prompts">Copy-paste prompts</DocHeading>
       <ul className="list-disc list-inside space-y-2 text-zinc-400 text-sm mb-6">
         <li>
-          Using XFlux, search recent English tweets about federal reserve rate cuts and summarize.
+          Using XFlux, search tweets with q=&quot;$SOL&quot; OR &quot;Solana&quot; lang:en
+          -is:retweet from the last day. List accounts with clear price calls and &gt;10k
+          followers.
         </li>
-        <li>Using XFlux, pull @elonmusk&apos;s profile and latest tweets.</li>
-        <li>Using XFlux Smart Money, list 4 MACRO accounts from the last 14 days.</li>
-        <li>Using XFlux, list my monitors and show recent hits.</li>
+        <li>
+          Using XFlux, pull @HyperliquidX profile and latest tweets, then summarize what the
+          account is pushing this week.
+        </li>
+        <li>
+          Using XFlux Smart Money, list 4 CRYPTO accounts from the last 14 days and note one
+          recent claim each.
+        </li>
+        <li>
+          Using XFlux, list my monitors and show the most recent hits. If I have none, suggest
+          three @handles worth watching for trading alerts.
+        </li>
       </ul>
 
       <DocHeading id="agent-discovery">Agent discovery (no Google required)</DocHeading>
